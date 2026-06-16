@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Lean Startup | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Metodologias</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Implementacao</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
+      <span>/</span>
+      <span class="text-blue-400">Modulo 2.2</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MODULO 2.2</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🚀 Lean Startup</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">De Eric Ries e a IMVU ao metodo que mudou como startups e corporacoes validam ideias. Build-Measure-Learn, MVPs e a arte de pivotar antes de quebrar.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">45</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="2-2" data-inema-track="2">
+
+    <!-- TOPICO 1: Eric Ries e a Origem -->
+    <section id="topico-1" data-inema-topic="modulo-2-2#topico-1" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">📖 Eric Ries e a Origem do Lean Startup</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t1-p1">
+        Em 2004, <strong class="text-blue-400">Eric Ries</strong> era CTO da IMVU, uma startup de avatares 3D para chat. A equipe passou 6 meses construindo um produto que ninguem queria. Meses de codigo, design e planejamento jogados fora. Essa experiencia traumatica se tornou o momento fundador do Lean Startup: e se existisse um metodo para descobrir <strong class="text-blue-400">o que nao construir</strong> antes de gastar tempo e dinheiro?
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🎯</span> A Tese Central
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m2-2-t1-tese">Startups nao falham por falta de produto. Falham por falta de clientes. O maior risco nao e tecnico, e de mercado. Portanto, o trabalho mais importante de uma startup nao e construir, e <strong class="text-blue-400">aprender</strong>. E toda atividade que nao produz aprendizado validado e desperdicio.</p>
+        <p class="text-neutral-400 text-sm">Eric Ries, "The Lean Startup" (2011)</p>
+      </div>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🧬</span> DNA do Lean Startup
+        </h3>
+        <p class="text-neutral-300 mb-3">O Lean Startup combina 3 influencias:</p>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span><strong class="text-blue-400">Customer Development</strong> (Steve Blank): sair do escritorio e falar com clientes antes de escrever codigo</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span><strong class="text-blue-400">Lean Manufacturing</strong> (Toyota): eliminar desperdicio, fluxo continuo, melhoria iterativa</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span><strong class="text-blue-400">Agile Development</strong>: ciclos curtos, entrega frequente, adaptacao rapida</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: O Ciclo Build-Measure-Learn -->
+    <section id="topico-2" data-inema-topic="modulo-2-2#topico-2" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">🔄 O Ciclo Build-Measure-Learn</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t2-p1">
+        O motor do Lean Startup e um loop de feedback: <strong class="text-blue-400">Construir &rarr; Medir &rarr; Aprender</strong>. O objetivo nao e construir o produto mais rapido. E <strong class="text-blue-400">percorrer o ciclo inteiro o mais rapido possivel</strong>. Cada volta do ciclo testa uma hipotese especifica e produz aprendizado validado.
+      </p>
+
+      <!-- SVG: Ciclo Build-Measure-Learn -->
+      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 800 400" class="w-full h-auto" role="img" aria-label="Ciclo Build-Measure-Learn do Lean Startup: ideias levam a construir, produto leva a medir, dados levam a aprender, aprendizado gera novas ideias">
+          <defs>
+            <linearGradient id="m22-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/>
+            </linearGradient>
+            <filter id="m22-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m22-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <circle cx="1.3" cy="1.3" r="1.3" fill="#3b82f6" opacity="0.12"/>
+            </pattern>
+            <marker id="m22-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"/></marker>
+            <marker id="m22-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
+          </defs>
+          <rect x="0" y="0" width="800" height="400" fill="url(#m22-grid)"/>
+
+          <!-- Setas curvas do ciclo -->
+          <path d="M400,80 C580,80 680,160 680,200" fill="none" stroke="#60a5fa" stroke-width="1.8" opacity="0.5" marker-end="url(#m22-ah)"/>
+          <path d="M680,240 C680,320 560,360 400,360" fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.5" marker-end="url(#m22-ahc)"/>
+          <path d="M360,360 C180,360 120,280 120,200" fill="none" stroke="#60a5fa" stroke-width="1.8" opacity="0.5" marker-end="url(#m22-ah)"/>
+          <path d="M120,170 C120,100 200,60 360,60" fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.5" marker-end="url(#m22-ahc)"/>
+
+          <!-- BUILD (topo) -->
+          <g filter="url(#m22-glow)">
+            <rect x="320" y="40" width="160" height="60" rx="14" fill="#0e1622" stroke="url(#m22-grad)" stroke-width="2"/>
+          </g>
+          <text x="400" y="66" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="18">BUILD</text>
+          <text x="400" y="86" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Construir</text>
+
+          <!-- MEASURE (direita) -->
+          <rect x="600" y="175" width="160" height="60" rx="14" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+          <text x="680" y="201" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="18">MEASURE</text>
+          <text x="680" y="221" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Medir</text>
+
+          <!-- LEARN (base) -->
+          <g filter="url(#m22-glow)">
+            <rect x="320" y="330" width="160" height="60" rx="14" fill="#0e1622" stroke="url(#m22-grad)" stroke-width="2"/>
+          </g>
+          <text x="400" y="356" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="18">LEARN</text>
+          <text x="400" y="376" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Aprender</text>
+
+          <!-- IDEAS (esquerda) -->
+          <rect x="40" y="175" width="160" height="60" rx="14" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+          <text x="120" y="201" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="18">IDEAS</text>
+          <text x="120" y="221" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Hipoteses</text>
+
+          <!-- Labels nas curvas -->
+          <text x="560" y="120" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="10" opacity="0.7">Produto/MVP</text>
+          <text x="580" y="320" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="10" opacity="0.7">Dados</text>
+          <text x="240" y="340" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="10" opacity="0.7">Aprendizado</text>
+          <text x="220" y="110" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="10" opacity="0.7">Hipoteses</text>
+
+          <!-- Centro: "Minimizar tempo total do ciclo" -->
+          <text x="400" y="205" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="12" font-weight="600" opacity="0.8">Minimizar</text>
+          <text x="400" y="220" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10" opacity="0.6">tempo total do ciclo</text>
+        </svg>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">⚠️</span> O Truque Contra-Intuitivo
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-2-t2-trick">Voce <strong class="text-blue-400">planeja de tras pra frente</strong>. Primeiro decide o que quer aprender (hipotese). Depois define como medir (metrica). So entao decide o que construir (MVP). A maioria das equipes faz o oposto: constroi primeiro, depois tenta medir algo, e raramente aprende nada de util.</p>
+        <div class="bg-dark-700/50 rounded-lg p-4 font-mono text-sm">
+          <p class="text-red-400 mb-1">// Ordem errada (90% das equipes):</p>
+          <p class="text-neutral-300 mb-3">Build &rarr; "o que deu?" &rarr; "hm, sei la" &rarr; Build de novo</p>
+          <p class="text-blue-400 mb-1">// Ordem correta (Lean):</p>
+          <p class="text-neutral-300">Learn (hipotese) &rarr; Measure (metrica) &rarr; Build (MVP minimo)</p>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: MVP - Tipos e Estrategias -->
+    <section id="topico-3" data-inema-topic="modulo-2-2#topico-3" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🧪 MVP: Tipos e Estrategias</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t3-p1">
+        MVP (Minimum Viable Product) e o produto mais simples que permite <strong class="text-blue-400">testar uma hipotese com clientes reais</strong>. Nao e a versao "meia-boca" do produto final. E um experimento. O MVP responde UMA pergunta: vale a pena construir isso?
+      </p>
+
+      <!-- Tipos de MVP em cards -->
+      <div class="space-y-6 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-2xl">🎭</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Wizard of Oz MVP</h4>
+            <p class="text-sm text-neutral-400 mb-3">Parece automatico, mas ha humanos por tras</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-2-t3-wiz">O usuario ve um produto funcional, mas por tras um humano faz o trabalho manualmente. Testa se as pessoas querem a funcionalidade ANTES de gastar meses automatizando. Ex: chatbot que na verdade e um humano respondendo; app de recomendacao onde as sugestoes sao curadas manualmente.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-2xl">🤵</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Concierge MVP</h4>
+            <p class="text-sm text-neutral-400 mb-3">Servico manual e personalizado para poucos</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-2-t3-con">Diferente do Wizard of Oz, o cliente SABE que e manual. Voce entrega o servico um-a-um para aprender o que funciona antes de escalar. Ex: Zappos (fundador comprava sapatos em lojas locais e enviava manualmente); consultoria de dieta personalizada antes de criar um app.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-2xl">💨</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Smoke Test / Landing Page MVP</h4>
+            <p class="text-sm text-neutral-400 mb-3">Teste de demanda antes de construir qualquer coisa</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-2-t3-smo">Uma pagina que descreve o produto e tem um botao "Quero!" ou formulario de email. Mede se as pessoas se interessam o suficiente para clicar/cadastrar. Zero codigo de produto. Ex: Buffer lancou uma landing page descrevendo o servico e coletou emails antes de escrever a primeira linha de codigo.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-2xl">🎬</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Video MVP</h4>
+            <p class="text-sm text-neutral-400 mb-3">Mostrar o conceito em video e medir reacao</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-2-t3-vid">Um video de 3 minutos explicando o que o produto faz (sem que o produto exista). Mede engajamento, compartilhamentos e sign-ups. O caso classico: Dropbox criou um video de demonstracao que gerou 70.000 inscritos na lista de espera em uma noite. A validacao perfeita.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Regra de Ouro do MVP
+        </h3>
+        <p class="text-neutral-300">Se voce nao tem vergonha do seu MVP, voce lancou tarde demais. O MVP nao e sobre o produto. E sobre a velocidade do aprendizado. Cada dia a mais "polindo" e um dia sem feedback real.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Metricas de Vaidade vs Acionaveis -->
+    <section id="topico-4" data-inema-topic="modulo-2-2#topico-4" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">📊 Metricas de Vaidade vs Metricas Acionaveis</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t4-p1">
+        A maior armadilha do Lean Startup nao e construir o MVP errado. E <strong class="text-blue-400">medir a coisa errada</strong>. Metricas de vaidade fazem voce se sentir bem. Metricas acionaveis fazem voce tomar decisoes melhores. A diferenca e a diferenca entre sucesso e autoengano.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Metricas de Vaidade</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Total de usuarios registrados</strong> (inclui abandonos)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Page views totais</strong> (um usuario em loop = muitas views)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Downloads</strong> (baixou != usou != pagou)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>"Seguidores"</strong> (nao necessariamente clientes)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Receita acumulada</strong> (so sobe, nunca informa tendencia)</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Metricas Acionaveis</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>Taxa de ativacao</strong> (% que completa acao-chave)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>Retencao por coorte</strong> (usuarios da semana X voltam na Y?)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>NPS (Net Promoter Score)</strong> (recomendaria?)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>LTV/CAC</strong> (receita por cliente / custo de aquisicao)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>Receita por coorte</strong> (tendencia real semana a semana)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🧮</span> Innovation Accounting
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m2-2-t4-ia">Ries chama de Innovation Accounting o framework de 3 passos para medir progresso em ambientes de incerteza:</p>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">1.</span>
+            <span><strong class="text-blue-400">Baseline:</strong> Lance o MVP e meça onde voce esta hoje (taxa de conversao real, nao desejada)</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">2.</span>
+            <span><strong class="text-blue-400">Tuning:</strong> Execute experimentos para mover a metrica do baseline em direcao ao ideal</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">3.</span>
+            <span><strong class="text-blue-400">Decisao:</strong> Se os experimentos nao movem a metrica, e hora de pivotar. Se movem, perseverar</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Pivot vs Persevere -->
+    <section id="topico-5" data-inema-topic="modulo-2-2#topico-5" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">🔀 Pivot vs Persevere</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t5-p1">
+        O pivot e a decisao mais dificil do Lean Startup. Significa <strong class="text-blue-400">mudar de estrategia sem mudar de visao</strong>. Nao e desistir. E redirecionar com base em evidencias. A maioria das startups de sucesso pivotaram pelo menos uma vez: Instagram comecou como Burbn (check-in app), Twitter era o Odeo (podcasts), Slack era um jogo chamado Glitch.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🔄</span> Tipos de Pivot
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Zoom-in Pivot</h4>
+            <p class="text-xs text-neutral-300">Uma feature unica se torna o produto inteiro. Ex: Instagram removeu tudo do Burbn exceto fotos+filtros.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Zoom-out Pivot</h4>
+            <p class="text-xs text-neutral-300">O produto inteiro se torna uma feature de algo maior. Ex: Yelp comecou como email de recomendacoes entre amigos.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Customer Segment Pivot</h4>
+            <p class="text-xs text-neutral-300">Mesmo produto, publico diferente. Ex: Slack de gamers para empresas.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Channel Pivot</h4>
+            <p class="text-xs text-neutral-300">Mesmo produto, canal de distribuicao diferente. Ex: de venda direta para marketplace.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Value Capture Pivot</h4>
+            <p class="text-xs text-neutral-300">Mudar como monetiza. Ex: de venda unica para assinatura (Adobe Creative Cloud).</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Platform Pivot</h4>
+            <p class="text-xs text-neutral-300">De aplicacao para plataforma (ou vice-versa). Ex: Amazon de loja para AWS+marketplace.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> Sinais de que e hora de pivotar
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-red-400">&#8226;</span>
+            <span>Experimentos nao movem as metricas ha 3+ ciclos</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-red-400">&#8226;</span>
+            <span>Clientes usam o produto de forma inesperada (pista de pivot)</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-red-400">&#8226;</span>
+            <span>A equipe esta "otimizando" sem impacto no comportamento do usuario</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-red-400">&#8226;</span>
+            <span>Conversas com clientes revelam que o problema real e outro</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Cases Classicos -->
+    <section id="topico-6" data-inema-topic="modulo-2-2#topico-6" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">📚 Cases Classicos do Lean Startup</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t6-p1">
+        A teoria ganha vida nos exemplos. Estes sao os dois cases mais estudados do Lean Startup, e cada um ensina algo diferente sobre validacao.
+      </p>
+
+      <!-- Case Dropbox -->
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📦</span> Dropbox: O Video MVP Perfeito
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m2-2-t6-drop">Drew Houston tinha um problema: esquecer o pen drive. A solucao tecnica (sync de arquivos na nuvem) era complexa. Investidores duvidavam: "ja existem 20 empresas fazendo isso". Houston nao construiu o produto. Fez um video de 3 minutos mostrando como funcionaria.</p>
+        <div class="space-y-3">
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 font-bold">1.</span>
+            <p class="text-neutral-300 text-sm"><strong>Hipotese:</strong> Pessoas querem sync de arquivos se for transparente (sem pensar).</p>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 font-bold">2.</span>
+            <p class="text-neutral-300 text-sm"><strong>MVP:</strong> Video screencast de 3 min postado no Hacker News.</p>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 font-bold">3.</span>
+            <p class="text-neutral-300 text-sm"><strong>Metrica:</strong> Sign-ups na lista de espera.</p>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 font-bold">4.</span>
+            <p class="text-neutral-300 text-sm"><strong>Resultado:</strong> 5.000 &rarr; 75.000 inscritos em 24h. Hipotese validada.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case Zappos -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">👟</span> Zappos: O Concierge MVP Original
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m2-2-t6-zap">Nick Swinmurn queria vender sapatos online em 1999. Ninguem acreditava que pessoas comprariam sapatos sem experimentar. Em vez de montar estoque e logistica, ele foi a lojas de sapatos locais, tirou fotos, postou online, e quando alguem comprava, ele ia na loja, comprava o par e enviava pelo correio.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-4">
+            <h4 class="font-bold text-emerald-400 mb-3 text-sm">&#10003; O que o MVP validou</h4>
+            <ul class="space-y-2 text-neutral-300 text-sm">
+              <li>&#8226; Pessoas compram sapatos online (demanda)</li>
+              <li>&#8226; Disposicao a esperar pela entrega</li>
+              <li>&#8226; Fotos bastam (sem experimentar)</li>
+              <li>&#8226; Politica de devolucao resolve a objecao</li>
+            </ul>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl border border-dark-600 p-4">
+            <h4 class="font-bold text-blue-400 mb-3 text-sm">📊 Investimento do MVP</h4>
+            <ul class="space-y-2 text-neutral-300 text-sm">
+              <li>&#8226; Custo: quase zero (camera + site basico)</li>
+              <li>&#8226; Tempo: dias, nao meses</li>
+              <li>&#8226; Risco: comprava so quando vendia</li>
+              <li>&#8226; Resultado: adquirida pela Amazon por $1.2B</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Lean Startup no Corporativo
+        </h3>
+        <p class="text-neutral-300">Lean Startup nao e so para startups. GE, Intuit, Toyota e Bosch usam o ciclo BML internamente. A diferenca: em corporacoes, o "pivot" e mais politico que tecnico. O Innovation Accounting e essencial para justificar aprendizado (nao so receita) para o board.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Startups falham por falta de clientes, nao de produto</strong>
+              <span class="text-neutral-400"> - O trabalho mais importante e aprender, nao construir</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Build-Measure-Learn na ordem certa</strong>
+              <span class="text-neutral-400"> - Planeje de tras pra frente: Learn &rarr; Measure &rarr; Build</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">MVP e experimento, nao produto</strong>
+              <span class="text-neutral-400"> - Wizard of Oz, Concierge, Smoke Test, Video: cada um testa algo diferente</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Metricas de vaidade vs acionaveis</strong>
+              <span class="text-neutral-400"> - Total de downloads nao conta. Retencao por coorte sim</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Pivotar e redirecionar com base em evidencias</strong>
+              <span class="text-neutral-400"> - Instagram, Slack, Twitter: todos pivotaram para o sucesso</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-blue-400 mb-2">Proxima Trilha:</h3>
+          <p class="text-neutral-300">Trilha 3 - Implementacao: como criar programas de inovacao corporativa</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="modulo-2-1.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Modulo Anterior
+          </a>
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">
+            Voltar para Trilha &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Design Thinking | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Metodologias</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Implementacao</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
+      <span>/</span>
+      <span class="text-blue-400">Modulo 2.1</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MODULO 2.1</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🎯 Design Thinking</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Uma abordagem centrada no ser humano para resolver problemas complexos. De Stanford e IDEO para o mundo corporativo: como pensar como designer transforma a maneira como organizacoes inovam.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">45</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="2-1" data-inema-track="2">
+
+    <!-- TOPICO 1: O que e Design Thinking -->
+    <section id="topico-1" data-inema-topic="modulo-2-1#topico-1" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🧠 O que e Design Thinking</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-1-t1-p1">
+        Design Thinking nao e uma metodologia rigida. E uma <strong class="text-blue-400">abordagem para resolver problemas</strong> que coloca o ser humano no centro de todas as decisoes. Nasceu do trabalho da IDEO, consultoria de design fundada por David Kelley, e foi formalizada por <strong class="text-blue-400">Tim Brown</strong> como uma disciplina que usa a sensibilidade e os metodos do designer para atender necessidades das pessoas com o que e tecnologicamente viavel e comercialmente sustentavel.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📖</span> Definicao de Tim Brown
+        </h3>
+        <p class="text-neutral-300 mb-4">"Design thinking is a human-centered approach to innovation that draws from the designer's toolkit to integrate the needs of people, the possibilities of technology, and the requirements for business success."</p>
+        <p class="text-neutral-400 text-sm">Tim Brown, CEO da IDEO, em "Change by Design" (2009)</p>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-1-t1-p2">
+        A Stanford d.school (Hasso Plattner Institute of Design) transformou o Design Thinking em disciplina academica nos anos 2000, criando o modelo de 5 etapas que se tornou referencia global. O ponto-chave: diferente de processos lineares de engenharia, o DT e <strong class="text-blue-400">iterativo e nao-linear</strong>. Voce pode (e deve) voltar a etapas anteriores quando descobre algo novo.
+      </p>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> Dados de Adocao
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong>85%</strong> das empresas Fortune 500 utilizam alguma forma de Design Thinking (Forrester, 2023)</li>
+          <li><strong>6x</strong> maior retorno sobre investimento em projetos que usam DT vs. abordagens tradicionais (McKinsey Design Index)</li>
+          <li><strong>71%</strong> das equipes relatam melhoria na colaboracao apos adotar DT (IBM Enterprise Design Thinking)</li>
+          <li><strong>$20M+</strong> em economia anual reportada pela IBM com seu framework de Enterprise Design Thinking</li>
+        </ul>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">🎨</div>
+          <h4 class="font-semibold text-blue-400 text-sm mb-1">Desejabilidade</h4>
+          <p class="text-xs text-neutral-400">O que as pessoas querem?</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">⚙️</div>
+          <h4 class="font-semibold text-blue-400 text-sm mb-1">Viabilidade</h4>
+          <p class="text-xs text-neutral-400">E tecnicamente possivel?</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">💰</div>
+          <h4 class="font-semibold text-blue-400 text-sm mb-1">Sustentabilidade</h4>
+          <p class="text-xs text-neutral-400">E financeiramente viavel?</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">✨</div>
+          <h4 class="font-semibold text-blue-400 text-sm mb-1">Inovacao</h4>
+          <p class="text-xs text-neutral-400">A interseccao dos 3</p>
+        </div>
+      </div>
+
+      <!-- Botao marcar como lido -->
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: As 5 Etapas -->
+    <section id="topico-2" data-inema-topic="modulo-2-1#topico-2" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">🔄 As 5 Etapas do Design Thinking</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-1-t2-p1">
+        O modelo da Stanford d.school organiza o Design Thinking em <strong class="text-blue-400">5 etapas</strong> que formam um processo iterativo. O formato de "duplo diamante" (divergir-convergir duas vezes) captura a essencia: primeiro expandir o entendimento do problema, depois focar na definicao certa; depois expandir as solucoes possiveis, e finalmente convergir para a melhor.
+      </p>
+
+      <!-- SVG: Duplo Diamante / 5 Etapas -->
+      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 1000 300" class="w-full h-auto" role="img" aria-label="Diagrama das 5 etapas do Design Thinking: Empatizar, Definir, Idear, Prototipar, Testar, dispostas em formato de duplo diamante">
+          <defs>
+            <linearGradient id="m21-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/>
+            </linearGradient>
+            <filter id="m21-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m21-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <circle cx="1.3" cy="1.3" r="1.3" fill="#3b82f6" opacity="0.12"/>
+            </pattern>
+            <marker id="m21-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"/></marker>
+            <marker id="m21-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
+          </defs>
+          <rect x="0" y="0" width="1000" height="300" fill="url(#m21-grid)"/>
+
+          <!-- Duplo diamante: formas -->
+          <path d="M50,150 L200,50 L350,150 L200,250 Z" fill="#0e1622" stroke="#60a5fa" stroke-width="2" opacity="0.4"/>
+          <path d="M350,150 L550,50 L750,150 L550,250 Z" fill="#0e1622" stroke="#38bdf8" stroke-width="2" opacity="0.4"/>
+
+          <!-- Setas de conexao -->
+          <line x1="350" y1="150" x2="348" y2="150" stroke="#60a5fa" stroke-width="1.8" opacity="0.5"/>
+
+          <!-- Etapa 1: Empatizar -->
+          <g filter="url(#m21-glow)">
+            <rect x="20" y="120" width="120" height="60" rx="12" fill="#0e1622" stroke="url(#m21-grad)" stroke-width="2"/>
+          </g>
+          <text x="80" y="146" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="14">Empatizar</text>
+          <text x="80" y="164" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">Entender</text>
+
+          <!-- Etapa 2: Definir -->
+          <rect x="180" y="120" width="120" height="60" rx="12" fill="#0e1622" stroke="#60a5fa" stroke-width="2"/>
+          <text x="240" y="146" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="14">Definir</text>
+          <text x="240" y="164" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">Focar</text>
+
+          <!-- Etapa 3: Idear -->
+          <rect x="370" y="120" width="120" height="60" rx="12" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+          <text x="430" y="146" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="14">Idear</text>
+          <text x="430" y="164" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">Explorar</text>
+
+          <!-- Etapa 4: Prototipar -->
+          <rect x="540" y="120" width="120" height="60" rx="12" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+          <text x="600" y="146" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="14">Prototipar</text>
+          <text x="600" y="164" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">Construir</text>
+
+          <!-- Etapa 5: Testar -->
+          <g filter="url(#m21-glow)">
+            <rect x="730" y="120" width="120" height="60" rx="12" fill="#0e1622" stroke="url(#m21-grad)" stroke-width="2"/>
+          </g>
+          <text x="790" y="146" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="14">Testar</text>
+          <text x="790" y="164" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">Validar</text>
+
+          <!-- Setas entre etapas -->
+          <path d="M140,150 L178,150" fill="none" stroke="#60a5fa" stroke-width="1.8" opacity="0.5" marker-end="url(#m21-ah)"/>
+          <path d="M300,150 L368,150" fill="none" stroke="#60a5fa" stroke-width="1.8" opacity="0.5" marker-end="url(#m21-ah)"/>
+          <path d="M490,150 L538,150" fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.5" marker-end="url(#m21-ahc)"/>
+          <path d="M660,150 L728,150" fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.5" marker-end="url(#m21-ahc)"/>
+
+          <!-- Seta de iteracao (volta) -->
+          <path d="M850,150 C920,150 920,40 790,40 L100,40 C40,40 40,120 50,120" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.35" marker-end="url(#m21-ah)"/>
+          <text x="500" y="32" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="11" opacity="0.6">iteracao continua</text>
+
+          <!-- Labels dos diamantes -->
+          <text x="200" y="280" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="11" opacity="0.7">Espaco do Problema</text>
+          <text x="550" y="280" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11" opacity="0.7">Espaco da Solucao</text>
+        </svg>
+      </div>
+
+      <!-- Detalhamento de cada etapa -->
+      <div class="space-y-6 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold">1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Empatizar</h4>
+            <p class="text-sm text-neutral-400 mb-3">Mergulhar no universo do usuario</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-1-t2-emp">Observar, entrevistar e vivenciar a experiencia do usuario. Nao e sobre perguntar "o que voce quer?", mas sobre entender comportamentos, dores e motivacoes reais. Ferramentas: entrevistas em profundidade, shadowing, diarios de uso, mapa de empatia.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold">2</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Definir</h4>
+            <p class="text-sm text-neutral-400 mb-3">Sintetizar insights em um ponto de vista claro</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-1-t2-def">Transformar dados de empatia em um "Point of View" (POV) e declaracoes "How Might We" (Como poderiamos...). A qualidade da definicao do problema determina a qualidade das solucoes. Ferramentas: personas, jornada do usuario, POV statement, HMW questions.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold">3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Idear</h4>
+            <p class="text-sm text-neutral-400 mb-3">Gerar volume antes de filtrar</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-1-t2-ide">Divergir radicalmente: quantidade acima de qualidade. Adiar o julgamento, buscar ideias selvagens, construir sobre ideias dos outros. Ferramentas: brainstorm estruturado, Crazy 8s, SCAMPER, analogias forcadas, brainwriting 6-3-5.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold">4</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Prototipar</h4>
+            <p class="text-sm text-neutral-400 mb-3">Tornar tangivel para testar</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-1-t2-pro">Construir rapido, barato e imperfeito. O prototipo nao e o produto: e uma pergunta materializada. Quanto mais cedo e barato voce falha, mais aprende. Ferramentas: prototipo de papel, storyboard, roleplay, wireframe, maquete fisica, prototipo digital de baixa fidelidade.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold">5</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Testar</h4>
+            <p class="text-sm text-neutral-400 mb-3">Validar com usuarios reais</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-1-t2-tes">Colocar o prototipo na mao do usuario e observar. Nao defender a ideia: ouvir. O objetivo nao e "aprovar" o prototipo, mas aprender o que funciona e o que precisa mudar. Cada teste pode levar voce de volta a qualquer etapa anterior.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Ferramentas Praticas -->
+    <section id="topico-3" data-inema-topic="modulo-2-1#topico-3" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🛠️ Ferramentas Praticas por Etapa</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-1-t3-p1">
+        Cada etapa do Design Thinking tem ferramentas especificas. Nao precisa usar todas em todo projeto. O importante e <strong class="text-blue-400">escolher a ferramenta certa para o momento certo</strong>. Aqui vao as mais usadas e comprovadas em ambiente corporativo.
+      </p>
+
+      <!-- Mapa de Empatia -->
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">👁️</span> Mapa de Empatia
+        </h3>
+        <p class="text-neutral-300 mb-4">Quadro dividido em 4 quadrantes que organiza o que voce aprendeu sobre o usuario:</p>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600">
+            <h4 class="text-sm font-semibold text-blue-400 mb-1">Pensa e Sente</h4>
+            <p class="text-xs text-neutral-400">Preocupacoes, aspiracoes, medos. O que realmente importa?</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600">
+            <h4 class="text-sm font-semibold text-blue-400 mb-1">Ve</h4>
+            <p class="text-xs text-neutral-400">Ambiente, amigos, mercado. O que o entorno oferece?</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600">
+            <h4 class="text-sm font-semibold text-blue-400 mb-1">Ouve</h4>
+            <p class="text-xs text-neutral-400">Influencias, midia, colegas. Quem influencia decisoes?</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600">
+            <h4 class="text-sm font-semibold text-blue-400 mb-1">Fala e Faz</h4>
+            <p class="text-xs text-neutral-400">Comportamento publico, atitude. Acoes observaveis.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Persona -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">👤</span> Persona
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-1-t3-per">Representacao semi-ficticia do usuario ideal baseada em dados reais de pesquisa. Uma persona tem nome, foto, dados demograficos, objetivos, frustracao, e uma "frase que resume" tudo. A chave: persona nao e fantasia. Ela e a sintese das entrevistas e observacoes.</p>
+        <div class="bg-primary/10 rounded-lg border border-primary/30 p-4">
+          <p class="text-sm text-primary font-semibold mb-1">💡 Dica Pratica</p>
+          <p class="text-sm text-neutral-300">Limite-se a 2-3 personas por projeto. Mais do que isso dilui o foco. Se todas as decisoes servem a todas as personas, nenhuma persona esta realmente guiando o design.</p>
+        </div>
+      </div>
+
+      <!-- HMW -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">❓</span> How Might We (HMW)
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-1-t3-hmw">Perguntas "Como poderiamos...?" que reescrevem o problema como oportunidade. A formulacao importa: ampla demais ("Como poderiamos melhorar a vida das pessoas?") gera respostas vagas. Estreita demais ("Como poderiamos adicionar um botao azul?") limita a criatividade.</p>
+        <div class="bg-dark-700/50 rounded-lg p-4 font-mono text-sm">
+          <p class="text-blue-400 mb-1">// Muito ampla:</p>
+          <p class="text-neutral-300 mb-3">"Como poderiamos melhorar a experiencia do cliente?"</p>
+          <p class="text-blue-400 mb-1">// Calibrada:</p>
+          <p class="text-neutral-300 mb-3">"Como poderiamos reduzir a ansiedade do cliente na espera entre pedido e entrega?"</p>
+          <p class="text-blue-400 mb-1">// Muito estreita:</p>
+          <p class="text-neutral-300">"Como poderiamos enviar um SMS de confirmacao?"</p>
+        </div>
+      </div>
+
+      <!-- Crazy 8s -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">⚡</span> Crazy 8s
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m2-1-t3-cr8">Dobre uma folha A4 em 8 quadrantes. Cronometre 8 minutos. Desenhe 8 solucoes diferentes (1 por minuto). A pressao do tempo forca o cerebro a abandonar a zona de conforto e explorar alternativas radicais. Funciona melhor em grupo: cada participante gera 8 ideias, depois o time vota nas melhores.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Quando Usar e Quando Nao Usar -->
+    <section id="topico-4" data-inema-topic="modulo-2-1#topico-4" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">⚖️ Quando Usar e Quando Nao Usar</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-1-t4-p1">
+        Design Thinking nao e bala de prata. Funciona extremamente bem para certos tipos de problemas e pode ser um desperdicio de tempo em outros. Saber <strong class="text-blue-400">quando aplicar</strong> e tao importante quanto saber como.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Usar Design Thinking quando</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>O problema e <strong>ambiguo ou mal definido</strong></span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Voce nao sabe quem e o usuario real ou o que ele precisa</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Solucoes existentes nao funcionam e ninguem sabe por que</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Precisa de <strong>inovacao radical</strong>, nao incremental</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Times multidisciplinares precisam de linguagem comum</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Nao usar Design Thinking quando</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>O problema e <strong>tecnico e bem definido</strong> (bug, falha de sistema)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Ha urgencia extrema (horas, nao dias)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>A solucao ja e conhecida e validada (otimizar, nao reinventar)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Restricoes regulatorias eliminam espacos de solucao</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Lideranca quer "teatro de inovacao" sem intencion de mudar</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> Armadilha Comum
+        </h3>
+        <p class="text-neutral-300">"Design Thinking Theatre": workshops com post-its coloridos que geram empolgacao mas zero implementacao. Se nao ha compromisso de testar e iterar apos a sessao de ideacao, voce esta fazendo teatro, nao Design Thinking. O valor esta na iteracao, nao no post-it.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Case IDEO Shopping Cart -->
+    <section id="topico-5" data-inema-topic="modulo-2-1#topico-5" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">🛒 Case: IDEO e o Shopping Cart Challenge</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-1-t5-p1">
+        Em 1999, a ABC Nightline desafiou a IDEO a redesenhar o <strong class="text-blue-400">carrinho de supermercado</strong> em apenas 5 dias. O episodio se tornou o case mais famoso de Design Thinking na historia e e estudado ate hoje em escolas de negocios no mundo inteiro.
+      </p>
+
+      <!-- Timeline do case -->
+      <div class="space-y-6 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">D1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Dia 1: Empatia em campo</h4>
+            <p class="text-sm text-neutral-400 mb-3">Observacao e imersao</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-1-t5-d1">A equipe de designers, engenheiros e especialistas vai a supermercados. Observam compradores, funcionarios, criancas. Descobrem: 22.000 criancas se machucam por ano em carrinhos; ninguem sabe onde deixou o carrinho no estacionamento; as rodinhas emperram; furtos de carrinho custam milhoes.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">D2</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Dia 2: Divergencia total</h4>
+            <p class="text-sm text-neutral-400 mb-3">Ideacao em grupos multidisciplinares</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-1-t5-d2">Brainstorm com regras claras: construir sobre ideias dos outros, adiar julgamento, buscar volume. Regra "uma conversa por vez". Times focados em temas: seguranca infantil, armazenamento, checkout, navegacao. Centenas de ideias geradas.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">D3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Dia 3-4: Prototipagem rapida</h4>
+            <p class="text-sm text-neutral-400 mb-3">Do desenho ao objeto fisico</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-1-t5-d3">Votacao democratica nas melhores ideias. Construcao de prototipos funcionais com materiais simples. Iteracao constante: "se nao da pra construir em uma hora, simplifique". Prototipo fisico real de carrinho com cestas removiveis, scanner embutido e design anti-tombamento.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">D5</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Dia 5: Apresentacao e teste</h4>
+            <p class="text-sm text-neutral-400 mb-3">Prototipo funcional em 5 dias</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-1-t5-d5">Carrinho final: estrutura modular com cestas removiveis (cada pessoa pega a sua, faz compras, e devolve ao frame), scanner para autoconsulta de precos, design sem cesto fixo (impossivel carregar crianca em posicao perigosa). Nao era perfeito. Era um veiculo de aprendizado.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Licao Principal
+        </h3>
+        <p class="text-neutral-300">O resultado final nao era o ponto. A IDEO demonstrou que um time multidisciplinar, usando Design Thinking, pode chegar a solucoes radicalmente diferentes em dias, nao meses. A metodologia e o produto. O carrinho e o efeito colateral.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: DT na Pratica Corporativa -->
+    <section id="topico-6" data-inema-topic="modulo-2-1#topico-6" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">🏢 Design Thinking na Pratica Corporativa</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-1-t6-p1">
+        Aplicar DT em empresas e diferente de um workshop academico. Em ambiente corporativo, voce lida com <strong class="text-blue-400">politica interna, orcamentos, hierarquia e inercial</strong>. Aqui esta como adaptar sem perder a essencia.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🏗️</span> IBM Enterprise Design Thinking
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m2-1-t6-ibm">A IBM adaptou o Design Thinking para escala corporativa com 3 adicoes ao modelo classico:</p>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span><strong class="text-blue-400">Hills:</strong> Declaracoes de intencao focadas no usuario ("Quem + O que + Wow"). Alinham times grandes em torno de um resultado mensuravel.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span><strong class="text-blue-400">Playbacks:</strong> Alinhamentos regulares com stakeholders. Nao e "aprovacao de gerente" — e sincronizacao de entendimento. Evita surpresas.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span><strong class="text-blue-400">Sponsor Users:</strong> Usuarios reais que participam ativamente do desenvolvimento. Nao e "entrevistado passivo" — e co-criador com voz no processo.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">📋</span> Sprint de Design Thinking para Corporativo
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Semana 1</h4>
+            <p class="text-xs text-neutral-300">Empatia + Definicao. Entrevistas com 5-8 usuarios. Sintese em personas e HMW.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Semana 2</h4>
+            <p class="text-xs text-neutral-300">Ideacao + Prototipagem. Crazy 8s com o time. Prototipo de baixa fidelidade.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Semana 3</h4>
+            <p class="text-xs text-neutral-300">Teste + Iteracao. Validacao com 5 usuarios. Ajustes e decisao de pivot/avancar.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Fatores de sucesso</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Patrocinio executivo (alguem com poder de implementar)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Time multidisciplinar (nao so designers)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Espaco fisico/virtual dedicado</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Acesso direto a usuarios reais</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Erros frequentes</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Workshop de 1 dia sem follow-up (teatro)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Pular empatia e ir direto pra ideacao</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Prototipo "perfeito" que ninguem ousa criticar</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Usar DT para validar decisao ja tomada</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Design Thinking e centrado no humano</strong>
+              <span class="text-neutral-400"> - Nao e sobre tecnologia ou negocios em primeiro lugar, mas sobre entender pessoas</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">5 etapas iterativas, nao lineares</strong>
+              <span class="text-neutral-400"> - Empatizar, Definir, Idear, Prototipar, Testar. Voltar e normal</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Ferramentas certas para momentos certos</strong>
+              <span class="text-neutral-400"> - Mapa de empatia, persona, HMW, Crazy 8s, prototipo de papel</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Nao e bala de prata</strong>
+              <span class="text-neutral-400"> - Funciona para problemas ambiguos e humanos, nao para bugs ou decisoes ja tomadas</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">O valor esta na iteracao</strong>
+              <span class="text-neutral-400"> - Workshop sem follow-up e teatro de inovacao</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-blue-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">2.2 - Lean Startup: do conceito ao MVP com Eric Ries</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-2-2.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">
+            Proximo Modulo &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

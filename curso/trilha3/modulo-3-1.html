@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Programa de Inovacao Corporativa | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha purple) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Metodologias</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Implementacao</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a>
+      <span>/</span>
+      <span class="text-purple-400">Modulo 3.1</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MODULO 3.1</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🏗️ Programa de Inovacao Corporativa</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Como construir um programa de inovacao do zero que sobreviva a troca de CEO. Os 5 componentes, os 3 horizontes de McKinsey, a alocacao 70/20/10 e os quick wins que garantem credibilidade.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">50</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Avancado</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Estrategia</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="3-1" data-inema-track="3">
+
+    <!-- TOPICO 1: Criando do Zero -->
+    <section id="topico-1" data-inema-topic="modulo-3-1#topico-1" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🎯 Como Criar um Programa de Inovacao do Zero</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t1-p1">
+        A maioria dos programas de inovacao corporativa morre em 18 meses. Nao por falta de ideias, mas por falta de <strong class="text-purple-400">arquitetura organizacional</strong>. Um programa de inovacao nao e um hackathon anual. E uma estrutura permanente que canaliza energia criativa em resultados mensuráveis, resistindo a mudancas de lideranca e ciclos economicos.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> Realidade dos Programas de Inovacao
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong>94%</strong> dos executivos estao insatisfeitos com o desempenho de inovacao da sua empresa (McKinsey, 2023)</li>
+          <li><strong>72%</strong> dos programas de inovacao corporativa nao sobrevivem alem de 3 anos (CB Insights)</li>
+          <li><strong>3x</strong> maior chance de sucesso quando ha governanca formal vs. iniciativas ad hoc (BCG)</li>
+          <li><strong>Top 20%</strong> das empresas em inovacao geram 3x mais crescimento de receita (PwC Innovation Benchmark)</li>
+        </ul>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🚦</span> Antes de Comecar: Pre-Requisitos
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m3-1-t1-pre">Sem estes 3 pre-requisitos, nenhum programa sobrevive:</p>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-purple-400 mt-1">1.</span>
+            <span><strong class="text-purple-400">Sponsor executivo:</strong> Alguem do C-level que protege o orcamento e remove barreiras. Sem isso, a primeira crise corta o programa.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-purple-400 mt-1">2.</span>
+            <span><strong class="text-purple-400">Dor real do negocio:</strong> O programa precisa estar conectado a um problema estrategico (nao "inovar por inovar"). Ex: perda de market share, ameaca de disrupcao, nova regulamentacao.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-purple-400 mt-1">3.</span>
+            <span><strong class="text-purple-400">Tolerancia ao fracasso:</strong> Se a cultura pune erros, nenhum framework salva. Isso e cultural (Trilha 1).</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Os 5 Componentes -->
+    <section id="topico-2" data-inema-topic="modulo-3-1#topico-2" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">🧩 Os 5 Componentes Essenciais</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t2-p1">
+        Todo programa de inovacao robusto se sustenta sobre <strong class="text-purple-400">5 pilares</strong>. Nenhum e opcional. Se faltar um, o programa e fragil. Se faltar dois, e teatro.
+      </p>
+
+      <div class="space-y-6 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+            <span class="text-purple-400 font-bold">1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Visao de Inovacao</h4>
+            <p class="text-sm text-neutral-400 mb-3">O "para que" que alinha todos</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m3-1-t2-vis">Declaracao clara de ONDE a empresa quer chegar com inovacao e POR QUE. Nao e "ser a empresa mais inovadora do Brasil" (vago). E: "Em 3 anos, 20% da receita vira de produtos que nao existem hoje, focados em sustentabilidade." Especifico, mensuravel, conectado a estrategia.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+            <span class="text-purple-400 font-bold">2</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Governanca</h4>
+            <p class="text-sm text-neutral-400 mb-3">Quem decide o que, com qual orcamento</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m3-1-t2-gov">Comite de inovacao com mandato claro. Quem aprova projetos? Quem aloca recursos? Quem mata projetos que nao funcionam? Sem governanca, tudo depende de "quem conhece quem" e morre na politica. O comite deve ter representantes de negocio, tecnologia, financas e operacoes.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+            <span class="text-purple-400 font-bold">3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Processo</h4>
+            <p class="text-sm text-neutral-400 mb-3">Da ideia ao mercado, de forma reproduzivel</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m3-1-t2-pro">Funil estruturado: captacao de ideias &rarr; triagem &rarr; validacao (MVP/experimento) &rarr; incubacao &rarr; escala. Cada stage com criterios claros de avanca/para/pivota. Nao e burocracia: e previsibilidade. Sem processo, inovacao e sorte.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+            <span class="text-purple-400 font-bold">4</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Metricas</h4>
+            <p class="text-sm text-neutral-400 mb-3">O que medir para saber se funciona</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m3-1-t2-met">Input metrics (ideias submetidas, experimentos rodados), throughput metrics (projetos em cada stage), output metrics (receita de novos produtos, time-to-market). Innovation Accounting (Modulo 2.2) aplicado ao portfolio inteiro. Sem metricas, o programa e invisivel ao board.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+            <span class="text-purple-400 font-bold">5</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Cultura</h4>
+            <p class="text-sm text-neutral-400 mb-3">O combustivel invisivel</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m3-1-t2-cul">Seguranca psicologica, celebracao de aprendizado (nao so de sucesso), tempo protegido para exploracao, reconhecimento de contribuidores. A cultura e o que faz as pessoas QUEREREM participar. Sem ela, o processo e governanca sao cascas vazias.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Os 3 Horizontes de Inovacao (McKinsey) -->
+    <section id="topico-3" data-inema-topic="modulo-3-1#topico-3" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">📐 Os 3 Horizontes de Inovacao (McKinsey)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t3-p1">
+        O modelo dos 3 Horizontes, criado por Mehrdad Baghai, Steve Coley e David White da McKinsey em "The Alchemy of Growth" (1999), organiza o <strong class="text-purple-400">portfolio de inovacao em 3 faixas temporais</strong>. Nenhuma empresa sobrevive investindo so em um horizonte.
+      </p>
+
+      <!-- SVG: 3 Horizontes em escada -->
+      <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 900 350" class="w-full h-auto" role="img" aria-label="Diagrama dos 3 Horizontes de Inovacao da McKinsey: H1 Core (manter e defender), H2 Adjacente (expandir), H3 Transformacional (criar o futuro), em degraus ascendentes">
+          <defs>
+            <linearGradient id="m31-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#a855f7"/>
+            </linearGradient>
+            <filter id="m31-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m31-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <circle cx="1.3" cy="1.3" r="1.3" fill="#a855f7" opacity="0.12"/>
+            </pattern>
+          </defs>
+          <rect x="0" y="0" width="900" height="350" fill="url(#m31-grid)"/>
+
+          <!-- Eixo X: Tempo -->
+          <line x1="80" y1="300" x2="850" y2="300" stroke="#c084fc" stroke-width="1.5" opacity="0.3"/>
+          <text x="465" y="340" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="12" opacity="0.6">Horizonte temporal &#8594;</text>
+
+          <!-- Eixo Y: Retorno -->
+          <line x1="80" y1="300" x2="80" y2="40" stroke="#c084fc" stroke-width="1.5" opacity="0.3"/>
+          <text x="40" y="170" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="12" opacity="0.6" transform="rotate(-90, 40, 170)">Potencial de retorno</text>
+
+          <!-- Linha tracejada ascendente -->
+          <path d="M120,270 C250,260 350,200 480,160 C600,120 700,70 840,50" fill="none" stroke="#c084fc" stroke-width="1.5" stroke-dasharray="9 9" opacity="0.35"/>
+
+          <!-- H1: Core -->
+          <rect x="100" y="220" width="220" height="70" rx="12" fill="#1a1230" stroke="#c084fc" stroke-width="2"/>
+          <text x="210" y="248" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="16">H1: Core</text>
+          <text x="210" y="270" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="11">Manter e defender</text>
+
+          <!-- H2: Adjacente -->
+          <rect x="340" y="140" width="220" height="70" rx="12" fill="#1a1230" stroke="#c084fc" stroke-width="2"/>
+          <text x="450" y="168" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="16">H2: Adjacente</text>
+          <text x="450" y="190" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="11">Expandir fronteiras</text>
+
+          <!-- H3: Transformacional (com glow) -->
+          <g filter="url(#m31-glow)">
+            <rect x="580" y="50" width="240" height="70" rx="12" fill="#1a1230" stroke="url(#m31-grad)" stroke-width="2"/>
+          </g>
+          <text x="700" y="78" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="16">H3: Transformacional</text>
+          <text x="700" y="100" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="11">Criar o futuro</text>
+
+          <!-- Labels de percentual -->
+          <text x="210" y="310" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11" opacity="0.7">70% dos recursos</text>
+          <text x="450" y="230" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11" opacity="0.7">20% dos recursos</text>
+          <text x="700" y="140" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11" opacity="0.7">10% dos recursos</text>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2">H1: Core (0-1 ano)</h4>
+          <p class="text-sm text-neutral-300 mb-2">Otimizar o negocio existente. Extensoes de linha, melhorias de produto, eficiencia operacional.</p>
+          <p class="text-xs text-neutral-400"><strong>Risco:</strong> Baixo | <strong>Retorno:</strong> Previsivel | <strong>Exemplo:</strong> Novo sabor de produto existente</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2">H2: Adjacente (1-3 anos)</h4>
+          <p class="text-sm text-neutral-300 mb-2">Expandir para mercados ou capacidades adjacentes. Novos segmentos, novos canais, parcerias estrategicas.</p>
+          <p class="text-xs text-neutral-400"><strong>Risco:</strong> Medio | <strong>Retorno:</strong> Promissor | <strong>Exemplo:</strong> Amazon entrando em Cloud (AWS)</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2">H3: Transformacional (3-7 anos)</h4>
+          <p class="text-sm text-neutral-300 mb-2">Criar negocios e mercados que nao existem. Apostas radicais, moonshots, ventures internas.</p>
+          <p class="text-xs text-neutral-400"><strong>Risco:</strong> Alto | <strong>Retorno:</strong> Exponencial | <strong>Exemplo:</strong> Google criando Waymo (carros autonomos)</p>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Alocacao 70/20/10 -->
+    <section id="topico-4" data-inema-topic="modulo-3-1#topico-4" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">💰 Alocacao 70/20/10 (Google)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t4-p1">
+        O Google popularizou uma regra simples: <strong class="text-purple-400">70% no core, 20% em adjacente, 10% em transformacional</strong>. Nao e lei. E um ponto de partida que forca a conversa sobre balanceamento. A maioria das empresas coloca 95% no H1 e se pergunta por que nao inova.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Como aplicar</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Mapear o portfolio atual nos 3 horizontes</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Calcular % de orcamento e % de pessoas em cada H</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Ajustar gradualmente (nao de uma vez)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Revisar trimestralmente e rebalancear</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Erros comuns</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Tratar 70/20/10 como dogma rigido</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Colocar 10% em H3 mas medir com metricas de H1</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Nao proteger o orcamento de H2/H3 em crises</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Pedir ROI de 12 meses para apostas de 5 anos</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Dica de Implementacao
+        </h3>
+        <p class="text-neutral-300">Comece medindo onde voce esta hoje. A maioria das empresas descobre que esta em 95/4/1. Nao tente pular para 70/20/10 de uma vez. Um primeiro passo realista: ir de 95/4/1 para 85/10/5 em 12 meses. O importante nao e o numero exato, e ter a disciplina de investir nos 3 horizontes.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Stage-Gate Orientado a Aprendizado -->
+    <section id="topico-5" data-inema-topic="modulo-3-1#topico-5" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">🚪 Stage-Gate Orientado a Aprendizado</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t5-p1">
+        O Stage-Gate classico (Robert Cooper) pode matar inovacao quando aplicado literalmente. Ele foi desenhado para <strong class="text-purple-400">desenvolvimento de produto, nao para inovacao exploratoria</strong>. A versao moderna adapta os gates para avaliar APRENDIZADO, nao so deliverables.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🔄</span> Stage-Gate Adaptado para Inovacao
+        </h3>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">G0</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Gate 0: Problema vale a pena?</h4>
+              <p class="text-sm text-neutral-300">Existe evidencia de que o problema e real e relevante? Quem sofre com ele? Qual o tamanho do mercado potencial?</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">G1</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Gate 1: Hipotese validada?</h4>
+              <p class="text-sm text-neutral-300">O MVP testou a hipotese principal? O que aprendemos? Os dados suportam continuar? Nao e "prototipo bonito", e "evidencia de demanda".</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">G2</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Gate 2: Unit economics viavel?</h4>
+              <p class="text-sm text-neutral-300">O modelo de negocio fecha? LTV > CAC? O cliente paga o suficiente? Ha caminho para escala?</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">G3</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Gate 3: Escala ou integra?</h4>
+              <p class="text-sm text-neutral-300">Crescer como unidade separada ou integrar ao core? Que recursos precisa? Qual o plano de 12 meses?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> O Erro Fatal do Stage-Gate Rigido
+        </h3>
+        <p class="text-neutral-300">Exigir business case completo no Gate 0 mata 90% das inovacoes H3. No H3, o business case e uma ficcao. Em vez disso, exija: "Qual a hipotese? Como vamos testa-la? Quanto custa o teste?" O investment ticket e pequeno. Se a hipotese for validada, o proximo gate libera mais.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Quick Wins para Ganhar Credibilidade -->
+    <section id="topico-6" data-inema-topic="modulo-3-1#topico-6" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">⚡ Quick Wins para Ganhar Credibilidade</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t6-p1">
+        Nenhum programa de inovacao sobrevive sem mostrar resultado rapido. Os primeiros 90 dias definem se o programa ganha credibilidade ou e rotulado como "mais uma iniciativa de RH". <strong class="text-purple-400">Quick wins nao sao o objetivo final, sao o combustivel politico</strong> que compra tempo para inovacoes maiores.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center">
+          <span class="mr-2">🗓️</span> Os Primeiros 90 Dias
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Dias 1-30</h4>
+            <ul class="text-xs text-neutral-300 space-y-1">
+              <li>&#8226; Entrevistar 15-20 lideres sobre dores</li>
+              <li>&#8226; Mapear iniciativas de inovacao existentes</li>
+              <li>&#8226; Identificar 3-5 problemas de alto impacto e baixa complexidade</li>
+            </ul>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Dias 30-60</h4>
+            <ul class="text-xs text-neutral-300 space-y-1">
+              <li>&#8226; Lancar 2-3 sprints de inovacao focados</li>
+              <li>&#8226; Entregar MVPs dos quick wins</li>
+              <li>&#8226; Comunicar resultados amplamente</li>
+            </ul>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Dias 60-90</h4>
+            <ul class="text-xs text-neutral-300 space-y-1">
+              <li>&#8226; Apresentar resultados ao C-level</li>
+              <li>&#8226; Formalizar governanca e processo</li>
+              <li>&#8226; Abrir chamada para o 2o ciclo</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🎯</span> Criterios para Escolher Quick Wins
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Impacto visivel</h4>
+            <p class="text-xs text-neutral-300">O resultado precisa ser obvio para quem nao participa do programa. Algo que as pessoas "sintam" no dia a dia.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Execucao rapida</h4>
+            <p class="text-xs text-neutral-300">Maximo 4-6 semanas. Se leva mais que isso, nao e quick win. Escolha problemas que nao dependam de 10 aprovacoes.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Dono forte</h4>
+            <p class="text-xs text-neutral-300">Cada quick win precisa de um lider de area que "adota" o resultado. Sem dono, vira piloto eterno.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Historia contavel</h4>
+            <p class="text-xs text-neutral-300">O resultado precisa virar uma narrativa: "Em 3 semanas, o time X resolveu Y usando Z." Isso gera demanda organica.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> A Estrategia do Cavalo de Troia
+        </h3>
+        <p class="text-neutral-300">Use os quick wins para plantar as sementes da cultura. Cada sprint de inovacao e uma oportunidade de ensinar Design Thinking (Modulo 2.1), Lean Startup (Modulo 2.2) e trabalho colaborativo. Os participantes viram evangelistas. Em 12 meses, voce tem uma rede de 50-100 pessoas treinadas espalhadas pela organizacao.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">5 componentes: visao, governanca, processo, metricas, cultura</strong>
+              <span class="text-neutral-400"> - Se faltam dois, e teatro de inovacao</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">3 horizontes balanceados</strong>
+              <span class="text-neutral-400"> - H1 core, H2 adjacente, H3 transformacional. Investir em todos</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">70/20/10 como ponto de partida</strong>
+              <span class="text-neutral-400"> - Nao dogma. O importante e ter disciplina de H2+H3</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Stage-Gate por aprendizado, nao por deliverable</strong>
+              <span class="text-neutral-400"> - Em H3, business case e ficcao. Exija hipotese + teste</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Quick wins compram tempo politico</strong>
+              <span class="text-neutral-400"> - 90 dias para mostrar resultado ou o programa morre</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-purple-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">3.5 - IA como Acelerador de Cultura de Inovacao</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-3-5.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">
+            Proximo Modulo &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

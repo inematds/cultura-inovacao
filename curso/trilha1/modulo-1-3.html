@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Modelos Teoricos | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed === 'object') { for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy === 'light') p.theme = 'claro'; else if (legacy === 'dark') p.theme = 'inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark': { dark: true, attr: null, cs: 'dark' }, 'claro': { dark: false, attr: null, cs: 'light' }, 'sepia': { dark: false, attr: 'sepia', cs: 'light' }, 'foco': { dark: null, attr: 'foco', cs: null }, 'contraste': { dark: true, attr: 'contraste', cs: 'dark' } };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark'); else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter'); html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style; var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString()); s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch'); s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system' ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' : (p.font === 'leitura' ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif' : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = { emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66], amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60] };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + ''); s.setProperty('--accent-s', a[1] + '%'); s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {} }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#FACC15', dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' } } } } }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "cultura-inovacao",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 5, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Os Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Modelos Teoricos", "topics": 5, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Mindset de Crescimento", "topics": 5, "href": "curso/trilha1/modulo-1-4.html" }
+      ]}
+    ]
+  }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5, 150, 105, 0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5, 150, 105, 0.18); }
+
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span><span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Praticas</span></a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Lideranca</span></a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Inicio</a><span>/</span>
+      <a href="index.html" class="hover:text-emerald-400">Trilha 1</a><span>/</span>
+      <span class="text-emerald-400">Modulo 1.3</span>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">MODULO 1.3</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🏢 Modelos Teoricos: Google X, Amazon, Pixar</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Como as organizacoes mais inovadoras do mundo operacionalizaram a cultura de inovacao. Cinco modelos reais, dissecar cada um.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">5</div><div class="text-xs text-neutral-400">Topicos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">50</div><div class="text-xs text-neutral-400">Minutos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Basico</div><div class="text-xs text-neutral-400">Nivel</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Casos</div><div class="text-xs text-neutral-400">Tipo</div></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="1-3" data-inema-track="1">
+
+    <!-- SVG: Comparativo dos Modelos -->
+    <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-12 overflow-hidden">
+      <svg viewBox="0 0 900 300" class="w-full h-auto" role="img" aria-label="Comparativo visual dos 5 modelos de cultura de inovacao: Google X com 10x thinking, Amazon com Day One, Pixar com Braintrust, 3M com 15% time e Toyota com Kaizen">
+        <defs>
+          <linearGradient id="m13-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/></linearGradient>
+          <filter id="m13-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <pattern id="m13-grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#10b981" opacity="0.12"/></pattern>
+        </defs>
+        <rect x="0" y="0" width="900" height="300" fill="url(#m13-grid)"/>
+
+        <!-- Label topo -->
+        <text x="450" y="28" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="600" font-size="14">MODELOS DE CULTURA DE INOVACAO</text>
+
+        <!-- Google X -->
+        <g filter="url(#m13-glow)">
+          <rect x="30" y="50" width="155" height="220" rx="12" fill="#0e2018" stroke="url(#m13-grad)" stroke-width="2"/>
+        </g>
+        <text x="107" y="80" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="600" font-size="14">Google X</text>
+        <text x="107" y="100" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="11">Moonshot Factory</text>
+        <text x="107" y="130" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">10x thinking</text>
+        <text x="107" y="150" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Fail fast + kill signals</text>
+        <text x="107" y="170" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Pre-mortems</text>
+        <text x="107" y="190" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Equipes diversas</text>
+        <text x="107" y="230" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="9" font-style="italic">Radical / disruptivo</text>
+
+        <!-- Amazon -->
+        <rect x="205" y="50" width="155" height="220" rx="12" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+        <text x="282" y="80" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="14">Amazon</text>
+        <text x="282" y="100" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Day One Culture</text>
+        <text x="282" y="130" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Customer obsession</text>
+        <text x="282" y="150" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Working backwards</text>
+        <text x="282" y="170" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Two-pizza teams</text>
+        <text x="282" y="190" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">6-page memos</text>
+        <text x="282" y="230" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="9" font-style="italic">Sistematico / escalavel</text>
+
+        <!-- Pixar -->
+        <rect x="380" y="50" width="155" height="220" rx="12" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+        <text x="457" y="80" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="14">Pixar</text>
+        <text x="457" y="100" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Braintrust</text>
+        <text x="457" y="130" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Candor sem politica</text>
+        <text x="457" y="150" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">"Suck to not suck"</text>
+        <text x="457" y="170" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Encontros aleatorios</text>
+        <text x="457" y="190" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Ed Catmull</text>
+        <text x="457" y="230" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="9" font-style="italic">Criativo / iterativo</text>
+
+        <!-- 3M -->
+        <rect x="555" y="50" width="155" height="220" rx="12" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+        <text x="632" y="80" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="14">3M</text>
+        <text x="632" y="100" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">15% Time</text>
+        <text x="632" y="130" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Intraempreendedorismo</text>
+        <text x="632" y="150" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Dual ladder career</text>
+        <text x="632" y="170" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Post-It = acidente</text>
+        <text x="632" y="190" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">30% regra (receita)</text>
+        <text x="632" y="230" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="9" font-style="italic">Incremental / bottom-up</text>
+
+        <!-- Toyota -->
+        <rect x="730" y="50" width="155" height="220" rx="12" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+        <text x="807" y="80" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="14">Toyota</text>
+        <text x="807" y="100" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Kaizen + A3</text>
+        <text x="807" y="130" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Melhoria continua</text>
+        <text x="807" y="150" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Gemba walks</text>
+        <text x="807" y="170" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">5 porques</text>
+        <text x="807" y="190" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="10">Relatorios A3</text>
+        <text x="807" y="230" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="9" font-style="italic">Continuo / operacional</text>
+      </svg>
+    </div>
+
+    <!-- TOPICO 1: Google X -->
+    <section id="topico-1" data-inema-topic="modulo-1-3#topico-1" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🚀 Google X: A Moonshot Factory</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t1-p1">
+        Google X (hoje simplesmente "X") e o laboratorio de inovacao radical do Alphabet. Nao trabalha em melhorias incrementais. Trabalha em <strong class="text-emerald-400">problemas que afetam bilhoes de pessoas</strong>, buscando solucoes 10 vezes melhores que as existentes. Carros autonomos (Waymo), baloes de internet (Loon), lentes de contato inteligentes (Verily) nasceram aqui.
+      </p>
+
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔑</span> Principios Culturais do X
+        </h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>10x Thinking:</strong> Nao busque 10% melhor - busque 10 vezes melhor. Essa ambicao paradoxalmente e mais facil: forca voce a repensar o problema do zero, nao a otimizar a solucao velha. Astro Teller (head do X): "E mais facil fazer algo 10x melhor que 10% melhor."</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Fail Fast + Kill Signals:</strong> Todo projeto no X tem "kill signals" pre-definidos. Se um sinal dispara, o projeto e cancelado ANTES de consumir recursos. A equipe e celebrada por matar o projeto cedo, nao punida.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Pre-mortems:</strong> Antes de iniciar um projeto, a equipe faz um exercicio: "Imagine que estamos 18 meses no futuro e o projeto falhou. O que deu errado?" Isso identifica riscos que o otimismo inicial esconde.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Equipes Radicalmente Diversas:</strong> Um time de carro autonomo incluia engenheiros, filosofos, antropologos e designers. A diversidade cognitiva nao e bonus - e requisito estrutural.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Licao para Organizacoes Menores
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-3-t1-p2">Voce nao precisa de orcamento de bilhoes para aplicar os principios do X. Pre-mortems, kill signals e a pergunta "como resolveriamos isso se tivessemos que melhorar 10x?" sao ferramentas gratuitas que qualquer equipe pode adotar amanha.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span><span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 2: Amazon -->
+    <section id="topico-2" data-inema-topic="modulo-1-3#topico-2" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">📦 Amazon: Day One Culture</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t2-p1">
+        Jeff Bezos escreveu em sua carta de 1997 aos acionistas: <strong class="text-emerald-400">"It's always Day 1."</strong> Isso se tornou a filosofia central da Amazon por mais de 25 anos. "Day 2 is stasis. Followed by irrelevance. Followed by excruciating, painful decline. Followed by death." A Amazon opera como se fosse uma startup de Day 1 mesmo sendo uma empresa de trilhoes.
+      </p>
+
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔑</span> Os Mecanismos da Amazon
+        </h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Customer Obsession:</strong> LP #1 dos 16. Todo projeto comeca com a pergunta: "Isso melhora a vida do cliente?" Se a resposta nao for clara, o projeto nao avanca.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Working Backwards:</strong> Antes de escrever uma linha de codigo, o time escreve um press release ficticio + FAQ do produto como se ja existisse. Se o PR nao empolga, volta para a prancheta. Forca clareza de pensamento.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Two-Pizza Teams:</strong> Equipes pequenas (6-10 pessoas), cross-funcionais, com full ownership do seu dominio. Sem dependencias externas para entregar. Cada time e uma "startup" dentro da Amazon.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>6-Page Memos:</strong> Nao usa PowerPoint. Reunioes comecam com 20 minutos de leitura silenciosa de um documento narrativo de 6 paginas. Forca o autor a pensar com profundidade, nao em bullet points rasos. "Full sentences are harder to write than bullet points."</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> Resultados Praticos
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong>AWS</strong> nasceu de uma necessidade interna (infraestrutura para a loja) que foi transformada em produto externo via Working Backwards</li>
+          <li><strong>Kindle</strong> foi proposto num 6-page memo que convenceu a empresa a competir com seu proprio negocio de livros fisicos</li>
+          <li><strong>Amazon Go</strong> (lojas sem caixa) levou 4 anos de iteracao antes do lancamento, protegido pela cultura de investimento de longo prazo</li>
+        </ul>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span><span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 3: Pixar -->
+    <section id="topico-3" data-inema-topic="modulo-1-3#topico-3" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🎬 Pixar: O Braintrust</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t3-p1">
+        Ed Catmull, co-fundador da Pixar e autor de "Creativity, Inc.", construiu um dos ambientes criativos mais produtivos da historia. Todo filme da Pixar, ele diz, <strong class="text-emerald-400">"comeca horrivel"</strong>. O segredo nao e comecar bem, e ter um processo que transforma "horrivel" em "extraordinario". Esse processo e o Braintrust.
+      </p>
+
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🧠</span> Como o Braintrust Funciona
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-3-t3-p2">O Braintrust e uma reuniao periodica onde os diretores mais experientes da Pixar assistem ao estado atual de um filme e dao feedback brutal e honesto. Mas com regras muito claras:</p>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Candor sem consequencia politica:</strong> O feedback e sobre o trabalho, nunca sobre a pessoa. E nao ha punicao por discordar de um diretor senior.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Sem autoridade sobre o diretor:</strong> O Braintrust NAO pode mandar o diretor mudar nada. So oferece perspectiva. A decisao final e do diretor. Isso e fundamental: tira a dinamica de poder.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>"From suck to not suck":</strong> Catmull diz que todo filme da Pixar, nos primeiros rascunhos, e terrivel. O processo de iteracao com feedback honesto e o que o transforma. O genio nao esta no talento individual, mas no sistema.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Todos sao iguais na sala:</strong> O estagiario pode (e deve) dizer ao diretor veterano que a cena nao funciona. A hierarquia da empresa para na porta.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">Braintrust Real</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>"A cena do segundo ato nao conecta emocionalmente"</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>"Eu nao entendi a motivacao do vilao"</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>"O publico pode perder o interesse aqui"</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">Falso "Braintrust"</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>"Voce deveria trocar o vilao por X" (prescritivo)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>"Isso nao vai dar certo" (sem especificidade)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Chefe decide o que muda (hierarquia)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span><span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 4: 3M -->
+    <section id="topico-4" data-inema-topic="modulo-1-3#topico-4" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">📌 3M: O 15% Time e o Post-It</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t4-p1">
+        A 3M e talvez o caso mais longevo de cultura de inovacao sistematica. Desde os anos 1940, a empresa permite que engenheiros e cientistas dediquem <strong class="text-emerald-400">15% do tempo de trabalho a projetos pessoais</strong> de inovacao. O Post-It, um dos produtos mais iconicos do seculo XX, nasceu exatamente desse mecanismo.
+      </p>
+
+      <!-- Timeline -->
+      <div class="space-y-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-2">A Historia do Post-It</h3>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">1968: O "Erro"</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-3-t4-p2">Spencer Silver, quimico da 3M, tenta criar um adesivo super-forte. Acidentalmente cria um adesivo que gruda levemente e pode ser removido sem deixar residuo. E considerado um "fracasso" pela maioria.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">1974: A Conexao</h4>
+            <p class="text-neutral-300 text-sm">Art Fry, colega de Silver, usa o tempo dos 15% para resolver um problema pessoal: marcadores que caiam do livro de hinos na igreja. Combina o adesivo "fracassado" com papeis pequenos.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">1980: Post-It Notes</h4>
+            <p class="text-neutral-300 text-sm">Apos 6 anos de iteracao e resistencia interna, o Post-It e lancado nacionalmente. Torna-se um dos produtos mais vendidos da 3M e um icone de inovacao acidental.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🏗️</span> Outros Mecanismos da 3M
+        </h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>30% Rule:</strong> 30% da receita de cada divisao deve vir de produtos lancados nos ultimos 4 anos. Forca inovacao continua, nao so no lab.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Dual Ladder Career:</strong> Caminho de carreira tecnica paralelo ao gerencial. Cientistas podem subir sem virar gerentes. Isso preserva talentos tecnicos na inovacao em vez de perde-los para gestao.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Genesis Grants:</strong> Fundos internos para financiar projetos de funcionarios em estagio inicial, sem aprovacao da hierarquia direta.</span>
+          </li>
+        </ul>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span><span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 5: Toyota -->
+    <section id="topico-5" data-inema-topic="modulo-1-3#topico-5" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">🏭 Toyota: Kaizen e o Relatorio A3</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t5-p1">
+        A Toyota e o caso mais longevo de inovacao operacional do mundo. Enquanto Google X busca moonshots e Pixar busca historias, a Toyota busca <strong class="text-emerald-400">milhares de melhorias pequenas todos os dias</strong>. Kaizen (melhoria continua) nao e um programa - e a forma como a Toyota existe.
+      </p>
+
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔑</span> O Sistema Toyota
+        </h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Kaizen:</strong> Cada funcionario, do chao de fabrica ao C-level, e esperado propor melhorias. A Toyota recebe ~700.000 sugestoes de melhoria por ano dos funcionarios. A maioria e implementada.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Relatorios A3:</strong> Qualquer problema ou proposta cabe numa unica folha A3 (42x30cm). Forca clareza: situacao atual, analise de causa raiz, contramedidas propostas, plano de acao, metricas de sucesso. Se nao cabe em A3, voce nao entendeu o problema.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Gemba Walks:</strong> Lideres vao regularmente ao "gemba" (chao de fabrica, onde o trabalho acontece) para observar, perguntar e aprender. Nao para inspecionar ou auditar - para entender a realidade e identificar oportunidades de melhoria.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>5 Porques:</strong> Diante de um problema, pergunte "por que?" 5 vezes para chegar a causa raiz. Ex.: "Por que a maquina parou?" &rarr; "Fusivel queimou" &rarr; "Por que?" &rarr; "Lubrificacao insuficiente" &rarr; ... ate a causa real.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> O Poder do Incremental
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m1-3-t5-p2">A mistica da inovacao favorece o moonshot. Mas os numeros da Toyota mostram o poder da melhoria continua:</p>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong>1 melhoria/dia</strong> por funcionario = efeito composto devastador ao longo de decadas</li>
+          <li>Toyota produz <strong>a mesma qualidade com 40% menos recursos</strong> que concorrentes (MIT IMVP study)</li>
+          <li>O Toyota Production System foi copiado por praticamente toda a industria (Lean Manufacturing)</li>
+          <li>Em 2023, a Toyota tinha <strong>37 anos consecutivos</strong> como a maior montadora em producao global</li>
+        </ul>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Aplicacao Universal
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-3-t5-p3">O Kaizen funciona em qualquer contexto: software, servicos, saude, educacao. A pergunta diaria e simples: "O que podemos fazer 1% melhor hoje?" A maioria das empresas busca a grande revoluc&#227;o e ignora as mil melhorias pequenas que, acumuladas, transformam.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span><span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- RESUMO -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📋</span> Resumo do Modulo</h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">&#10003;</span><div><strong class="text-white">Google X</strong><span class="text-neutral-400"> - 10x thinking, fail fast, kill signals, pre-mortems. Inovacao radical com disciplina</span></div></div>
+          <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">&#10003;</span><div><strong class="text-white">Amazon</strong><span class="text-neutral-400"> - Day One, customer obsession, working backwards, two-pizza teams, 6-page memos. Mecanismos > intencoes</span></div></div>
+          <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">&#10003;</span><div><strong class="text-white">Pixar</strong><span class="text-neutral-400"> - Braintrust, candor sem politica, "from suck to not suck". Iteracao honesta transforma o mediocre em extraordinario</span></div></div>
+          <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">&#10003;</span><div><strong class="text-white">3M</strong><span class="text-neutral-400"> - 15% time, 30% rule, dual ladder, Genesis Grants. Intraempreendedorismo institucionalizado por decadas</span></div></div>
+          <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">&#10003;</span><div><strong class="text-white">Toyota</strong><span class="text-neutral-400"> - Kaizen, A3, gemba walks, 5 porques. O poder devastador da melhoria continua e incremental</span></div></div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-emerald-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">1.4 - Mindset de Crescimento</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="modulo-1-2.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">&#8592; Modulo Anterior</a>
+          <a href="modulo-1-4.html" class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors">Proximo Modulo &#8594;</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>Cultura de Inovacao - 2026</p></div>
+  </footer>
+
+  <script>
+    function toggleTopic(button) { const topicItem = button.closest('.topic-item'); const explanation = topicItem.querySelector('.topic-explanation'); const moduleCard = button.closest('.bg-dark-800'); if (moduleCard) { moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => { if (exp !== explanation) exp.classList.remove('active'); }); } explanation.classList.toggle('active'); }
+    const themeToggle = document.getElementById('theme-toggle'); const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon'); const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon'); const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) { themeToggleDarkIcon.classList.remove('hidden'); html.classList.remove('dark'); } else { themeToggleLightIcon.classList.remove('hidden'); }
+    themeToggle.addEventListener('click', () => { themeToggleDarkIcon.classList.toggle('hidden'); themeToggleLightIcon.classList.toggle('hidden'); html.classList.toggle('dark'); localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light'); });
+    function openModal(modalId) { const modal = document.getElementById(modalId); if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; } }
+    function closeModal() { document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden')); document.body.style.overflow = 'auto'; }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>if (window.INEMA && typeof window.INEMA.init === 'function') { window.INEMA.init(); }</script>
+</body>
+</html>

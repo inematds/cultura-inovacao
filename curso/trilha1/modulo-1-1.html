@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>O que e Cultura de Inovacao | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC: bloqueante, antes de tudo -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "cultura-inovacao",
+    "tracks": [
+      {
+        "n": "1",
+        "title": "Fundamentos",
+        "modules": [
+          { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 5, "href": "curso/trilha1/modulo-1-1.html" },
+          { "id": "1-2", "title": "Os Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+          { "id": "1-3", "title": "Modelos Teoricos", "topics": 5, "href": "curso/trilha1/modulo-1-3.html" },
+          { "id": "1-4", "title": "Mindset de Crescimento", "topics": 5, "href": "curso/trilha1/modulo-1-4.html" }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides - OBRIGATORIO */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha emerald) */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5, 150, 105, 0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5, 150, 105, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas e linhas divisorias mais suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG pulse animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Praticas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Lideranca</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-emerald-400">Trilha 1</a>
+      <span>/</span>
+      <span class="text-emerald-400">Modulo 1.1</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">
+        MODULO 1.1
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">💡 O que e Cultura de Inovacao</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Cultura de inovacao nao e ter uma ideia genial. E ter um sistema que gera ideias continuamente e transforma a organizacao de dentro para fora.</p>
+
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">5</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">40</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Basico</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Teoria</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEUDO -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="1-1" data-inema-track="1">
+
+    <!-- TOPICO 1: Definicao de Cultura de Inovacao -->
+    <section id="topico-1" data-inema-topic="modulo-1-1#topico-1" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🔬 Definicao: O que e Cultura de Inovacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-1-t1-p1">
+        Cultura de inovacao e o <strong class="text-emerald-400">sistema de valores, comportamentos e praticas</strong> que torna a inovacao um processo continuo dentro de uma organizacao. Nao se trata de esperar por um momento de genialidade ou depender de um unico inventor. Trata-se de construir um ambiente onde novas ideias surgem naturalmente, sao testadas rapidamente e implementadas com disciplina.
+      </p>
+
+      <!-- Conceito Principal -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">💎</span> Definicao Central
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-1-t1-p2">
+          Cultura de inovacao e o conjunto de <strong class="text-emerald-400">normas nao escritas, rituais, valores e estruturas</strong> que fazem com que uma organizacao busque, valorize e implemente novas formas de criar valor. E o "como fazemos as coisas aqui" aplicado a inovacao.
+        </p>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Nao e um departamento</strong> - e algo que permeia todos os niveis da organizacao</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Nao e um evento</strong> - e um processo continuo, nao um hackathon anual</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Nao e tecnologia</strong> - e mentalidade. A tecnologia e ferramenta, a cultura e o motor</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>E um sistema</strong> - conecta pessoas, processos e proposito em torno da criacao de valor novo</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Dados de Pesquisa -->
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> O que dizem os dados
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong>84%</strong> dos executivos dizem que inovacao e importante para a estrategia de crescimento, mas apenas <strong>6%</strong> estao satisfeitos com o desempenho em inovacao (McKinsey, 2023)</li>
+          <li><strong>3,5x</strong> maior retorno ao acionista em empresas com cultura forte de inovacao vs. pares do setor (BCG Innovation Index, 2024)</li>
+          <li><strong>79%</strong> das organizacoes mais inovadoras apontam a cultura como o fator #1 de sucesso, acima de talento ou investimento (PwC Global Innovation Survey)</li>
+        </ul>
+      </div>
+
+      <!-- Dica Pratica -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Teste Rapido
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-1-t1-p3">Na proxima reuniao de equipe, pergunte: "Qual foi a ultima vez que alguem aqui testou uma ideia nova e falhou sem consequencias negativas?" Se ninguem responder em 10 segundos, sua cultura de inovacao precisa de trabalho.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 2: Inovacao Pontual vs Cultura Sistemica -->
+    <section id="topico-2" data-inema-topic="modulo-1-1#topico-2" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">🎯 Inovacao Pontual vs. Cultura Sistemica</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-1-t2-p1">
+        A maioria das organizacoes confunde <strong class="text-emerald-400">inovacao pontual</strong> (um produto novo, um hackathon, uma iniciativa isolada) com <strong class="text-emerald-400">cultura sistemica de inovacao</strong> (um sistema que gera inovacao de forma previsivel e sustentavel). A diferenca e a mesma entre pescar um peixe e construir uma rede de pesca.
+      </p>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">Cultura Sistemica</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Inovacao como <strong>processo continuo</strong> com metricas claras</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Todos contribuem, nao so o "departamento de inovacao"</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Fracassos sao <strong>aprendizado sistematizado</strong></span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Ideias fluem de baixo para cima e entre areas</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Resultados se acumulam ao longo do tempo (efeito composto)</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">Inovacao Pontual</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Depende de um "<strong>genio</strong>" ou uma area especifica</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Hackathons e "dias de inovacao" como teatro corporativo</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Fracassos geram punicao ou culpa</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Ideias sao top-down, sem canal para experimentacao</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Resultados sao aleatorios e nao escalam</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Conceito Principal -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🏗️</span> O Sistema que Gera Ideias
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-1-t2-p2">
+          Pense numa fabrica. A inovacao pontual e como se um operario inventasse uma maquina nova por conta propria. A cultura sistemica e ter uma <strong class="text-emerald-400">linha de montagem de ideias</strong>: captacao, triagem, prototipagem, teste, implementacao e escala. Cada etapa com responsaveis, criterios e ritmo.
+        </p>
+        <p class="text-neutral-300" data-inema-block="m1-1-t2-p3">
+          Organizacoes como Google, Amazon e Toyota nao inovam por sorte. Inovam porque construiram sistemas onde a inovacao e inevitavel. O 20% time do Google, o Working Backwards da Amazon e o Kaizen da Toyota sao mecanismos, nao ideologias.
+        </p>
+      </div>
+
+      <!-- Timeline -->
+      <div class="space-y-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-2">Evolucao Tipica: de Pontual para Sistemica</h3>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold">1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Fase Reativa</h4>
+            <p class="text-sm text-neutral-400 mb-2">Onde a maioria comeca</p>
+            <p class="text-neutral-300 text-sm">Inovacao acontece por acidente ou por crise. Nao ha processo. Dependencia de "herois" individuais.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold">2</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Fase Estruturada</h4>
+            <p class="text-sm text-neutral-400 mb-2">Primeiros processos</p>
+            <p class="text-neutral-300 text-sm">Surgem programas de ideias, labs de inovacao, hackathons regulares. Ha intencao, mas ainda sao silos.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold">3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Fase Sistemica</h4>
+            <p class="text-sm text-neutral-400 mb-2">Cultura como motor</p>
+            <p class="text-neutral-300 text-sm">Inovacao e parte do DNA. Todos os niveis participam. Ha metricas, tolerancia ao erro estruturada e experimentacao continua como norma.</p>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 3: Framework de Schein -->
+    <section id="topico-3" data-inema-topic="modulo-1-1#topico-3" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🧊 O Framework de Schein: 3 Niveis de Cultura</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-1-t3-p1">
+        Edgar Schein, professor emerito do MIT Sloan, criou o modelo mais influente para entender cultura organizacional. Segundo Schein, a cultura existe em <strong class="text-emerald-400">tres niveis</strong>, como um iceberg: o que se ve na superficie, o que se declara e o que realmente guia o comportamento nas profundezas.
+      </p>
+
+      <!-- SVG: Iceberg de Schein -->
+      <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 800 500" class="w-full h-auto" role="img" aria-label="Diagrama do Iceberg de Schein: tres niveis de cultura organizacional - artefatos visiveis na superficie, valores declarados no meio, pressupostos basicos na base submersa">
+          <defs>
+            <linearGradient id="m11-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/>
+            </linearGradient>
+            <filter id="m11-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m11-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <circle cx="1.3" cy="1.3" r="1.3" fill="#10b981" opacity="0.12"/>
+            </pattern>
+            <linearGradient id="m11-water" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#0e1b26" stop-opacity="0.3"/>
+              <stop offset="1" stop-color="#0e1b26" stop-opacity="0.9"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Background grid -->
+          <rect x="0" y="0" width="800" height="500" fill="url(#m11-grid)"/>
+
+          <!-- Water line -->
+          <line x1="50" y1="160" x2="750" y2="160" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="9 9" opacity="0.5"/>
+          <text x="760" y="155" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11" opacity="0.7">linha d'agua</text>
+
+          <!-- Nivel 1: Artefatos (acima da agua) -->
+          <g filter="url(#m11-glow)">
+            <rect x="200" y="40" width="400" height="90" rx="14" fill="#0e2018" stroke="url(#m11-grad)" stroke-width="2"/>
+          </g>
+          <text x="400" y="70" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="600" font-size="18">ARTEFATOS</text>
+          <text x="400" y="92" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="12">Visiveis: escritorios, rituais, linguagem,</text>
+          <text x="400" y="108" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="12">dresscode, ferramentas, organogramas</text>
+
+          <!-- Submerso overlay -->
+          <rect x="0" y="160" width="800" height="340" fill="url(#m11-water)"/>
+
+          <!-- Nivel 2: Valores Declarados -->
+          <rect x="150" y="190" width="500" height="100" rx="14" fill="#0e1b26" stroke="#38bdf8" stroke-width="2" opacity="0.9"/>
+          <text x="400" y="225" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="18">VALORES DECLARADOS</text>
+          <text x="400" y="248" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="12">Estrategias, metas, filosofia oficial,</text>
+          <text x="400" y="264" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="12">missao, visao e valores no mural</text>
+
+          <!-- Nivel 3: Pressupostos Basicos -->
+          <rect x="100" y="330" width="600" height="120" rx="14" fill="#1a0e10" stroke="#9ca3af" stroke-width="2" opacity="0.9"/>
+          <text x="400" y="370" text-anchor="middle" fill="#e5e7eb" font-family="Inter,sans-serif" font-weight="600" font-size="18">PRESSUPOSTOS BASICOS</text>
+          <text x="400" y="395" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="12">Crencas inconscientes, "e assim que as coisas sao",</text>
+          <text x="400" y="412" text-anchor="middle" fill="#d1d5db" font-family="Inter,sans-serif" font-size="12">verdades tacitas, o que realmente guia decisoes</text>
+          <text x="400" y="435" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="11" font-style="italic">"Aqui ninguem questiona o chefe" / "Errar e inaceitavel"</text>
+
+          <!-- Labels laterais -->
+          <text x="55" y="85" fill="#34d399" font-family="Inter,sans-serif" font-size="11" font-weight="600">FACIL</text>
+          <text x="45" y="100" fill="#34d399" font-family="Inter,sans-serif" font-size="11">de ver</text>
+
+          <text x="40" y="240" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11" font-weight="600">MEDIO</text>
+          <text x="35" y="255" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11">de acessar</text>
+
+          <text x="40" y="385" fill="#9ca3af" font-family="Inter,sans-serif" font-size="11" font-weight="600">DIFICIL</text>
+          <text x="35" y="400" fill="#9ca3af" font-family="Inter,sans-serif" font-size="11">de mudar</text>
+
+          <!-- Setas -->
+          <line x1="85" y1="110" x2="85" y2="420" stroke="#9ca3af" stroke-width="1.8" opacity="0.3"/>
+          <polygon points="80,420 90,420 85,435" fill="#9ca3af" opacity="0.4"/>
+        </svg>
+      </div>
+
+      <!-- Detalhamento dos 3 niveis -->
+      <div class="space-y-6 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold">1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Artefatos (Superficie)</h4>
+            <p class="text-sm text-neutral-400 mb-3">O que qualquer visitante percebe nos primeiros 5 minutos</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-1-t3-p2">Layout do escritorio (aberto vs fechado), dresscode, rituais visiveis (stand-ups, demos), ferramentas usadas, como as reunioes sao conduzidas, se ha Post-Its nas paredes ou quadros de experimentos. Sao faceis de observar, mas enganosos: um escritorio "cool" nao garante cultura de inovacao.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold">2</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Valores Declarados (Meio)</h4>
+            <p class="text-sm text-neutral-400 mb-3">O que a organizacao diz que valoriza</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-1-t3-p3">Missao e visao no site, valores nos murais, discursos do CEO, politicas oficiais. O problema: muitas empresas declaram "inovacao" como valor mas punem quem tenta algo novo e falha. O gap entre valores declarados e comportamentos reais e onde a cultura se revela.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold">3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Pressupostos Basicos (Profundidade)</h4>
+            <p class="text-sm text-neutral-400 mb-3">O que realmente guia comportamentos, muitas vezes inconscientemente</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-1-t3-p4">Crencas tao arraigadas que ninguem questiona: "errar e inaceitavel", "o chefe sempre tem razao", "se nao esta quebrado, nao mexe", "quem questiona e problematico". Sao o nivel mais dificil de mudar, mas sao o nivel que realmente determina se a inovacao vai prosperar ou morrer. Schein argumenta que transformacao cultural real so acontece quando se desafia este nivel.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerta -->
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> Armadilha Comum
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-1-t3-p5">Muitas empresas investem pesado em artefatos (escritorios modernos, mesa de ping-pong, escorregador) sem tocar nos pressupostos basicos. O resultado: "innovation theater" - uma fachada de inovacao que nao produz resultados reais. Schein chama isso de mudanca de superficie.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 4: Dimensoes-Chave da Cultura de Inovacao -->
+    <section id="topico-4" data-inema-topic="modulo-1-1#topico-4" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">🧭 Dimensoes-Chave da Cultura de Inovacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-1-t4-p1">
+        Pesquisadores como Dobni (2008), Rao e Weintraub (2013) e a propria equipe do MIT identificaram dimensoes recorrentes em organizacoes que sustentam inovacao ao longo do tempo. Essas dimensoes funcionam como <strong class="text-emerald-400">alavancas praticas</strong> que voce pode medir e desenvolver.
+      </p>
+
+      <!-- Grid de dimensoes (mini-cards) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🔓</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Autonomia</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-1-t4-p2">Grau de liberdade que as pessoas tem para explorar ideias sem pedir permissao a cada passo. Nao e anarquia - e confianca com limites claros. Google (20% time), 3M (15% time) e Atlassian (ShipIt Days) sao exemplos.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🎲</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Tolerancia ao Risco</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-1-t4-p3">Capacidade de aceitar incerteza e falhas como parte do processo. Organizacoes inovadoras distinguem "falhas inteligentes" (hipotese testada, aprendizado extraido) de "falhas por negligencia". Amazon chama de "one-way doors vs. two-way doors".</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🤝</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Colaboracao</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-1-t4-p4">Interacao cross-funcional rica e frequente. Inovacao raramente nasce em silos. A Pixar projeta seus escritorios para maximizar encontros nao planejados. Toyota usa "obeya rooms" para reunir diferentes funcoes.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">👤</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Orientacao ao Cliente</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-1-t4-p5">Inovacao comeca pelo problema do usuario, nao pela tecnologia disponivel. Amazon coloca uma "cadeira vazia" na mesa para representar o cliente. Design Thinking parte da empatia como passo zero.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🧪</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Experimentacao</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-1-t4-p6">Cultura de testar hipoteses com rapidez e baixo custo. MVPs, prototipos, A/B tests como pratica diaria, nao como excecao. A Netflix roda milhares de experimentos simultaneos. A Booking.com testa tudo.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">📚</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Aprendizado Continuo</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-1-t4-p7">Organizacao que sistematiza o aprendizado: retrospectivas, post-mortems, compartilhamento de conhecimento. Nao basta testar - e preciso capturar e disseminar o que se aprendeu. Amazon faz "correction of errors" (COE) para cada incidente.</p>
+        </div>
+      </div>
+
+      <!-- Dica Pratica -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">🛠️</span> Diagnostico Rapido
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-1-t4-p8">Para cada dimensao, pergunte: "De 1 a 5, como estamos?" Onde voce tiver 1 ou 2, ha uma oportunidade de intervencao direta. Ferramentas como o "Innovation Culture Assessment" de Rao & Weintraub (MIT Sloan, 2013) formalizam esse diagnostico com 54 indicadores em 6 blocos.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 5: Por que Cultura Come Estrategia no Cafe da Manha -->
+    <section id="topico-5" data-inema-topic="modulo-1-1#topico-5" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">🍽️ Por que Cultura Come Estrategia no Cafe da Manha</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-1-t5-p1">
+        A frase atribuida a Peter Drucker e a mais citada em gestao: <strong class="text-emerald-400">"Culture eats strategy for breakfast."</strong> Nao importa quao brilhante e seu plano de inovacao se a cultura da organizacao o rejeita como um corpo rejeita um orgao transplantado. A cultura e o sistema imunologico da organizacao - e ela pode matar a inovacao antes dela nascer.
+      </p>
+
+      <!-- Dados de Pesquisa -->
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> Evidencias: Cultura > Estrategia
+        </h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span><strong>70%</strong> das transformacoes organizacionais falham, e a causa #1 e resistencia cultural (McKinsey, Kotter)</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span>Empresas com cultura forte tiveram retorno <strong>756%</strong> maior em 11 anos vs. as com cultura fraca (Kotter & Heskett, "Corporate Culture and Performance")</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span>A cultura e o <strong>preditor #1</strong> de satisfacao do empregado, acima de remuneracao e beneficios (Glassdoor Economic Research, 2019)</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span>Equipes com alta seguranca psicologica (um pilar cultural) sao <strong>2,7x</strong> mais inovadoras (Google Project Aristotle)</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Conceito Principal -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔑</span> A Logica do Sistema Imunologico
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-1-t5-p2">
+          Quando uma organizacao tenta implantar inovacao sem mudar a cultura, acontece o seguinte: o novo processo ou ferramenta e introduzido com fanfarra, encontra resistencia passiva ("fazemos isso pra cumprir tabela"), perde momentum e morre silenciosamente. Os anticorpos culturais - medo de errar, hierarquia rigida, "sempre fizemos assim" - destroem a iniciativa.
+        </p>
+        <p class="text-neutral-300" data-inema-block="m1-1-t5-p3">
+          Por isso este curso comeca pela cultura, nao pela ferramenta. Sem o terreno fertil, nenhuma semente de inovacao cresce. O trabalho cultural e mais lento, mais dificil de medir e menos "sexy" que um novo software. Mas e o trabalho que faz todos os outros funcionarem.
+        </p>
+      </div>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Sinais de Cultura Pro-Inovacao</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Pessoas compartilham falhas abertamente em retrospectivas</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Experimentacao nao precisa de 5 niveis de aprovacao</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Ideias sao avaliadas pelo merito, nao pela hierarquia de quem propos</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>"O que aprendemos?" e pergunta frequente apos projetos</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Sinais de Cultura Anti-Inovacao</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>"Quem mandou voce fazer isso?" como resposta a iniciativas</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Decisoes so descem do topo, nunca sobem</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Erros geram cacas a culpados, nao analise de causa raiz</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>"Sempre fizemos assim" e argumento aceito em reunioes</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- RESUMO DO MODULO -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Cultura de inovacao e um sistema</strong>
+              <span class="text-neutral-400"> - Nao e genialidade individual, e um conjunto de valores, comportamentos e processos que gera inovacao de forma continua</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Sistemico > pontual</strong>
+              <span class="text-neutral-400"> - Construir uma rede de pesca e melhor que pescar um peixe. O foco e no processo, nao no evento</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Schein: 3 niveis</strong>
+              <span class="text-neutral-400"> - Artefatos (superficie), valores declarados (meio), pressupostos basicos (profundidade). Mudanca real exige tocar o nivel mais profundo</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">6 dimensoes praticas</strong>
+              <span class="text-neutral-400"> - Autonomia, tolerancia ao risco, colaboracao, orientacao ao cliente, experimentacao e aprendizado continuo</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Cultura come estrategia</strong>
+              <span class="text-neutral-400"> - 70% das transformacoes falham por resistencia cultural. Sem cultura, nenhuma ferramenta ou metodologia funciona</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-emerald-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">1.2 - Os Pilares da Cultura de Inovacao</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-1-2.html" class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors">
+            Proximo Modulo &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

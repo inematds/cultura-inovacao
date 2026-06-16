@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Os Pilares da Cultura de Inovacao | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed === 'object') { for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy === 'light') p.theme = 'claro'; else if (legacy === 'dark') p.theme = 'inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark': { dark: true, attr: null, cs: 'dark' }, 'claro': { dark: false, attr: null, cs: 'light' }, 'sepia': { dark: false, attr: 'sepia', cs: 'light' }, 'foco': { dark: null, attr: 'foco', cs: null }, 'contraste': { dark: true, attr: 'contraste', cs: 'dark' } };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark'); else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter'); html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style; var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString()); s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch'); s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system' ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' : (p.font === 'leitura' ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif' : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = { emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66], amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60] };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + ''); s.setProperty('--accent-s', a[1] + '%'); s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {} }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { primary: '#FACC15', dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' } } } }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "cultura-inovacao",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 5, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Os Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Modelos Teoricos", "topics": 5, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Mindset de Crescimento", "topics": 5, "href": "curso/trilha1/modulo-1-4.html" }
+      ]}
+    ]
+  }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - emerald accent */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5, 150, 105, 0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5, 150, 105, 0.18); }
+
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10">
+            <span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span><span class="hidden sm:inline">Praticas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span><span class="hidden sm:inline">Lideranca</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-emerald-400">Trilha 1</a>
+      <span>/</span>
+      <span class="text-emerald-400">Modulo 1.2</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">MODULO 1.2</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🏛️ Os Pilares da Cultura de Inovacao</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Os seis fundamentos que sustentam organizacoes verdadeiramente inovadoras. Sem esses pilares, qualquer programa de inovacao e construcao sobre areia.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">45</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Basico</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Teoria</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEUDO -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="1-2" data-inema-track="1">
+
+    <!-- SVG: 6 Pilares -->
+    <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-12 overflow-hidden">
+      <svg viewBox="0 0 900 320" class="w-full h-auto" role="img" aria-label="Diagrama dos 6 pilares da cultura de inovacao: Seguranca Psicologica, Tolerancia ao Erro, Diversidade Cognitiva, Experimentacao, Colaboracao Cross-Funcional e Foco no Cliente, sustentando o teto da Inovacao Sustentavel">
+        <defs>
+          <linearGradient id="m12-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/>
+          </linearGradient>
+          <filter id="m12-glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <pattern id="m12-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+            <circle cx="1.3" cy="1.3" r="1.3" fill="#10b981" opacity="0.12"/>
+          </pattern>
+        </defs>
+
+        <rect x="0" y="0" width="900" height="320" fill="url(#m12-grid)"/>
+
+        <!-- Teto: Inovacao Sustentavel -->
+        <g filter="url(#m12-glow)">
+          <rect x="50" y="20" width="800" height="50" rx="12" fill="#0e2018" stroke="url(#m12-grad)" stroke-width="2"/>
+        </g>
+        <text x="450" y="52" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="600" font-size="18">INOVACAO SUSTENTAVEL</text>
+
+        <!-- 6 Pilares (colunas) -->
+        <rect x="70" y="85" width="110" height="180" rx="8" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+        <text x="125" y="140" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="11">Seguranca</text>
+        <text x="125" y="155" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Psicologica</text>
+        <text x="125" y="200" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="24">🛡️</text>
+
+        <rect x="200" y="85" width="110" height="180" rx="8" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+        <text x="255" y="140" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="11">Tolerancia</text>
+        <text x="255" y="155" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">ao Erro</text>
+        <text x="255" y="200" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="24">🎯</text>
+
+        <rect x="330" y="85" width="110" height="180" rx="8" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+        <text x="385" y="140" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="11">Diversidade</text>
+        <text x="385" y="155" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Cognitiva</text>
+        <text x="385" y="200" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="24">🧩</text>
+
+        <rect x="460" y="85" width="110" height="180" rx="8" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+        <text x="515" y="140" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="11">Experimentacao</text>
+        <text x="515" y="155" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Continua</text>
+        <text x="515" y="200" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="24">🧪</text>
+
+        <rect x="590" y="85" width="110" height="180" rx="8" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+        <text x="645" y="140" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="11">Colaboracao</text>
+        <text x="645" y="155" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Cross-Funcional</text>
+        <text x="645" y="200" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="24">🤝</text>
+
+        <rect x="720" y="85" width="110" height="180" rx="8" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+        <text x="775" y="140" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="11">Foco no</text>
+        <text x="775" y="155" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Cliente</text>
+        <text x="775" y="200" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="24">👤</text>
+
+        <!-- Base -->
+        <rect x="50" y="278" width="800" height="30" rx="8" fill="#0e2018" stroke="#34d399" stroke-width="1.8" opacity="0.6"/>
+        <text x="450" y="298" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="12" font-weight="600">FUNDACAO CULTURAL DA ORGANIZACAO</text>
+      </svg>
+    </div>
+
+    <!-- TOPICO 1: Seguranca Psicologica -->
+    <section id="topico-1" data-inema-topic="modulo-1-2#topico-1" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🛡️ Seguranca Psicologica</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t1-p1">
+        <strong class="text-emerald-400">Seguranca psicologica</strong> e a crenca compartilhada de que o ambiente e seguro para correr riscos interpessoais: fazer perguntas, admitir erros, propor ideias nao convencionais e discordar de superiores sem medo de punicao ou humilhacao. O conceito foi formalizado por <strong class="text-emerald-400">Amy Edmondson</strong> (Harvard Business School) e ganhou alcance global com o Project Aristotle do Google.
+      </p>
+
+      <!-- Dados de Pesquisa -->
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> Project Aristotle (Google, 2015)
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-2-t1-p2">O Google estudou 180 equipes internas para descobrir o que diferenciava as equipes de alta performance. Testaram tudo: composicao, senioridade, proximidade, tamanho. A variavel #1 nao foi talento, nao foi QI medio, nao foi experiencia.</p>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong>Fator #1:</strong> Seguranca Psicologica (com distancia significativa do #2)</li>
+          <li><strong>Equipes com alta SP:</strong> 2,7x mais inovadoras, 40% menos turnover, erro reportado 47% mais rapido</li>
+          <li><strong>O sinal:</strong> Nao e ser "legal" ou "agradavel" - e poder dizer "eu nao sei", "eu errei", "eu discordo" sem risco social</li>
+        </ul>
+      </div>
+
+      <!-- Conceito Principal -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔑</span> Edmondson: O que Seguranca Psicologica NAO e
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Nao e ser "bonzinho"</strong> - E justamente o contrario: e poder ser direto e honesto porque o ambiente permite</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Nao e falta de cobranca</strong> - Equipes com SP alta combinam alta exigencia com alta seguranca (o quadrante "zona de aprendizado")</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Nao e permissao para baixa performance</strong> - E separar feedback sobre o trabalho de ataque a pessoa</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Nao e conforto</strong> - E coragem. SP cria as condicoes para conversas dificeis, nao para evita-las</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Dica Pratica -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">🛠️</span> Como Construir SP na Pratica
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m1-2-t1-p3">Edmondson sugere 3 passos para lideres:</p>
+        <ul class="space-y-2 text-neutral-300 text-sm">
+          <li><strong>1. Enquadre o trabalho como aprendizado</strong>, nao como execucao. Diga: "Estamos entrando em territorio novo. Precisamos da perspectiva de todos."</li>
+          <li><strong>2. Reconheca sua propria falibilidade</strong>. Diga: "Posso estar errado. O que estou perdendo?" Isso da permissao para os outros fazerem o mesmo.</li>
+          <li><strong>3. Modele curiosidade</strong>. Faca mais perguntas do que afirmacoes. Proporcao ideal: 3 perguntas para cada 1 afirmacao em reunioes.</li>
+        </ul>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 2: Tolerancia ao Erro Inteligente -->
+    <section id="topico-2" data-inema-topic="modulo-1-2#topico-2" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">🎯 Tolerancia ao Erro Inteligente</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t2-p1">
+        "Fail fast, fail cheap, fail forward" nao e um slogan vazio. E uma <strong class="text-emerald-400">disciplina operacional</strong>. Organizacoes inovadoras nao celebram qualquer falha - elas distinguem sistematicamente entre erros que geram aprendizado e erros por negligencia, e criam processos para extrair o maximo de cada um.
+      </p>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">Erro Inteligente</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Tinha uma <strong>hipotese clara</strong> antes de testar</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>O teste foi <strong>barato e rapido</strong> (MVP, prototipo)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Gerou <strong>aprendizado documentado</strong> e compartilhado</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Informou a <strong>proxima iteracao</strong></span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">Erro por Negligencia</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Nao havia hipotese - foi "achismo"</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Apostou <strong>alto</strong> sem validar antes</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Ignorou sinais</strong> que ja indicavam o problema</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Repetiu o <strong>mesmo erro</strong> sem aprender</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🚪</span> Amazon: Portas de Uma Via vs. Duas Vias
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-2-t2-p2">Jeff Bezos classifica decisoes em dois tipos:</p>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Portas de uma via (Type 1):</strong> Irreversiveis. Exigem cautela, analise profunda, escalonamento. Ex.: vender uma unidade de negocio, entrar num mercado novo de bilhoes.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Portas de duas vias (Type 2):</strong> Reversiveis. Devem ser tomadas rapido, por equipes pequenas, sem burocracia. Se nao funcionar, volta. A maioria das decisoes do dia a dia sao Type 2.</span>
+          </li>
+        </ul>
+        <p class="text-neutral-300 mt-3" data-inema-block="m1-2-t2-p3">O erro mais comum das empresas grandes e tratar decisoes Type 2 como Type 1 - gerando lentidao paralisante.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 3: Diversidade Cognitiva -->
+    <section id="topico-3" data-inema-topic="modulo-1-2#topico-3" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🧩 Diversidade Cognitiva</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t3-p1">
+        Diversidade cognitiva e a presenca de <strong class="text-emerald-400">formas diferentes de pensar, processar informacao e resolver problemas</strong> dentro de um mesmo time. Nao e so diversidade demografica (genero, etnia, idade), embora essa frequentemente contribua. E sobre ter pessoas que olham para o mesmo problema de angulos genuinamente diferentes.
+      </p>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> O que a pesquisa mostra
+        </h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li><strong>35% mais eficazes:</strong> Times cognitivamente diversos sao 35% mais eficazes em resolver problemas complexos (Harvard Business Review, Reynolds & Lewis, 2017)</li>
+          <li><strong>20% mais inovadores:</strong> Empresas no quartil superior de diversidade tem 20% mais receita de inovacao (BCG, 2018)</li>
+          <li><strong>Groupthink:</strong> Times homogeneos tomam decisoes mais rapido, mas erram mais. A homogeneidade gera confianca excessiva, nao precisao (Surowiecki, "The Wisdom of Crowds")</li>
+          <li><strong>Desconforto produtivo:</strong> Times diversos relatam mais conflito (positivo) e chegam a solucoes melhores. O "atrito cognitivo" e uma feature, nao um bug</li>
+        </ul>
+      </div>
+
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🧠</span> Tipos de Diversidade Cognitiva
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-neutral-300 text-sm">
+          <div class="bg-dark-800/50 rounded-lg p-4">
+            <strong class="text-emerald-400">Diversidade de perspectiva</strong>
+            <p>Diferentes formas de representar problemas e situacoes</p>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4">
+            <strong class="text-emerald-400">Diversidade heuristica</strong>
+            <p>Diferentes abordagens para resolver problemas</p>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4">
+            <strong class="text-emerald-400">Diversidade interpretativa</strong>
+            <p>Diferentes formas de categorizar e classificar informacao</p>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4">
+            <strong class="text-emerald-400">Diversidade preditiva</strong>
+            <p>Diferentes modelos mentais para prever consequencias</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Na Pratica
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-2-t3-p2">Antes de montar um time de projeto, mapeie os estilos cognitivos (ferramentas como MBTI, Herrmann Brain Dominance ou simplesmente pergunte "como voce abordaria isso?"). Garanta que nao tem 5 pessoas que pensam igual. E lembre: diversidade sem seguranca psicologica e inutil - as pessoas diferentes precisam se sentir seguras para expressar suas perspectivas divergentes.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 4: Experimentacao Continua -->
+    <section id="topico-4" data-inema-topic="modulo-1-2#topico-4" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">🧪 Experimentacao Continua</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t4-p1">
+        A diferenca entre uma <strong class="text-emerald-400">cultura de hipotese</strong> e uma <strong class="text-emerald-400">cultura de opiniao</strong> e a diferenca entre ciencia e politica. Na cultura de opiniao, ganha quem argumenta melhor (ou quem tem mais poder). Na cultura de hipotese, ganha quem testa. "Vamos descobrir" substitui "eu acho que".
+      </p>
+
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔬</span> Cultura de Hipotese vs. Cultura de Opiniao
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-dark-800/50 rounded-lg p-4">
+            <h4 class="font-semibold text-emerald-400 mb-2">Cultura de Hipotese</h4>
+            <ul class="space-y-2 text-neutral-300 text-sm">
+              <li>"Acreditamos que X porque Y. Vamos testar."</li>
+              <li>Decisao baseada em dados de experimentos</li>
+              <li>Falha = dado novo, ajusta e tenta de novo</li>
+              <li>Qualquer um pode propor um teste</li>
+            </ul>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">Cultura de Opiniao</h4>
+            <ul class="space-y-2 text-neutral-300 text-sm">
+              <li>"Eu acho que devemos fazer X porque sou o gerente."</li>
+              <li>Decisao baseada em hierarquia ou eloq&uuml;encia</li>
+              <li>Falha = culpa de alguem, encobrir e seguir</li>
+              <li>So lideranca senior pode propor mudancas</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> Exemplos de Escala
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong>Booking.com:</strong> Roda ~25.000 experimentos simultaneos. Qualquer engenheiro pode lancar um A/B test sem aprovacao gerencial</li>
+          <li><strong>Netflix:</strong> Testa tudo - desde thumbnails de filmes ate algoritmos de recomendacao. A cultura e "provar, nao opinar"</li>
+          <li><strong>Amazon:</strong> "Good intentions don't work. Mechanisms do." Processos formais para hipotese-teste-iteracao em cada area</li>
+          <li><strong>Spotify:</strong> "Think it, build it, ship it, tweak it." Squads autonomos com permissao para experimentar dentro de sua missao</li>
+        </ul>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">🛠️</span> Framework de Experimentacao Rapida
+        </h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m1-2-t4-p2">1. <strong>Hipotese:</strong> "Se fizermos X, esperamos Y porque Z." | 2. <strong>Metrica:</strong> Como saberemos que funcionou? | 3. <strong>Teste minimo:</strong> Qual o menor experimento que valida isso? | 4. <strong>Prazo:</strong> Quando teremos a resposta? (max 2 semanas) | 5. <strong>Decisao:</strong> Escalar, iterar ou descartar? | 6. <strong>Aprendizado:</strong> O que isso nos ensinou?</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 5: Colaboracao Cross-Funcional -->
+    <section id="topico-5" data-inema-topic="modulo-1-2#topico-5" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">🤝 Colaboracao Cross-Funcional</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t5-p1">
+        Inovacao raramente nasce dentro de um unico departamento. As melhores ideias surgem na <strong class="text-emerald-400">interseccao entre disciplinas</strong> - quando um engenheiro conversa com um designer, quando vendas traz insights de cliente para produto, quando financas desafia tecnologia a pensar em viabilidade desde o dia 1.
+      </p>
+
+      <!-- Timeline: Exemplos -->
+      <div class="space-y-6 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold text-lg">T</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Toyota: Obeya Rooms</h4>
+            <p class="text-sm text-neutral-400 mb-2">"Grande sala" em japones</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-2-t5-p2">Uma sala fisica (ou virtual) onde todas as funcoes envolvidas num projeto se reunem regularmente com informacoes visuais nas paredes. Engenharia, producao, qualidade, compras, marketing - todos no mesmo espaco, vendo os mesmos dados, resolvendo problemas juntos. Elimina handoffs e filas entre departamentos.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold text-lg">P</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Pixar: Encontros Nao Planejados</h4>
+            <p class="text-sm text-neutral-400 mb-2">Arquitetura a servico da colaboracao</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-2-t5-p3">Steve Jobs projetou a sede da Pixar com um unico atrium central e todos os banheiros, cafeteria e correio no meio. Forcou engenheiros, animadores, roteiristas e executivos a se cruzarem dezenas de vezes por dia. Jobs disse: "Criatividade vem de encontros espontaneos." O predio e uma maquina de colisoes produtivas.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold text-lg">A</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Amazon: Two-Pizza Teams</h4>
+            <p class="text-sm text-neutral-400 mb-2">Autonomia em escala</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-2-t5-p4">Times pequenos o suficiente para serem alimentados por duas pizzas (6-10 pessoas), mas cross-funcionais: contem todas as competencias necessarias para entregar de ponta a ponta sem depender de outros times. Reduz coordenacao, aumenta velocidade, preserva ownership.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> Inimigo #1: Silos Organizacionais
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-2-t5-p5">Quando departamentos nao conversam, cada um otimiza para si. Marketing promete o que engenharia nao pode entregar. Produto desenvolve features que vendas nao sabe vender. Financas corta o orcamento de experimentacao porque nao entende o pipeline de inovacao. Silos sao o cancer da inovacao.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 6: Foco no Cliente/Usuario -->
+    <section id="topico-6" data-inema-topic="modulo-1-2#topico-6" class="mb-16">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">👤 Foco no Cliente / Usuario</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t6-p1">
+        Inovacao sem cliente e invencao. Invencao pode ser fascinante para o inventor, mas nao cria valor. O pilar do <strong class="text-emerald-400">foco no cliente</strong> garante que toda inovacao comeca e termina com uma pessoa real cujo problema precisa ser resolvido. A tecnologia e o meio, nao o fim.
+      </p>
+
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔑</span> Customer Obsession (Amazon)
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-2-t6-p2">A Amazon eleva foco no cliente a "obsessao". E o Leadership Principle #1 dos 16. Na pratica:</p>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Working Backwards:</strong> Todo produto novo comeca com um press release ficticio escrito do ponto de vista do cliente. Se o PR nao empolga, o produto nao vale a pena</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Cadeira vazia:</strong> Em reunioes, uma cadeira vazia representa o cliente. Antes de cada decisao: "O que o cliente diria?"</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Andon cord:</strong> Qualquer funcionario pode "puxar a corda" e parar um processo se perceber que o cliente sera prejudicado</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Grid de abordagens -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-emerald-400 mb-2">Design Thinking</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-2-t6-p3">Empatia como passo zero. Observar, entrevistar, imergir no contexto do usuario antes de gerar qualquer solucao. IDEO e d.school de Stanford popularizaram o metodo.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-emerald-400 mb-2">Jobs to Be Done (JTBD)</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-2-t6-p4">Clayton Christensen: clientes nao compram produtos - "contratam" solucoes para um job. Entender o job e mais poderoso que pesquisa de mercado tradicional. "As pessoas nao querem uma furadeira de 1/4 de polegada. Querem um buraco de 1/4 de polegada."</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-emerald-400 mb-2">Continuous Discovery</h4>
+          <p class="text-neutral-300 text-sm">Teresa Torres: falar com clientes toda semana, nao so no inicio do projeto. "Discovery continua" garante que o produto nunca diverge do que o usuario precisa.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-emerald-400 mb-2">Gemba Walks</h4>
+          <p class="text-neutral-300 text-sm">Conceito Toyota adaptado: ir ao "gemba" (lugar real onde o valor e criado/consumido) e observar. No digital: session recordings, user shadowing, support tickets como fonte de insight.</p>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- RESUMO -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div><strong class="text-white">Seguranca Psicologica</strong><span class="text-neutral-400"> - O fundamento de tudo. Sem ela, os outros pilares nao funcionam. Project Aristotle provou: e o fator #1</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div><strong class="text-white">Tolerancia ao Erro Inteligente</strong><span class="text-neutral-400"> - Fail fast, fail cheap. Distinguir erro inteligente de negligencia. Portas de uma via vs. duas vias</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div><strong class="text-white">Diversidade Cognitiva</strong><span class="text-neutral-400"> - Times 35% mais eficazes. Nao e so demografica - e formas diferentes de pensar e resolver</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div><strong class="text-white">Experimentacao Continua</strong><span class="text-neutral-400"> - Cultura de hipotese > cultura de opiniao. Booking.com: 25.000 experimentos simultaneos</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div><strong class="text-white">Colaboracao Cross-Funcional</strong><span class="text-neutral-400"> - Toyota Obeya, Pixar atrium, Amazon two-pizza teams. Silos sao o cancer da inovacao</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div><strong class="text-white">Foco no Cliente</strong><span class="text-neutral-400"> - Inovacao sem cliente e invencao. Working backwards, JTBD, continuous discovery</span></div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-emerald-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">1.3 - Modelos Teoricos: Google X, Amazon, Pixar</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="modulo-1-1.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">&#8592; Modulo Anterior</a>
+          <a href="modulo-1-3.html" class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors">Proximo Modulo &#8594;</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) { moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => { if (exp !== explanation) exp.classList.remove('active'); }); }
+      explanation.classList.toggle('active');
+    }
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) { themeToggleDarkIcon.classList.remove('hidden'); html.classList.remove('dark'); } else { themeToggleLightIcon.classList.remove('hidden'); }
+    themeToggle.addEventListener('click', () => { themeToggleDarkIcon.classList.toggle('hidden'); themeToggleLightIcon.classList.toggle('hidden'); html.classList.toggle('dark'); localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light'); });
+    function openModal(modalId) { const modal = document.getElementById(modalId); if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; } }
+    function closeModal() { document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden')); document.body.style.overflow = 'auto'; }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>if (window.INEMA && typeof window.INEMA.init === 'function') { window.INEMA.init(); }</script>
+</body>
+</html>
