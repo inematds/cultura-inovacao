@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="inema-course" content="cultura-inovacao">
-  <title>Cultura de Inovacao — Da Teoria a Pratica</title>
+  <title>Cultura de Inovacao — Da Teoria a Pratica | Curso INEMA</title>
+  <meta name="description" content="A parte mais dificil de copiar e a cultura. Aprenda a construir, medir e escalar um sistema que gera inovacao continuamente. 3 trilhas, 28 modulos, 168 topicos.">
 
   <!-- ANTI-FOUC: script bloqueante ANTES do Tailwind -->
   <script>
@@ -183,6 +184,7 @@
     html:not(.dark) .text-primary { color: #a16207; }
     html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
     html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
     html:not(.dark) .text-sky-400 { color: #0369a1; }
     html:not(.dark) .text-yellow-400 { color: #a16207; }
     html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
@@ -194,6 +196,21 @@
     /* Dark mode - bordas e linhas divisorias mais suaves */
     .dark .border-dark-600 { border-color: #374151; }
     .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* animacao do hero SVG */
+    @keyframes hero-pulse { 0%,100% { opacity:.45 } 50% { opacity:1 } }
+    @keyframes hero-flow  { to { stroke-dashoffset: -28; } }
+    @media (prefers-reduced-motion: no-preference) {
+      .hero-a { animation: hero-pulse 2.8s ease-in-out infinite; }
+      .hero-a:nth-child(2){animation-delay:.2s} .hero-a:nth-child(3){animation-delay:.4s}
+      .hero-a:nth-child(4){animation-delay:.6s} .hero-a:nth-child(5){animation-delay:.8s}
+      .hero-flow { stroke-dasharray: 6 8; animation: hero-flow 1.4s linear infinite; }
+    }
+    html { scroll-behavior: smooth; }
+    [id] { scroll-margin-top: 5rem; }
   </style>
 </head>
 <body class="bg-dark-900 text-neutral-100 min-h-screen">
@@ -223,7 +240,11 @@
             <span class="sm:hidden">T3</span>
             <span class="hidden sm:inline">Avancado</span>
           </a>
-          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+          <button type="button" data-inema-journey-open class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors">
+            <span>🧭</span><span>Minha jornada</span>
+            <span data-inema-journey-badge class="text-xs px-1.5 py-0.5 rounded-full bg-emerald-500/20"></span>
+          </button>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1">
             <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
               <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
             </svg>
@@ -237,255 +258,351 @@
   </nav>
 
   <!-- HERO -->
-  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-16 border-b border-dark-600">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <span class="inline-block px-4 py-1.5 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-6 tracking-wider">CURSO COMPLETO</span>
-      <h1 class="text-4xl sm:text-5xl font-bold mb-6">💡 Cultura de Inovacao</h1>
-      <p class="text-xl text-neutral-300 max-w-3xl mx-auto mb-2">Da Teoria a Pratica</p>
-      <p class="text-lg text-neutral-400 max-w-2xl mx-auto mb-10">A parte mais dificil de copiar e a cultura. Aprenda a construir, medir e escalar cultura de inovacao.</p>
+  <header class="relative overflow-hidden bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 grid lg:grid-cols-2 gap-12 items-center">
+      <!-- coluna texto -->
+      <div>
+        <span class="inline-block px-4 py-1.5 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-6 tracking-wider">CURSO COMPLETO · ACESSO LIVRE</span>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-5 leading-tight">💡 Cultura de Inovacao</h1>
+        <p class="text-2xl text-emerald-400 font-semibold mb-4">Da Teoria a Pratica</p>
+        <p class="text-lg text-neutral-300 max-w-xl mb-8 leading-relaxed">
+          A parte mais dificil de copiar nao e o produto nem a tecnologia — e a <strong class="text-neutral-100">cultura</strong>.
+          Aprenda a construir, medir e escalar um <strong class="text-emerald-400">sistema que gera inovacao continuamente</strong>: nao por sorte, por metodo.
+        </p>
 
-      <!-- Stats -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto">
-        <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-600">
-          <div class="text-2xl font-bold text-emerald-400">3</div>
-          <div class="text-xs text-neutral-400">Trilhas</div>
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-8">
+          <a href="curso/trilha1/index.html" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-600 text-white rounded-xl font-bold text-lg hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-900/30">
+            Comecar agora &#8594;
+          </a>
+          <button type="button" data-inema-journey-open class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-dark-800 border border-emerald-500/30 text-emerald-400 rounded-xl font-semibold hover:bg-emerald-500/10 transition-colors">
+            🧭 Continuar de onde parei
+          </button>
         </div>
-        <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-600">
-          <div class="text-2xl font-bold text-emerald-400">28</div>
-          <div class="text-xs text-neutral-400">Modulos</div>
-        </div>
-        <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-600">
-          <div class="text-2xl font-bold text-emerald-400">168</div>
-          <div class="text-xs text-neutral-400">Topicos</div>
-        </div>
-        <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-600">
-          <div class="text-2xl font-bold text-emerald-400">~14h</div>
-          <div class="text-xs text-neutral-400">Duracao</div>
+
+        <!-- Progresso do curso -->
+        <div data-inema-meter="curso" class="inema-meter max-w-md" role="progressbar"
+             aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do curso">
+          <div class="flex justify-between text-sm text-neutral-400 mb-1">
+            <span class="inema-meter-count" data-inema-meter-frac>0 de 168 topicos</span>
+            <span class="inema-meter-pct" data-inema-meter-pct>0%</span>
+          </div>
+          <div class="inema-bar h-2 bg-dark-700 rounded-full overflow-hidden">
+            <div class="inema-bar__fill h-full bg-emerald-500 rounded-full transition-all" data-inema-meter-fill style="width:0%"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Progresso do curso -->
-      <div data-inema-meter="curso" class="inema-meter mt-8 max-w-md mx-auto" role="progressbar"
-           aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do curso">
-        <div class="flex justify-between text-sm text-neutral-400 mb-1">
-          <span class="inema-meter-count" data-inema-meter-frac>0 de 168</span>
-          <span class="inema-meter-pct" data-inema-meter-pct>0%</span>
+      <!-- coluna SVG -->
+      <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4">
+        <svg viewBox="0 0 560 440" class="w-full h-auto" role="img" aria-label="Diagrama: ideias dispersas entram num sistema de inovacao com etapas captar, testar e escalar, gerando valor, com um ciclo de aprendizado que realimenta o sistema">
+          <defs>
+            <linearGradient id="hero-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/>
+            </linearGradient>
+            <filter id="hero-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="hero-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+              <circle cx="1.3" cy="1.3" r="1.3" fill="#10b981" opacity="0.12"/>
+            </pattern>
+          </defs>
+
+          <rect x="0" y="0" width="560" height="440" fill="url(#hero-grid)"/>
+
+          <!-- ideias dispersas (entrada) -->
+          <g fill="#38bdf8">
+            <circle class="hero-a" cx="40" cy="70" r="6"/>
+            <circle class="hero-a" cx="70" cy="150" r="5"/>
+            <circle class="hero-a" cx="44" cy="240" r="6"/>
+            <circle class="hero-a" cx="80" cy="330" r="5"/>
+            <circle class="hero-a" cx="40" cy="390" r="4"/>
+          </g>
+          <text x="50" y="35" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="13" font-weight="600">ideias</text>
+
+          <!-- fluxo de entrada -->
+          <path class="hero-flow" d="M90 220 C 150 220, 150 220, 200 220" fill="none" stroke="#38bdf8" stroke-width="2.5"/>
+
+          <!-- nucleo: o sistema (3 etapas) -->
+          <g filter="url(#hero-glow)">
+            <rect x="200" y="70" width="180" height="300" rx="20" fill="#0e2018" stroke="url(#hero-grad)" stroke-width="2.5"/>
+          </g>
+          <text x="290" y="58" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-size="13" font-weight="700">O SISTEMA</text>
+
+          <g font-family="Inter,sans-serif">
+            <rect x="222" y="98" width="136" height="70" rx="12" fill="#0e1b26" stroke="#34d399" stroke-width="1.6"/>
+            <text x="290" y="130" text-anchor="middle" fill="#a7f3d0" font-size="15" font-weight="600">Captar</text>
+            <text x="290" y="150" text-anchor="middle" fill="#6ee7b7" font-size="11">ideias de todos</text>
+
+            <rect x="222" y="185" width="136" height="70" rx="12" fill="#0e1b26" stroke="#34d399" stroke-width="1.6"/>
+            <text x="290" y="217" text-anchor="middle" fill="#a7f3d0" font-size="15" font-weight="600">Testar</text>
+            <text x="290" y="237" text-anchor="middle" fill="#6ee7b7" font-size="11">rapido e barato</text>
+
+            <rect x="222" y="272" width="136" height="70" rx="12" fill="#0e1b26" stroke="#34d399" stroke-width="1.6"/>
+            <text x="290" y="304" text-anchor="middle" fill="#a7f3d0" font-size="15" font-weight="600">Escalar</text>
+            <text x="290" y="324" text-anchor="middle" fill="#6ee7b7" font-size="11">o que funciona</text>
+          </g>
+
+          <!-- setas internas -->
+          <g stroke="#34d399" stroke-width="2" opacity="0.7">
+            <line x1="290" y1="168" x2="290" y2="185"/>
+            <line x1="290" y1="255" x2="290" y2="272"/>
+          </g>
+
+          <!-- fluxo de saida -->
+          <path class="hero-flow" d="M380 220 C 430 220, 430 220, 480 220" fill="none" stroke="#34d399" stroke-width="2.5"/>
+
+          <!-- valor (saida) -->
+          <g filter="url(#hero-glow)">
+            <circle cx="510" cy="220" r="34" fill="#0e2018" stroke="url(#hero-grad)" stroke-width="2.5"/>
+          </g>
+          <text x="510" y="216" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-size="22" font-weight="700">★</text>
+          <text x="510" y="238" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="10">valor</text>
+
+          <!-- ciclo de aprendizado (feedback) -->
+          <path d="M510 254 C 510 405, 290 415, 290 372" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="7 7" opacity="0.6"/>
+          <polygon points="284,372 296,372 290,360" fill="#38bdf8" opacity="0.7"/>
+          <text x="400" y="408" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="12" font-style="italic">aprendizado realimenta o sistema</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-dark-800/50 rounded-xl p-5 border border-dark-600 text-center">
+          <div class="text-3xl font-extrabold text-emerald-400">3</div>
+          <div class="text-xs text-neutral-400 mt-1">Trilhas</div>
         </div>
-        <div class="inema-bar h-2 bg-dark-700 rounded-full overflow-hidden">
-          <div class="inema-bar__fill h-full bg-emerald-500 rounded-full transition-all" data-inema-meter-fill style="width:0%"></div>
+        <div class="bg-dark-800/50 rounded-xl p-5 border border-dark-600 text-center">
+          <div class="text-3xl font-extrabold text-emerald-400">28</div>
+          <div class="text-xs text-neutral-400 mt-1">Modulos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-xl p-5 border border-dark-600 text-center">
+          <div class="text-3xl font-extrabold text-emerald-400">168</div>
+          <div class="text-xs text-neutral-400 mt-1">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-xl p-5 border border-dark-600 text-center">
+          <div class="text-3xl font-extrabold text-emerald-400">~14h</div>
+          <div class="text-xs text-neutral-400 mt-1">Duracao</div>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- TRILHAS -->
-  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <!-- TRILHA 1: Fundamentos (Emerald) -->
-    <section class="mb-16">
-      <a href="curso/trilha1/index.html" class="group block bg-dark-800 rounded-2xl border border-dark-600 hover:border-emerald-500/30 transition-all overflow-hidden">
+    <!-- O PROBLEMA -->
+    <section class="py-16 border-b border-dark-600">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="text-emerald-400 text-sm font-semibold tracking-wider uppercase">Por que isso importa</span>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-3 mb-4">A cultura come a estrategia no cafe da manha</h2>
+        <p class="text-lg text-neutral-400">Voce pode ter o melhor plano de inovacao do mundo. Se a cultura rejeita, ela morre — como um corpo rejeita um orgao transplantado.</p>
+      </div>
+      <div class="grid sm:grid-cols-3 gap-6">
+        <div class="bg-red-900/20 rounded-2xl border border-red-500/30 p-7 text-center">
+          <div class="text-4xl font-extrabold text-red-400 mb-2">70%</div>
+          <p class="text-neutral-300 text-sm">das transformacoes organizacionais falham — a causa #1 e resistencia cultural <span class="text-neutral-500">(McKinsey, Kotter)</span></p>
+        </div>
+        <div class="bg-dark-800 rounded-2xl border border-dark-600 p-7 text-center">
+          <div class="text-4xl font-extrabold text-emerald-400 mb-2">84% &rarr; 6%</div>
+          <p class="text-neutral-300 text-sm">dos executivos dizem que inovacao e prioridade, mas so 6% estao satisfeitos com o resultado <span class="text-neutral-500">(McKinsey)</span></p>
+        </div>
+        <div class="bg-dark-800 rounded-2xl border border-dark-600 p-7 text-center">
+          <div class="text-4xl font-extrabold text-emerald-400 mb-2">3,5x</div>
+          <p class="text-neutral-300 text-sm">maior retorno ao acionista em empresas com cultura forte de inovacao vs. seus pares <span class="text-neutral-500">(BCG)</span></p>
+        </div>
+      </div>
+      <p class="text-center text-neutral-400 mt-8 max-w-2xl mx-auto">Este curso comeca pela cultura — o terreno fertil — e so depois entrega as ferramentas. Porque sem o terreno, nenhuma semente cresce.</p>
+    </section>
+
+    <!-- O QUE VOCE VAI CONSTRUIR -->
+    <section class="py-16 border-b border-dark-600">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="text-emerald-400 text-sm font-semibold tracking-wider uppercase">A promessa</span>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-3 mb-4">O que voce vai sair sabendo fazer</h2>
+        <p class="text-lg text-neutral-400">Nao e teoria solta. Cada trilha entrega capacidades praticas que voce aplica na segunda-feira.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div class="flex items-start gap-4 bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <span class="text-emerald-400 text-2xl mt-0.5">🔬</span>
+          <div><h3 class="font-semibold text-neutral-100 mb-1">Diagnosticar a cultura</h3><p class="text-neutral-400 text-sm">Ler os 3 niveis de Schein, identificar barreiras e os "anticorpos" que matam ideias.</p></div>
+        </div>
+        <div class="flex items-start gap-4 bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <span class="text-emerald-400 text-2xl mt-0.5">🎨</span>
+          <div><h3 class="font-semibold text-neutral-100 mb-1">Aplicar os metodos certos</h3><p class="text-neutral-400 text-sm">Design Thinking, Lean Startup, Sprint, JTBD, OKRs e prototipagem — saber qual usar e quando.</p></div>
+        </div>
+        <div class="flex items-start gap-4 bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <span class="text-emerald-400 text-2xl mt-0.5">🏢</span>
+          <div><h3 class="font-semibold text-neutral-100 mb-1">Montar um programa que entrega</h3><p class="text-neutral-400 text-sm">Programa corporativo, intraempreendedorismo, inovacao aberta e governanca sem sufocar.</p></div>
+        </div>
+        <div class="flex items-start gap-4 bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <span class="text-emerald-400 text-2xl mt-0.5">🤖</span>
+          <div><h3 class="font-semibold text-neutral-100 mb-1">Usar IA como acelerador</h3><p class="text-neutral-400 text-sm">Onde a IA multiplica descoberta, ideacao e experimentacao — com os riscos sob controle.</p></div>
+        </div>
+        <div class="flex items-start gap-4 bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <span class="text-emerald-400 text-2xl mt-0.5">📊</span>
+          <div><h3 class="font-semibold text-neutral-100 mb-1">Medir e provar valor</h3><p class="text-neutral-400 text-sm">Metricas de inovacao e ROI sem cair em "vanity metrics" nem em teatro de numeros.</p></div>
+        </div>
+        <div class="flex items-start gap-4 bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <span class="text-emerald-400 text-2xl mt-0.5">📈</span>
+          <div><h3 class="font-semibold text-neutral-100 mb-1">Escalar o que funciona</h3><p class="text-neutral-400 text-sm">Atravessar o "vale da morte" do piloto e levar a inovacao ao impacto em toda a empresa.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- A JORNADA / TRILHAS -->
+    <section id="trilhas" class="py-16 border-b border-dark-600">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-emerald-400 text-sm font-semibold tracking-wider uppercase">A jornada</span>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-3 mb-4">Tres trilhas, do alicerce a escala</h2>
+        <p class="text-lg text-neutral-400">Comece pelos fundamentos, ganhe o arsenal pratico e termine construindo solucoes que escalam. Cada trilha se apoia na anterior.</p>
+      </div>
+
+      <!-- TRILHA 1 -->
+      <a href="curso/trilha1/index.html" class="group block bg-dark-800 rounded-2xl border border-dark-600 hover:border-emerald-500/30 transition-all overflow-hidden mb-8">
         <div class="bg-gradient-to-r from-emerald-900/30 to-dark-800 p-8">
           <div class="flex items-center justify-between mb-4">
-            <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full">TRILHA 1</span>
+            <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full">TRILHA 1 · COMECE AQUI</span>
             <span class="text-sm text-neutral-500">7 modulos · ~4h</span>
           </div>
-          <h2 class="text-2xl font-bold mb-3 group-hover:text-emerald-400 transition-colors">🌱 Fundamentos da Cultura de Inovacao</h2>
-          <p class="text-neutral-400 mb-6 max-w-3xl">O alicerce. Entenda o que e cultura de inovacao, quais sao seus pilares, como empresas de referencia constroem a delas e quais barreiras voce vai enfrentar.</p>
-
-          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-emerald-400 font-bold text-sm">1.1</div>
-              <div class="text-xs text-neutral-400 mt-1">O que e</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-emerald-400 font-bold text-sm">1.2</div>
-              <div class="text-xs text-neutral-400 mt-1">Pilares</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-emerald-400 font-bold text-sm">1.3</div>
-              <div class="text-xs text-neutral-400 mt-1">Modelos</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-emerald-400 font-bold text-sm">1.4</div>
-              <div class="text-xs text-neutral-400 mt-1">Mindset</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-emerald-400 font-bold text-sm">1.5</div>
-              <div class="text-xs text-neutral-400 mt-1">Lideranca</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-emerald-400 font-bold text-sm">1.6</div>
-              <div class="text-xs text-neutral-400 mt-1">Barreiras</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-emerald-400 font-bold text-sm">1.7</div>
-              <div class="text-xs text-neutral-400 mt-1">Metricas</div>
-            </div>
+          <h3 class="text-2xl font-bold mb-3 group-hover:text-emerald-400 transition-colors">🌱 Fundamentos da Cultura de Inovacao</h3>
+          <p class="text-neutral-400 mb-6 max-w-3xl">O alicerce. O que e cultura de inovacao, seus pilares, modelos de referencia, mindset de crescimento, o papel da lideranca, as barreiras comuns e como medir.</p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">O que e</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Pilares</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Modelos</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Mindset</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Lideranca</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Barreiras</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Metricas</span>
           </div>
-
-          <!-- Progresso da trilha -->
-          <div data-inema-meter="trilha:1" class="inema-meter mt-6" role="progressbar"
-               aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da trilha 1">
+          <div data-inema-meter="trilha:1" class="inema-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da trilha 1">
             <div class="flex justify-between text-xs text-neutral-500 mb-1">
-              <span data-inema-meter-frac>0 de 42</span>
-              <span data-inema-meter-pct>0%</span>
+              <span data-inema-meter-frac>0 de 42</span><span data-inema-meter-pct>0%</span>
             </div>
             <div class="inema-bar h-1.5 bg-dark-700 rounded-full overflow-hidden">
               <div class="inema-bar__fill h-full bg-emerald-500 rounded-full transition-all" data-inema-meter-fill style="width:0%"></div>
             </div>
           </div>
+          <span class="inline-flex items-center gap-1 text-emerald-400 font-semibold mt-5 group-hover:gap-2 transition-all">Entrar na trilha &#8594;</span>
         </div>
       </a>
-    </section>
 
-    <!-- TRILHA 2: Tecnicas (Blue) -->
-    <section class="mb-16">
-      <a href="curso/trilha2/index.html" class="group block bg-dark-800 rounded-2xl border border-dark-600 hover:border-blue-500/30 transition-all overflow-hidden">
+      <!-- TRILHA 2 -->
+      <a href="curso/trilha2/index.html" class="group block bg-dark-800 rounded-2xl border border-dark-600 hover:border-blue-500/30 transition-all overflow-hidden mb-8">
         <div class="bg-gradient-to-r from-blue-900/30 to-dark-800 p-8">
           <div class="flex items-center justify-between mb-4">
             <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full">TRILHA 2</span>
             <span class="text-sm text-neutral-500">10 modulos · ~5h</span>
           </div>
-          <h2 class="text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors">🔧 Tecnicas e Ferramentas</h2>
-          <p class="text-neutral-400 mb-6 max-w-3xl">O arsenal pratico. Design Thinking, Lean Startup, Sprint, SCAMPER, JTBD, OKRs, prototipagem rapida e os rituais que mantem a inovacao viva no dia a dia.</p>
-
-          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-blue-400 font-bold text-sm">2.1</div>
-              <div class="text-xs text-neutral-400 mt-1">Design Thinking</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-blue-400 font-bold text-sm">2.2</div>
-              <div class="text-xs text-neutral-400 mt-1">Lean Startup</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-blue-400 font-bold text-sm">2.3</div>
-              <div class="text-xs text-neutral-400 mt-1">Sprint Design</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-blue-400 font-bold text-sm">2.4</div>
-              <div class="text-xs text-neutral-400 mt-1">SCAMPER</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-blue-400 font-bold text-sm">2.5</div>
-              <div class="text-xs text-neutral-400 mt-1">JTBD</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-blue-400 font-bold text-sm">2.6</div>
-              <div class="text-xs text-neutral-400 mt-1">OKRs</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-blue-400 font-bold text-sm">2.7</div>
-              <div class="text-xs text-neutral-400 mt-1">Criatividade</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-blue-400 font-bold text-sm">2.8</div>
-              <div class="text-xs text-neutral-400 mt-1">Prototipagem</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-blue-400 font-bold text-sm">2.9</div>
-              <div class="text-xs text-neutral-400 mt-1">Feedback</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-blue-400 font-bold text-sm">2.10</div>
-              <div class="text-xs text-neutral-400 mt-1">Rituais</div>
-            </div>
+          <h3 class="text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors">🔧 Tecnicas e Ferramentas</h3>
+          <p class="text-neutral-400 mb-6 max-w-3xl">O arsenal pratico. Design Thinking, Lean Startup, Sprint, SCAMPER, JTBD, OKRs, criatividade sistematica, prototipagem, feedback loops e os rituais que mantem a inovacao viva.</p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Design Thinking</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Lean Startup</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Sprint</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">JTBD</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">OKRs</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Prototipagem</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">+4</span>
           </div>
-
-          <!-- Progresso da trilha -->
-          <div data-inema-meter="trilha:2" class="inema-meter mt-6" role="progressbar"
-               aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da trilha 2">
+          <div data-inema-meter="trilha:2" class="inema-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da trilha 2">
             <div class="flex justify-between text-xs text-neutral-500 mb-1">
-              <span data-inema-meter-frac>0 de 60</span>
-              <span data-inema-meter-pct>0%</span>
+              <span data-inema-meter-frac>0 de 60</span><span data-inema-meter-pct>0%</span>
             </div>
             <div class="inema-bar h-1.5 bg-dark-700 rounded-full overflow-hidden">
               <div class="inema-bar__fill h-full bg-blue-500 rounded-full transition-all" data-inema-meter-fill style="width:0%"></div>
             </div>
           </div>
+          <span class="inline-flex items-center gap-1 text-blue-400 font-semibold mt-5 group-hover:gap-2 transition-all">Entrar na trilha &#8594;</span>
         </div>
       </a>
-    </section>
 
-    <!-- TRILHA 3: Avancado (Purple) -->
-    <section class="mb-16">
+      <!-- TRILHA 3 -->
       <a href="curso/trilha3/index.html" class="group block bg-dark-800 rounded-2xl border border-dark-600 hover:border-purple-500/30 transition-all overflow-hidden">
         <div class="bg-gradient-to-r from-purple-900/30 to-dark-800 p-8">
           <div class="flex items-center justify-between mb-4">
             <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full">TRILHA 3</span>
             <span class="text-sm text-neutral-500">11 modulos · ~5h</span>
           </div>
-          <h2 class="text-2xl font-bold mb-3 group-hover:text-purple-400 transition-colors">🚀 Avancado — Construindo Solucoes</h2>
-          <p class="text-neutral-400 mb-6 max-w-3xl">A escala. Programe corporativo, intraempreendedorismo, inovacao aberta, ambidestria organizacional, IA como acelerador, ROI, governanca e o futuro.</p>
-
-          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.1</div>
-              <div class="text-xs text-neutral-400 mt-1">Programa</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.2</div>
-              <div class="text-xs text-neutral-400 mt-1">Intraempreend.</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.3</div>
-              <div class="text-xs text-neutral-400 mt-1">Aberta</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.4</div>
-              <div class="text-xs text-neutral-400 mt-1">Ambidestria</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.5</div>
-              <div class="text-xs text-neutral-400 mt-1">IA</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.6</div>
-              <div class="text-xs text-neutral-400 mt-1">Casos</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.7</div>
-              <div class="text-xs text-neutral-400 mt-1">ROI</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.8</div>
-              <div class="text-xs text-neutral-400 mt-1">Escala</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.9</div>
-              <div class="text-xs text-neutral-400 mt-1">Governanca</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.10</div>
-              <div class="text-xs text-neutral-400 mt-1">Comunidade</div>
-            </div>
-            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600 text-center">
-              <div class="text-purple-400 font-bold text-sm">3.11</div>
-              <div class="text-xs text-neutral-400 mt-1">Futuro</div>
-            </div>
+          <h3 class="text-2xl font-bold mb-3 group-hover:text-purple-400 transition-colors">🚀 Avancado — Construindo Solucoes</h3>
+          <p class="text-neutral-400 mb-6 max-w-3xl">A escala. Programa corporativo, intraempreendedorismo, inovacao aberta, ambidestria organizacional, IA como acelerador, casos reais, ROI, governanca e o futuro.</p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Programa</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Intraempreend.</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Inovacao Aberta</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">IA</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">Casos Reais</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">ROI</span>
+            <span class="text-xs px-2.5 py-1 rounded-md bg-dark-900/60 border border-dark-600 text-neutral-300">+5</span>
           </div>
-
-          <!-- Progresso da trilha -->
-          <div data-inema-meter="trilha:3" class="inema-meter mt-6" role="progressbar"
-               aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da trilha 3">
+          <div data-inema-meter="trilha:3" class="inema-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da trilha 3">
             <div class="flex justify-between text-xs text-neutral-500 mb-1">
-              <span data-inema-meter-frac>0 de 66</span>
-              <span data-inema-meter-pct>0%</span>
+              <span data-inema-meter-frac>0 de 66</span><span data-inema-meter-pct>0%</span>
             </div>
             <div class="inema-bar h-1.5 bg-dark-700 rounded-full overflow-hidden">
               <div class="inema-bar__fill h-full bg-purple-500 rounded-full transition-all" data-inema-meter-fill style="width:0%"></div>
             </div>
           </div>
+          <span class="inline-flex items-center gap-1 text-purple-400 font-semibold mt-5 group-hover:gap-2 transition-all">Entrar na trilha &#8594;</span>
         </div>
       </a>
+    </section>
+
+    <!-- PARA QUEM E -->
+    <section class="py-16 border-b border-dark-600">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="text-emerald-400 text-sm font-semibold tracking-wider uppercase">Para quem e</span>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-3 mb-4">Feito para quem precisa fazer a inovacao acontecer</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 text-center"><div class="text-3xl mb-3">👔</div><h3 class="font-semibold text-neutral-100 mb-1">Lideres e gestores</h3><p class="text-neutral-400 text-sm">que querem criar um ambiente onde ideias prosperam.</p></div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 text-center"><div class="text-3xl mb-3">🦾</div><h3 class="font-semibold text-neutral-100 mb-1">Intraempreendedores</h3><p class="text-neutral-400 text-sm">que querem inovar de dentro da organizacao.</p></div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 text-center"><div class="text-3xl mb-3">🧭</div><h3 class="font-semibold text-neutral-100 mb-1">Times de inovacao</h3><p class="text-neutral-400 text-sm">que buscam metodo e linguagem comum.</p></div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 text-center"><div class="text-3xl mb-3">💼</div><h3 class="font-semibold text-neutral-100 mb-1">Consultores e empreendedores</h3><p class="text-neutral-400 text-sm">que querem um framework completo e aplicavel.</p></div>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA / EXPERIENCIA -->
+    <section class="py-16 border-b border-dark-600">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="text-emerald-400 text-sm font-semibold tracking-wider uppercase">Sua experiencia</span>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-3 mb-4">Mais que ler — uma plataforma de aprendizado</h2>
+        <p class="text-lg text-neutral-400">O curso acompanha o seu progresso e se adapta ao seu jeito de estudar. Tudo roda no seu navegador, sem login.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><div class="text-2xl mb-2">✅</div><h3 class="font-semibold text-emerald-400 mb-1">Progresso automatico</h3><p class="text-neutral-400 text-sm">Marque topicos como lidos e veja sua evolucao por modulo, trilha e curso.</p></div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><div class="text-2xl mb-2">✍️</div><h3 class="font-semibold text-emerald-400 mb-1">Anotacoes e grifos</h3><p class="text-neutral-400 text-sm">Selecione qualquer trecho para grifar ou anotar. Suas notas ficam salvas.</p></div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><div class="text-2xl mb-2">🧭</div><h3 class="font-semibold text-emerald-400 mb-1">Minha jornada</h3><p class="text-neutral-400 text-sm">Continue de onde parou e veja tudo que ja estudou num painel unico.</p></div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><div class="text-2xl mb-2">🌓</div><h3 class="font-semibold text-emerald-400 mb-1">Claro, escuro e leitura</h3><p class="text-neutral-400 text-sm">Temas e preferencias de leitura para estudar do seu jeito, sem cansar a vista.</p></div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><div class="text-2xl mb-2">📡</div><h3 class="font-semibold text-emerald-400 mb-1">Funciona offline</h3><p class="text-neutral-400 text-sm">Self-contained: abre direto no navegador, sem servidor, sem conta, sem custo.</p></div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><div class="text-2xl mb-2">🎨</div><h3 class="font-semibold text-emerald-400 mb-1">Diagramas e exemplos reais</h3><p class="text-neutral-400 text-sm">Frameworks ilustrados e casos de Amazon, Toyota, Natura, Nubank, Lego e mais.</p></div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="py-20">
+      <div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-3xl border border-emerald-500/30 p-10 sm:p-14 text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">Pronto para construir uma cultura que inova de verdade?</h2>
+        <p class="text-lg text-neutral-300 max-w-2xl mx-auto mb-8">Comece pelos fundamentos. Em ~14 horas voce sai com o sistema completo — da teoria a pratica.</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="curso/trilha1/index.html" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-emerald-600 text-white rounded-xl font-bold text-lg hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-900/30">
+            Comecar pela Trilha 1 &#8594;
+          </a>
+          <button type="button" data-inema-journey-open class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-dark-800 border border-emerald-500/30 text-emerald-400 rounded-xl font-semibold hover:bg-emerald-500/10 transition-colors">
+            🧭 Minha jornada
+          </button>
+        </div>
+      </div>
     </section>
 
   </main>
 
   <!-- FOOTER -->
-  <footer class="border-t border-dark-600 py-8 mt-16">
+  <footer class="border-t border-dark-600 py-8">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
-      <p>Cultura de Inovacao — Da Teoria a Pratica - 2026</p>
+      <p>Cultura de Inovacao — Da Teoria a Pratica · 2026 · <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a></p>
     </div>
   </footer>
 
