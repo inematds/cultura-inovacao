@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Intraempreendedorismo | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha purple) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a>
+      <span>/</span>
+      <span class="text-purple-400">Modulo 3.2</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MODULO 3.2</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🦾 Intraempreendedorismo</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Empreender de dentro da empresa — com autonomia real e guarda-corpos que protegem o negocio. De Gifford Pinchot ao Skunk Works da Lockheed, aprenda como estruturar, sustentar e escalar iniciativas internas sem perder os talentos que as movem.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">45</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Avancado</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Pratico</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="3-2" data-inema-track="3">
+
+    <!-- SVG ILUSTRATIVO: diagrama de intraempreendedorismo (aninhamento: empresa > unidade autonoma > projeto) -->
+    <div class="mb-14">
+      <svg role="img" aria-label="Diagrama: empresa contendo unidade autonoma de intraempreendedorismo com projetos internos, mostrando autonomia com guarda-corpos" viewBox="0 0 720 260" class="w-full h-auto rounded-xl" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="m3-2-grad-corp" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="#111827" stop-opacity="0.0"/>
+          </linearGradient>
+          <linearGradient id="m3-2-grad-unit" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#a855f7" stop-opacity="0.28"/>
+            <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.10"/>
+          </linearGradient>
+          <filter id="m3-2-glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <pattern id="m3-2-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+            <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#374151" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+
+        <!-- fundo grid -->
+        <rect width="720" height="260" fill="url(#m3-2-grid)" rx="12"/>
+
+        <!-- empresa (caixa externa) -->
+        <rect x="18" y="18" width="684" height="224" rx="10" fill="url(#m3-2-grad-corp)" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6 3"/>
+        <text x="36" y="42" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#a78bfa" letter-spacing="1">EMPRESA</text>
+
+        <!-- unidade autonoma (caixa interna) -->
+        <rect id="m3-2-unit" x="160" y="48" width="400" height="168" rx="8" fill="url(#m3-2-grad-unit)" stroke="#38bdf8" stroke-width="1.8"/>
+        <text x="178" y="70" font-family="Inter,sans-serif" font-size="10" font-weight="700" fill="#38bdf8" letter-spacing="1.2">UNIDADE INTRAEMPREENDEDORA</text>
+
+        <!-- projetos internos (3 nos) -->
+        <circle id="m3-2-p1" cx="252" cy="148" r="32" fill="#7c3aed" fill-opacity="0.22" stroke="#a855f7" stroke-width="1.5" class="wf-a"/>
+        <text x="252" y="144" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#e9d5ff">Projeto</text>
+        <text x="252" y="157" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#e9d5ff">Alpha</text>
+
+        <circle id="m3-2-p2" cx="360" cy="148" r="32" fill="#0ea5e9" fill-opacity="0.18" stroke="#38bdf8" stroke-width="1.5" class="wf-a"/>
+        <text x="360" y="144" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#bae6fd">Projeto</text>
+        <text x="360" y="157" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#bae6fd">Beta</text>
+
+        <circle id="m3-2-p3" cx="468" cy="148" r="32" fill="#7c3aed" fill-opacity="0.22" stroke="#a855f7" stroke-width="1.5" class="wf-a"/>
+        <text x="468" y="144" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#e9d5ff">Projeto</text>
+        <text x="468" y="157" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#e9d5ff">Gamma</text>
+
+        <!-- linhas entre projetos -->
+        <line x1="284" y1="148" x2="328" y2="148" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="4 2"/>
+        <line x1="392" y1="148" x2="436" y2="148" stroke="#a855f7" stroke-width="1.2" stroke-dasharray="4 2"/>
+
+        <!-- sponsor label -->
+        <rect x="290" y="82" width="140" height="24" rx="4" fill="#1e1b4b" stroke="#6d28d9" stroke-width="1"/>
+        <text x="360" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#c4b5fd">&#9733; Sponsor Executivo</text>
+
+        <!-- guarda-corpos (label externo direita) -->
+        <text x="672" y="118" text-anchor="end" font-family="Inter,sans-serif" font-size="9" fill="#6b7280" transform="rotate(-90,672,118)">guarda-corpos</text>
+        <!-- seta sponsor -> unit -->
+        <line x1="360" y1="106" x2="360" y2="116" stroke="#6d28d9" stroke-width="1" marker-end="url(#m3-2-arr)"/>
+
+        <!-- definicao marcador de seta -->
+        <defs>
+          <marker id="m3-2-arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L6,3 z" fill="#6d28d9"/>
+          </marker>
+        </defs>
+
+        <!-- label autonomia -->
+        <text x="36" y="180" font-family="Inter,sans-serif" font-size="9" fill="#6b7280">autonomia</text>
+        <text x="36" y="193" font-family="Inter,sans-serif" font-size="9" fill="#6b7280">+ recursos</text>
+        <line x1="88" y1="185" x2="158" y2="148" stroke="#374151" stroke-width="1" stroke-dasharray="3 2"/>
+
+        <!-- label escala -->
+        <text x="600" y="210" font-family="Inter,sans-serif" font-size="9" fill="#6b7280">escala</text>
+        <line x1="598" y1="205" x2="568" y2="180" stroke="#374151" stroke-width="1" stroke-dasharray="3 2"/>
+      </svg>
+    </div>
+
+    <!-- TOPICO 1 -->
+    <section id="topico-1" data-inema-topic="modulo-3-2#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🏢 O que e Intraempreendedorismo</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t1-p1">
+        Intraempreendedorismo e a pratica de agir como empreendedor dentro de uma organizacao existente — criando novos produtos, processos ou modelos de negocio usando os recursos e a estrutura da empresa-mae. O termo foi cunhado por <strong class="text-purple-400">Gifford Pinchot III</strong> em 1978 e popularizado no livro <em>Intrapreneuring</em> (1985). A intuicao central de Pinchot era simples: o espirito empreendedor nao precisa nascer so fora das empresas — ele pode (e deve) florescer dentro delas.
+      </p>
+
+      <!-- box conceito principal -->
+      <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-3 flex items-center">
+          <span class="mr-2">💡</span> Definicao de Gifford Pinchot
+        </h3>
+        <p class="text-neutral-300 text-sm leading-relaxed" data-inema-block="m3-2-t1-def">
+          "Intrapreneur: qualquer dos sonhadores que fazem. Aqueles que assumem responsabilidade pessoal por criar inovacao de qualquer tipo dentro de uma organizacao." — Gifford Pinchot III, 1985. A diferenca critica para o empreendedor externo: o intraempreendedor usa capital, marca e clientes ja existentes, trocando velocidade de partida por navegacao politica e burocracia.
+        </p>
+      </div>
+
+      <!-- grid fazer vs evitar -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-emerald-500/20 p-5">
+          <h4 class="font-semibold text-emerald-400 mb-3 flex items-center"><span class="mr-2">✓</span> Intraempreendedorismo e</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">•</span><span>Criacao de valor novo dentro da estrutura existente</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">•</span><span>Assuncao de risco calculado com recursos da empresa</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">•</span><span>Autonomia com prestacao de contas clara</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">•</span><span>Iteracao rapida com validacao de mercado real</span></li>
+          </ul>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-red-500/20 p-5">
+          <h4 class="font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">✗</span> Nao confunda com</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">•</span><span>Apenas "ser criativo" no trabalho cotidiano</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">•</span><span>Projetos de melhoria incremental sem risco real</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">•</span><span>Startup interna sem budget ou sponsor dedicado</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">•</span><span>Hackathon isolado sem continuidade estrutural</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+        <p class="text-neutral-300 text-sm leading-relaxed" data-inema-block="m3-2-t1-hist">
+          A historia do intraempreendedorismo e pontuada por casos emblematicos: o <strong class="text-purple-400">Post-it</strong> (3M, 1974) nasceu de um adesivo "fracassado" que Spencer Silver nao conseguia jogar fora; o <strong class="text-purple-400">PlayStation</strong> surgiu de um projeto paralelo de Ken Kutaragi, ignorado pela Sony Electronics ate virar divisao bilionaria; e o <strong class="text-purple-400">Gmail</strong> emergiu diretamente da politica de 20% do Google. O padrao se repete: um individuo com tolerancia a ambiguidade, acesso informal a recursos e pelo menos um sponsor executivo que acredita nele antes que os numeros existam.
+        </p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2 -->
+    <section id="topico-2" data-inema-topic="modulo-3-2#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">🧠 Perfil e Motivacoes do Intraempreendedor</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t2-p1">
+        Nao e todo colaborador engajado que e intraempreendedor. O perfil e especifico e, muitas vezes, inconfortavel para gestores tradicionais: alta tolerancia a ambiguidade, orientacao por missao mais do que por hierarquia, e disposicao para questionar o status quo mesmo correndo risco politico. Identificar e nutrir esse perfil e tao importante quanto qualquer processo ou estrutura.
+      </p>
+
+      <!-- caracteristicas em timeline -->
+      <div class="space-y-4 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+            <span class="text-purple-400 font-bold text-sm">A</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Autonomia como combustivel</h4>
+            <p class="text-sm text-neutral-400 mb-2">Motivado pelo "fazer", nao pelo titulo</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m3-2-t2-a">O intraempreendedor tipico e movido pela possibilidade de construir algo real — nao por projecao de carreira linear. Ele aceita salario abaixo do maximo de mercado em troca de liberdade de execucao. Quando a empresa remove essa liberdade (comites demais, revisoes demais), ele sai.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
+            <span class="text-cyan-400 font-bold text-sm">B</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Tolerancia a ambiguidade</h4>
+            <p class="text-sm text-neutral-400 mb-2">Confortavel sem mapa completo</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m3-2-t2-b">Enquanto o gestor tradicional busca dados suficientes antes de agir, o intraempreendedor age com dados minimos e aprende no caminho. Essa caracteristica o torna valioso em contextos de alta incerteza, mas frustrante em processos de planejamento anuais rigidos.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+            <span class="text-purple-400 font-bold text-sm">C</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Pensamento sistemico + execucao tatil</h4>
+            <p class="text-sm text-neutral-400 mb-2">Ve o todo e ainda empurra o codigo</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m3-2-t2-c">Intraempreendedores fortes transitam entre estrategia e execucao operacional. Eles entendem o posicionamento competitivo e ainda assim nao tem medo de ligar para um cliente as 8h da manha para validar uma hipotese. Essa fluidez de altitude e rara e deve ser protegida — nao domesticada em um role especializado demais.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
+            <span class="text-cyan-400 font-bold text-sm">D</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Rede interna e navegacao politica</h4>
+            <p class="text-sm text-neutral-400 mb-2">Sabe de quem precisa de permissao e de quem precisa de perdao</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m3-2-t2-d">Ao contrario do mito do "lobo solitario", intraempreendedores de sucesso sao socialmente habeis dentro da organizacao. Eles constroem coalizoes informais, sabem navegar a politica sem se corromper por ela e escolhem strategicamente quando quebrar regras e quando pedir autorizacao.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- dica pratica -->
+      <div class="bg-primary/10 border border-primary/40 rounded-xl p-5 mb-6">
+        <h4 class="font-semibold text-primary mb-2 flex items-center"><span class="mr-2">⚡</span> Como identificar intraempreendedores na sua empresa</h4>
+        <p class="text-neutral-300 text-sm leading-relaxed" data-inema-block="m3-2-t2-dica">Pergunte: "Quem aqui ja fez algo que tecnicamente estava fora do seu escopo porque acreditava que era a coisa certa?" Quem responde com exemplos especificos (nao genericos) e quem voce esta procurando. Outro sinal: quem mais frequentemente diz "por que nao fazemos X?" — e entao tenta fazer X sem esperar permissao formal.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3 -->
+    <section id="topico-3" data-inema-topic="modulo-3-2#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🏗️ Estruturas de Apoio: Tempo, Orcamento e Sponsor</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t3-p1">
+        Intraempreendedorismo sem estrutura e hobby corporativo. Os tres recursos criticos — tempo dedicado, orcamento proprio e sponsor executivo — precisam coexistir. A ausencia de qualquer um deles nao apenas retarda o projeto: ela envia uma mensagem cultural poderosa de que a empresa nao leva o programa a serio.
+      </p>
+
+      <!-- tres colunas -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-purple-500/30 p-5">
+          <div class="text-3xl mb-3">⏱️</div>
+          <h4 class="font-semibold text-purple-400 mb-2">Tempo Protegido</h4>
+          <p class="text-sm text-neutral-300 leading-relaxed" data-inema-block="m3-2-t3-tempo">Nao basta dizer "pode trabalhar em projetos proprios". E preciso blindar esse tempo no calendario — como faz o Google com os 20% formais. Sem protecao institucional, o gestor imediato sempre vai realocar o intraempreendedor para "apagar incendios" do core business.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-cyan-500/30 p-5">
+          <div class="text-3xl mb-3">💰</div>
+          <h4 class="font-semibold text-cyan-400 mb-2">Orcamento Proprio</h4>
+          <p class="text-sm text-neutral-300 leading-relaxed" data-inema-block="m3-2-t3-orc">Um budget pequeno mas real — tipicamente entre R$50k e R$500k por projeto no estagio inicial — e mais valioso do que um budget ilimitado "sujeito a aprovacao". A burocracia de aprovacao mata o momentum. O orcamento proprio permite contratar entrevistadores, fazer prototipos e testar canais sem depender de um comite.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-purple-500/30 p-5">
+          <div class="text-3xl mb-3">🛡️</div>
+          <h4 class="font-semibold text-purple-400 mb-2">Sponsor Executivo</h4>
+          <p class="text-sm text-neutral-300 leading-relaxed" data-inema-block="m3-2-t3-spon">O sponsor e quem remove barreiras quando o projeto encontra resistencia interna — e ele SEMPRE encontra. Nao precisa ser CEO, mas precisa ter autoridade real sobre recursos e acesso direto ao tomador de decisao final. Sem sponsor, o primeiro "nao" de um middle manager enterra o projeto.</p>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-base font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🚦</span> Sinais de que a estrutura e real (nao teatro)
+        </h3>
+        <ul class="space-y-2 text-sm text-neutral-300">
+          <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">✓</span><span>O intraempreendedor pode dizer "nao" para uma tarefa do core business sem ser punido</span></li>
+          <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">✓</span><span>Existe uma linha de budget com codigo de centro de custo proprio, nao emprestado</span></li>
+          <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">✓</span><span>O sponsor aparece em reunioes do projeto, nao apenas no PowerPoint de lancamento</span></li>
+          <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">✓</span><span>Quando o projeto falha, nao ha punicao publica — ha um retrospectivo documentado</span></li>
+          <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Orcamento "disponivel depois da aprovacao do board" — isso nao e estrutura, e promessa</span></li>
+          <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Sponsor que "apoia" mas nunca remove nenhuma barreira real — e sponsor de fachada</span></li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4 -->
+    <section id="topico-4" data-inema-topic="modulo-3-2#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">🔬 Modelos: Google 20%, Skunk Works e Garagens</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t4-p1">
+        Tres arquetipos dominam a literatura e a pratica do intraempreendedorismo. Cada um resolve o problema da autonomia de forma diferente — e cada um tem tradeoffs criticos que raramente aparecem nos case studies superficiais. Conhecer os tres em profundidade evita a armadilha de copiar a forma sem entender a substancia.
+      </p>
+
+      <!-- modelo Skunk Works -->
+      <div class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-5">
+        <div class="flex items-start space-x-4">
+          <div class="text-3xl">✈️</div>
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-purple-400 mb-1">Lockheed Skunk Works (1943)</h3>
+            <p class="text-xs text-neutral-500 mb-3">Origem do modelo de "equipe autonoma isolada"</p>
+            <p class="text-neutral-300 text-sm leading-relaxed" data-inema-block="m3-2-t4-skunk">
+              Criado por <strong class="text-purple-400">Clarence "Kelly" Johnson</strong> na Lockheed durante a Segunda Guerra Mundial, o Skunk Works nasceu da necessidade de desenvolver o jato P-80 Shooting Star em tempo recorde — 143 dias, contra o prazo padrao de anos. A formula: equipe pequena (menos de 25 pessoas), isolamento fisico e burocratico do resto da empresa, relacao direta com o cliente (USAF), e autonomia total sobre decisoes tecnicas. O resultado foi o P-80, o U-2, o SR-71 Blackbird e o F-117 Stealth — todos desenvolvidos por uma equipe que representava menos de 1% dos funcionarios da Lockheed.
+              <br><br>
+              As <strong class="text-purple-400">14 Regras de Kelly Johnson</strong> — o "guarda-corpos" do Skunk Works — definem o modelo: numero minimo de pessoas, relatorio minimo, acesso direto ao tomador de decisao, e inspecao limitada pela organizacao-mae. O paradoxo: quanto mais a empresa tenta controlar o Skunk Works, mais ele perde a vantagem que justifica sua existencia.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- modelo Google 20% -->
+      <div class="bg-dark-800 rounded-xl border border-cyan-500/30 p-6 mb-5">
+        <div class="flex items-start space-x-4">
+          <div class="text-3xl">🔍</div>
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-cyan-400 mb-1">Google 20% Time (2004)</h3>
+            <p class="text-xs text-neutral-500 mb-3">O modelo distribuido — cada engenheiro e um potencial intraempreendedor</p>
+            <p class="text-neutral-300 text-sm leading-relaxed" data-inema-block="m3-2-t4-google">
+              Inspirada na politica de 15% da 3M (que gerou o Post-it), a regra dos 20% do Google permitia que engenheiros dedicassem um dia por semana a projetos de sua escolha. Gmail, Google News, Google Maps e AdSense nasceram desse programa. A diferenca em relacao ao Skunk Works: e distribuido (qualquer engenheiro pode participar), informal (nao precisa de aprovacao previa) e de baixo custo estrutural.
+              <br><br>
+              O ponto critico que poucos mencionam: o Google 20% funcionou em escala porque a empresa tinha uma cultura de engenharia forte, metricas claras de impacto e lideranca que genuinamente usava os produtos internos. Empresas que tentaram copiar o modelo sem esses pre-requisitos geraram "20% de navegacao no LinkedIn".
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- modelo garagem -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="text-3xl">🏠</div>
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-white mb-1">Modelo Garagem / Studio</h3>
+            <p class="text-xs text-neutral-500 mb-3">Espacos fisicos dedicados — IBM Garage, Amazon Working Backwards, Studio X</p>
+            <p class="text-neutral-300 text-sm leading-relaxed" data-inema-block="m3-2-t4-garage">
+              Um espaco fisico separado — "garagem" — onde equipes trabalham com metodos de startup: quadros de lean canvas na parede, iteracoes semanais, clientes reais desde o dia 1. O IBM Garage (inaugurado em 2016) e o modelo mais replicado: pares de consultores IBM + colaboradores do cliente trabalham juntos em sprints de 4-8 semanas. A vantagem sobre o Skunk Works e que o modelo e repeticavel e escalavel — nao depende de um "Kelly Johnson". A desvantagem: pode virar consultoria disfarada de inovacao se os resultados ficarem no PowerPoint.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- box dados -->
+      <div class="bg-blue-900/20 border border-blue-500/30 rounded-xl p-5 mb-6">
+        <h4 class="font-semibold text-blue-400 mb-2 flex items-center"><span class="mr-2">📊</span> Dados comparativos</h4>
+        <div class="grid grid-cols-3 gap-3 text-sm">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-purple-400">~1%</div>
+            <div class="text-neutral-400 text-xs">tamanho do Skunk Works em relacao a Lockheed</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-cyan-400">20%</div>
+            <div class="text-neutral-400 text-xs">do tempo de engenharia Google — gerou ~50% dos produtos novos 2004-2012</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-400">6x</div>
+            <div class="text-neutral-400 text-xs">mais rapido que projetos tradicionais no IBM Garage (dado interno, 2019)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5 -->
+    <section id="topico-5" data-inema-topic="modulo-3-2#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">⚖️ Autonomia com Guarda-corpos</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t5-p1">
+        O maior erro das empresas ao criar programas de intraempreendedorismo e oscilar entre dois extremos igualmente destrutivos: controle excessivo (que sufoca a inovacao) ou liberdade total (que descola o projeto da estrategia). A solucao e o conceito de <strong class="text-purple-400">guarda-corpos</strong>: limites que protegem sem prender. Kelly Johnson entendeu isso em 1943; a gestao moderna ainda luta para equilibrar.
+      </p>
+
+      <!-- conceito guarda-corpos -->
+      <div class="bg-gradient-to-br from-purple-900/20 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-base font-semibold text-purple-400 mb-4">Os 4 guarda-corpos que funcionam</h3>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-xs">1</span>
+            <div>
+              <strong class="text-white text-sm">Alinhamento estrategico, nao aprovacao operacional.</strong>
+              <p class="text-neutral-400 text-sm mt-1" data-inema-block="m3-2-t5-g1">A empresa define "em quais arenas queremos inovar" (ex: saude preventiva, logistica last-mile, financeiro B2B). Dentro dessas arenas, o intraempreendedor tem autonomia total de metodo, parceiro, tecnologia e timeline. Fora delas, precisa de aprovacao para continuar — nao para comecar.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xs">2</span>
+            <div>
+              <strong class="text-white text-sm">Revisoes por estagio (stage-gates), nao aprovacao continua.</strong>
+              <p class="text-neutral-400 text-sm mt-1" data-inema-block="m3-2-t5-g2">Cada stage-gate tem criterios claros de "continua / para / pivota". Entre os gates, zero interferencia. Isso e diferente de "reuniao semanal de status" — que e controle disfarado de acompanhamento.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-xs">3</span>
+            <div>
+              <strong class="text-white text-sm">Limites financeiros claros (nao escalonamento implicito).</strong>
+              <p class="text-neutral-400 text-sm mt-1" data-inema-block="m3-2-t5-g3">O intraempreendedor sabe exatamente quanto pode gastar sem aprovacao adicional. Tipicamente: ate X reais por decisao individual, ate Y reais por sprint, ate Z reais total antes do gate de escala. Numeros claros geram confianca — sem eles, toda decisao de gasto torna-se politica.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xs">4</span>
+            <div>
+              <strong class="text-white text-sm">Conformidade nao-negociavel (legal, etica, marca).</strong>
+              <p class="text-neutral-400 text-sm mt-1" data-inema-block="m3-2-t5-g4">Autonomia total sobre "o como". Zero autonomia sobre "o que e eticamente aceitavel". O intraempreendedor pode escolher qualquer tecnologia, qualquer modelo de negocio — mas nao pode violar LGPD, prejudicar clientes existentes ou comprometer a reputacao da marca. Esses limites sao inegociaveis e precisam ser explicitados desde o dia 1.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- alert box -->
+      <div class="bg-red-900/20 border border-red-500/30 rounded-xl p-5 mb-6">
+        <h4 class="font-semibold text-red-400 mb-2 flex items-center"><span class="mr-2">⚠️</span> Armadilha classica: "autonomia" que nao e</h4>
+        <p class="text-neutral-300 text-sm leading-relaxed" data-inema-block="m3-2-t5-warn">Muitas empresas anunciam "autonomia total" mas mantem reunioes de status semanais, exigem aprovacao de RH para qualquer contratacao temporaria e pedem atualizacao de board mensalmente. Isso nao e autonomia — e microgestao com vocabulario diferente. O intraempreendedor percebe a inconsistencia nos primeiros 30 dias e, se nao sair, adapta seu comportamento para sobreviver ao ambiente politico — perdendo exatamente o que o tornava valioso.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6 -->
+    <section id="topico-6" data-inema-topic="modulo-3-2#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">🛡️ Riscos e Como Reter Talentos Empreendedores</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t6-p1">
+        O maior risco do intraempreendedorismo nao e o projeto falhar — e o intraempreendedor sair depois que o projeto sucede. Ha um ciclo perverso bem documentado: a empresa investe na formacao e autonomia de um talento, ele aprende a construir algo do zero, tem sucesso suficiente para ganhar confianca, e entao parte para abrir sua propria empresa — levando conhecimento, rede e, frequentemente, uma versao aprimorada do que construiu internamente.
+      </p>
+
+      <!-- grid riscos -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-red-400 mb-3">Riscos para a empresa</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">▸</span><span><strong class="text-white">Fuga pos-sucesso:</strong> Intraempreendedor sai apos validar o modelo, abre startup concorrente</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">▸</span><span><strong class="text-white">Contaminacao cultural:</strong> Fracasso punido publicamente desencoraja futuras iniciativas</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">▸</span><span><strong class="text-white">Dependencia de heroi:</strong> Programa depende de 1-2 pessoas; quando saem, colapsa</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">▸</span><span><strong class="text-white">Canibalizacao:</strong> Inovacao interna ameaca linha de receita existente; empresa bloqueia</span></li>
+          </ul>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-3">Estrategias de retencao</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">▸</span><span><strong class="text-white">Equity sintetico:</strong> Participacao nos resultados do projeto que o intraempreendedor liderou</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">▸</span><span><strong class="text-white">Progressao de missao:</strong> Cada sucesso abre projeto de escopo maior — nao retorno ao core</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">▸</span><span><strong class="text-white">Reconhecimento publico:</strong> Credito nominal (nao so da empresa) em lancamentos, press releases</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">▸</span><span><strong class="text-white">Titulos que refletem impacto:</strong> "Fundador Interno" em vez de "Gerente de Projetos Especiais"</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- o ciclo de retencao -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-base font-semibold text-white mb-4">Por que o equity sintetico importa mais do que salario</h3>
+        <p class="text-neutral-300 text-sm leading-relaxed mb-4" data-inema-block="m3-2-t6-eq">
+          Intraempreendedores nao escolhem ficar por dinheiro — eles ficam por missao e por sentido de propriedade. O equity sintetico (participacao nos resultados do projeto, bonus atrelado a metricas que o proprio intraempreendedor ajudou a definir) e a unica forma de recriar o vinculo emocional que um cofundador externo tem com sua startup. Sem isso, a empresa e apenas um "employer of record" para uma pessoa que, psicologicamente, ja pensa em si mesma como fundadora de algo.
+        </p>
+        <p class="text-neutral-300 text-sm leading-relaxed" data-inema-block="m3-2-t6-eq2">
+          Empresas que implementaram programas de equity sintetico com sucesso incluem a <strong class="text-purple-400">Intuit</strong> (Design for Delight), a <strong class="text-purple-400">Amazon</strong> (single-threaded ownership com PLs que agem como CEOs de mini-empresas) e a <strong class="text-purple-400">Haier</strong> (modelo de microempresas internas com P&amp;L proprio). O principio comum: o intraempreendedor deve sentir que "construiu algo que e parcialmente meu" — mesmo que juridicamente seja 100% da empresa.
+        </p>
+      </div>
+
+      <!-- dica final -->
+      <div class="bg-primary/10 border border-primary/40 rounded-xl p-5 mb-6">
+        <h4 class="font-semibold text-primary mb-2 flex items-center"><span class="mr-2">⚡</span> A pergunta que todo lider deve fazer</h4>
+        <p class="text-neutral-300 text-sm leading-relaxed" data-inema-block="m3-2-t6-dica">"Se esse intraempreendedor saisse amanha e abrisse uma startup com o que aprendeu aqui, quanto tempo levaria para nos concorrer diretamente?" Se a resposta for "menos de 18 meses", voce tem um problema de retencao critico — e provavelmente nao esta dando a esse talento o que ele realmente precisa para ficar.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO DO MODULO -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">🦾</span> Resumo do Modulo
+        </h2>
+
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">✓</span>
+            <div>
+              <strong class="text-white">Gifford Pinchot cunhou o conceito em 1978</strong>
+              <span class="text-neutral-400"> — empreender de dentro usando os recursos da empresa-mae, trocando velocidade de partida por navegacao politica</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">✓</span>
+            <div>
+              <strong class="text-white">O perfil intraempreendedor e especifico</strong>
+              <span class="text-neutral-400"> — autonomia como combustivel, tolerancia a ambiguidade, transito entre estrategia e execucao, habilidade politica interna</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">✓</span>
+            <div>
+              <strong class="text-white">Tres recursos criticos que precisam coexistir</strong>
+              <span class="text-neutral-400"> — tempo protegido, orcamento proprio e sponsor executivo real (nao nominal)</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">✓</span>
+            <div>
+              <strong class="text-white">Tres modelos comprovados</strong>
+              <span class="text-neutral-400"> — Skunk Works (isolamento total), Google 20% (distribuido), Garagem/Studio (espaco dedicado). Cada um com tradeoffs proprios</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">✓</span>
+            <div>
+              <strong class="text-white">Guarda-corpos: 4 limites que protegem sem prender</strong>
+              <span class="text-neutral-400"> — alinhamento estrategico, stage-gates, limites financeiros claros, conformidade nao-negociavel</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">✓</span>
+            <div>
+              <strong class="text-white">Retencao e o risco ignorado</strong>
+              <span class="text-neutral-400"> — equity sintetico, progressao de missao e reconhecimento publico sao mais eficazes do que aumento de salario para reter intraempreendedores</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-purple-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">3.3 - Inovacao Aberta — como colaborar com startups, universidades e ecossistemas externos sem perder IP nem agilidade</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            ← Voltar para Trilha 3
+          </a>
+          <a href="modulo-3-3.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">
+            Proximo: 3.3 - Inovacao Aberta →
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="flex items-center space-x-2 text-yellow-400">
+          <span class="text-xl">💡</span>
+          <span class="font-bold">Cultura de Inovacao</span>
+        </div>
+        <p class="text-neutral-500 text-sm">Modulo 3.2 — Intraempreendedorismo</p>
+        <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm">INEMA.CLUB</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTopic(el) {
+      const explanation = el.nextElementSibling;
+      if (explanation) {
+        explanation.classList.toggle('active');
+        const arrow = el.querySelector('.arrow');
+        if (arrow) arrow.classList.toggle('rotate-180');
+      }
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

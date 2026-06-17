@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Ambidestria Organizacional | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha purple) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a>
+      <span>/</span>
+      <span class="text-purple-400">Modulo 3.4</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MODULO 3.4</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">⚖️ Ambidestria Organizacional</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Explorar o novo sem largar o que paga as contas. A ciencia por tras de como empresas sobrevivem a disrupcao mantendo o core intacto — e os erros que matam programas de inovacao por descuido com essa balanca.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">55</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Avancado</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Estrategia</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="3-4" data-inema-track="3">
+
+    <!-- TOPICO 1: Explorar vs Explotar -->
+    <section id="topico-1" data-inema-topic="modulo-3-4#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🔭 Explorar vs Explotar</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t1-p1">
+        Em 1991, James March publicou um artigo que mudou a teoria organizacional. O titulo era simples: <em>"Exploration and Exploitation in Organizational Learning"</em>. A tese era perturbadora: as mesmas capacidades que tornam uma empresa excelente no presente a tornam cega para o futuro. <strong class="text-purple-400">Exploitation</strong> e otimizar o que ja funciona — reducao de custo, melhoria continua, eficiencia. <strong class="text-purple-400">Exploration</strong> e buscar o que ainda nao existe — novos modelos, tecnologias, mercados. O problema: as duas atividades competem pelos mesmos recursos escassos, e a exploitacao quase sempre vence no curto prazo.
+      </p>
+
+      <!-- SVG: Tensao Explorar x Explotar -->
+      <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-4 mb-6">
+        <svg viewBox="0 0 700 260" class="w-full h-auto" role="img" aria-label="Diagrama de tensao entre exploracao e explotacao: dois polos opostos ligados por um eixo de tensao com recursos no centro">
+          <defs>
+            <linearGradient id="m3-4-grad-explore" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#a855f7" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.6"/>
+            </linearGradient>
+            <linearGradient id="m3-4-grad-exploit" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.9"/>
+            </linearGradient>
+            <filter id="m3-4-glow">
+              <feGaussianBlur stdDeviation="1.8" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <pattern id="m3-4-grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+              <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#374151" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <!-- fundo grid -->
+          <rect width="700" height="260" fill="url(#m3-4-grid)" rx="12"/>
+          <!-- polo esquerdo: Exploration -->
+          <rect x="20" y="50" width="190" height="160" rx="12" fill="url(#m3-4-grad-explore)" fill-opacity="0.18" stroke="#a855f7" stroke-width="2" filter="url(#m3-4-glow)"/>
+          <text x="115" y="85" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="#a855f7">EXPLORATION</text>
+          <text x="115" y="107" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#c4b5fd">Novos mercados</text>
+          <text x="115" y="124" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#c4b5fd">Novas tecnologias</text>
+          <text x="115" y="141" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#c4b5fd">Novos modelos</text>
+          <text x="115" y="164" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#7c3aed">Retorno: longo prazo</text>
+          <text x="115" y="182" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#7c3aed">Risco: alto</text>
+          <!-- polo direito: Exploitation -->
+          <rect x="490" y="50" width="190" height="160" rx="12" fill="url(#m3-4-grad-exploit)" fill-opacity="0.18" stroke="#38bdf8" stroke-width="2" filter="url(#m3-4-glow)"/>
+          <text x="585" y="85" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="#38bdf8">EXPLOITATION</text>
+          <text x="585" y="107" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#7dd3fc">Otimizacao</text>
+          <text x="585" y="124" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#7dd3fc">Melhoria continua</text>
+          <text x="585" y="141" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#7dd3fc">Reducao de custo</text>
+          <text x="585" y="164" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#0ea5e9">Retorno: curto prazo</text>
+          <text x="585" y="182" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#0ea5e9">Risco: baixo</text>
+          <!-- eixo de tensao -->
+          <line x1="210" y1="130" x2="490" y2="130" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <!-- no de tensao central -->
+          <circle cx="350" cy="130" r="28" fill="#1f2937" stroke="#9333ea" stroke-width="2" filter="url(#m3-4-glow)" class="wf-a"/>
+          <text x="350" y="126" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="600" fill="#e9d5ff">RECURSOS</text>
+          <text x="350" y="140" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#e9d5ff">ESCASSOS</text>
+          <!-- setas -->
+          <path d="M 322 130 L 212 130" stroke="#a855f7" stroke-width="1.5" fill="none" marker-end="url(#arr-l)"/>
+          <path d="M 378 130 L 488 130" stroke="#38bdf8" stroke-width="1.5" fill="none" marker-end="url(#arr-r)"/>
+          <defs>
+            <marker id="arr-l" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#a855f7"/>
+            </marker>
+            <marker id="arr-r" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#38bdf8"/>
+            </marker>
+          </defs>
+          <!-- rotulo James March -->
+          <text x="350" y="230" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#6b7280">James March, 1991 — "Exploration and Exploitation in Organizational Learning"</text>
+        </svg>
+      </div>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> O que a pesquisa diz
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong class="text-white">Armadilha da exploitacao:</strong> empresas que so otimizam ficam cegas para disrupcoes. Kodak dominava o mercado de filmes — otimizou cada cent — e nao viu o digital.</li>
+          <li><strong class="text-white">Armadilha da exploracao:</strong> empresas que so exploram ficam sem caixa antes de monetizar. Centenas de startups de 2000 morreram assim.</li>
+          <li><strong class="text-white">A solucao:</strong> March defende que as organizacoes precisam <em>ambas</em> — e que a tensao entre elas e produtiva, nao patologica.</li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Ambidestria Estrutural vs Contextual -->
+    <section id="topico-2" data-inema-topic="modulo-3-4#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">🏛️ Ambidestria Estrutural vs Contextual</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t2-p1">
+        O'Reilly e Tushman — os autores que popularizaram o conceito de <em>ambidextrous organization</em> — identificaram duas formas de uma empresa gerenciar a tensao entre explorar e explotar. A escolha entre elas nao e estetica: define quem toma decisoes, como o orcamento e alocado e quais comportamentos sao recompensados.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+        <!-- Estrutural -->
+        <div class="bg-dark-800 rounded-xl border border-purple-500/30 p-6">
+          <h4 class="font-semibold text-purple-400 mb-3 flex items-center">
+            <span class="mr-2">🏗️</span> Ambidestria Estrutural
+          </h4>
+          <p class="text-sm text-neutral-300 mb-4" data-inema-block="m3-4-t2-estrutural">Unidades de exploracao fisicamente separadas do core. Time autonomo, orcamento proprio, metricas distintas. Conectam-se ao core apenas via lideranca senior.</p>
+          <ul class="space-y-2 text-sm text-neutral-400">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">✓</span><span>Protecao contra a cultura do core que sufoca o novo</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">✓</span><span>Velocidade e agilidade sem burocracia</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Custo alto de manutencao de duas estruturas</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Risco de o novo nunca re-integrar ao core</span></li>
+          </ul>
+          <p class="text-xs text-neutral-500 mt-3">Exemplo: Amazon criando AWS em unidade separada (2002)</p>
+        </div>
+        <!-- Contextual -->
+        <div class="bg-dark-800 rounded-xl border border-blue-500/30 p-6">
+          <h4 class="font-semibold text-sky-400 mb-3 flex items-center">
+            <span class="mr-2">🔄</span> Ambidestria Contextual
+          </h4>
+          <p class="text-sm text-neutral-300 mb-4" data-inema-block="m3-4-t2-contextual">Cada individuo e cada equipe alterna entre explorar e explotar conforme a demanda. A ambidestria vive no nivel da pessoa, nao da estrutura. Exige cultura muito madura.</p>
+          <ul class="space-y-2 text-sm text-neutral-400">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">✓</span><span>Sem custos de estrutura dupla</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">✓</span><span>Aprendizado circula mais rapido entre novo e core</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Cultura precisa ser robustissima — o core normalmente vence</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Dificulta avaliacao de desempenho individual</span></li>
+          </ul>
+          <p class="text-xs text-neutral-500 mt-3">Exemplo: Google com 20% do tempo para projetos pessoais</p>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-xl p-5 mb-6">
+        <h4 class="font-semibold text-primary mb-2">💡 Dica Pratica — O'Reilly &amp; Tushman</h4>
+        <p class="text-sm text-neutral-300" data-inema-block="m3-4-t2-dica">A escolha entre estrutural e contextual depende do grau de distancia tecnologica e cultural entre o novo e o core. Quanto mais distante, mais estrutural precisa ser. Quanto mais proximo, mais contextual funciona. Empresas que escolhem o modelo errado desperdicam anos tentando fazer funcionar algo que nao funciona por design.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Os 3 Horizontes -->
+    <section id="topico-3" data-inema-topic="modulo-3-4#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">📈 Os 3 Horizontes de Crescimento</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t3-p1">
+        A McKinsey formalizou em 2000 o modelo dos 3 Horizontes — provavelmente o framework de portfolio de inovacao mais citado do mundo. Ele resolve uma pergunta pratica: como alocar orcamento e atencao gerencial entre iniciativas de diferentes maturidades sem sacrificar nem o presente nem o futuro?
+      </p>
+
+      <!-- Timeline dos 3 Horizontes -->
+      <div class="space-y-4 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center">
+            <span class="text-purple-400 font-bold text-lg">H1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-white">Horizonte 1 — Defender e Estender</h4>
+              <span class="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">0–2 anos</span>
+            </div>
+            <p class="text-sm text-neutral-300" data-inema-block="m3-4-t3-h1">O negocio atual que paga as contas. Melhoria incremental de produtos existentes, reducao de custos, expansao de mercados adjacentes. Representa ~70% do orcamento e da atencao gerencial. Fluxo de caixa positivo, baixo risco.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-lg">H2</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-white">Horizonte 2 — Construir Negocio Emergente</h4>
+              <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">2–5 anos</span>
+            </div>
+            <p class="text-sm text-neutral-300" data-inema-block="m3-4-t3-h2">Apostas em crescimento que estao comecando a provar tracacao mas ainda nao sao o core. Expansao para novos segmentos, novas plataformas, novos modelos de receita. ~20% do orcamento. Risco medio, retorno potencial alto.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-sky-500/20 border border-sky-500/40 flex items-center justify-center">
+            <span class="text-sky-400 font-bold text-lg">H3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-white">Horizonte 3 — Criar Opcoes de Futuro</h4>
+              <span class="text-xs bg-sky-500/20 text-sky-400 px-2 py-0.5 rounded-full">5+ anos</span>
+            </div>
+            <p class="text-sm text-neutral-300" data-inema-block="m3-4-t3-h3">Exploracao de ideias radicalmente novas — podem ou nao virar negocio. Pesquisa, experimentos, apostas em tecnologias emergentes. ~10% do orcamento. Risco alto, a maioria falha, mas os que funcionam podem reescrever o setor.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+        <h4 class="font-semibold text-white mb-3">⚠️ O equivoco mais comum com os 3 Horizontes</h4>
+        <p class="text-sm text-neutral-300" data-inema-block="m3-4-t3-equivoco">A McKinsey revisitou o modelo em 2019 e alertou: com a aceleracao tecnologica, os horizontes nao sao mais sequenciais. Um startup pode escalar do H3 ao H1 em 18 meses (veja o ChatGPT). O modelo deve ser usado como <strong class="text-white">bussola de alocacao</strong>, nao como linha do tempo rigida.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Como Separar o Novo e Reconectar ao Core -->
+    <section id="topico-4" data-inema-topic="modulo-3-4#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">🔗 Separar o Novo e Reconectar ao Core</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t4-p1">
+        O maior desafio pratico da ambidestria nao e criar a unidade de exploracao — e reconectar o que ela aprende ao negocio principal no momento certo. Separar sem plano de reconexao e apenas criar um projeto-vitrine caro. Reconectar cedo demais mata a inovacao com a cultura do core. A arte esta no timing e no mecanismo de transferencia.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-5">
+          <h4 class="font-semibold text-emerald-400 mb-3">✅ Fazer</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Definir criterios de graduacao antes de comecar (quando o novo vira mainstream)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Criar "pontes" — pessoas que transitam entre os dois mundos</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Transferir aprendizados cedo, mesmo antes de escalar o negocio</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Proteger a unidade nova de KPIs do core durante a fase de exploracao</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 border border-red-500/30 rounded-xl p-5">
+          <h4 class="font-semibold text-red-400 mb-3">❌ Evitar</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Reconectar antes da validacao de produto-mercado</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Manter separado apos escala — o core precisa absorver</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Separar fisicamente mas manter dependencia de recursos do core (budget, TI, juridico)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Nao documentar o que foi aprendido — o conhecimento vai embora com as pessoas</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-xl p-5 mb-6">
+        <h4 class="font-semibold text-primary mb-2">💡 O mecanismo de reconexao</h4>
+        <p class="text-sm text-neutral-300" data-inema-block="m3-4-t4-mecanismo">O'Reilly e Tushman identificaram que as empresas mais ambidestras usam um mecanismo especifico: <strong class="text-white">reunioes de portfolio em nivel de C-suite</strong> onde os lideres de H1 e H3 discutem o mesmo roadmap. Isso cria pressao estrutural para que a reconexao aconteca quando o negocio novo prova viabilidade. Sem esse mecanismo, a separacao vira permanente por inercializacao — nenhum dos dois lados tem incentivo para fazer a transferencia.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Lideranca Ambidestra -->
+    <section id="topico-5" data-inema-topic="modulo-3-4#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">🧭 Lideranca Ambidestra</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t5-p1">
+        A ambidestria organizacional falha mais por deficit de lideranca do que por deficit de estrutura. O'Reilly e Tushman dedicaram um livro inteiro a esse ponto: <em>"Lead and Disrupt"</em> (2016). O lider ambidestro precisa de um conjunto de comportamentos que sao contraintuitivos para gestores bem-sucedidos no core — porque o que fez o lider ter sucesso no H1 e exatamente o que prejudica o H3.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl p-5 border border-dark-600 text-center">
+          <div class="text-3xl mb-3">🎯</div>
+          <h4 class="font-semibold text-purple-400 mb-2">Clareza de Contexto</h4>
+          <p class="text-xs text-neutral-400">Saber quando esta gerenciando H1 vs H3 — e mudar o estilo de lideranca de acordo. Nao aplicar metricas de eficiencia a projetos de exploracao.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl p-5 border border-dark-600 text-center">
+          <div class="text-3xl mb-3">🤝</div>
+          <h4 class="font-semibold text-purple-400 mb-2">Gestao de Conflito</h4>
+          <p class="text-xs text-neutral-400">O core e o novo vao competir por recursos. O lider ambidestro nao escolhe um lado — arbitra com transparencia e criterios claros pre-definidos.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl p-5 border border-dark-600 text-center">
+          <div class="text-3xl mb-3">🛡️</div>
+          <h4 class="font-semibold text-purple-400 mb-2">Protecao Ativa</h4>
+          <p class="text-xs text-neutral-400">O lider senior usa seu capital politico para proteger unidades de exploracao de serem absorvidas ou sabotadas pelo core em momentos de crise.</p>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h4 class="font-semibold text-white mb-4">🔄 Os dois modos do lider ambidestro</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <p class="text-xs font-semibold text-purple-400 mb-2 uppercase tracking-wide">Modo Gestor (H1)</p>
+            <ul class="space-y-1 text-sm text-neutral-300">
+              <li>• Foco em execucao e predicao</li>
+              <li>• Metricas de eficiencia e margem</li>
+              <li>• Processos e compliance</li>
+              <li>• Hierarquia e accountability clara</li>
+            </ul>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <p class="text-xs font-semibold text-sky-400 mb-2 uppercase tracking-wide">Modo Empreendedor (H3)</p>
+            <ul class="space-y-1 text-sm text-neutral-300">
+              <li>• Foco em aprendizado e adaptacao</li>
+              <li>• Metricas de progresso em incerteza</li>
+              <li>• Experimentos rapidos e pivos</li>
+              <li>• Times pequenos e autonomos</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-xl p-5 mb-6">
+        <h4 class="font-semibold text-primary mb-2">💡 Dica Pratica</h4>
+        <p class="text-sm text-neutral-300" data-inema-block="m3-4-t5-dica">Pesquisa de O'Reilly com 90 empresas mostrou que o principal preditor de sucesso em ambidestria nao e o modelo estrutural escolhido — e a qualidade do time de lideranca senior. Empresas com times de lideranca coesos e que aceitam tensao produtiva performam 3x melhor em inovacao do que aquelas com CEO forte mas time homogeneo.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Erros Criticos -->
+    <section id="topico-6" data-inema-topic="modulo-3-4#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">💀 Erros que Matam a Ambidestria</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t6-p1">
+        A maioria das empresas que tenta ambidestria falha nao por falta de visao estrategica, mas por um de dois erros opostos: <strong class="text-red-400">canibalizacao</strong> (o novo devora o core antes de estar pronto) ou <strong class="text-red-400">morte por inanicao</strong> (o novo nao recebe recursos suficientes para sobreviver). Ambos parecem inevitaveis, mas sao altamente previsveis — e evitaveis com mecanismos certos.
+      </p>
+
+      <div class="bg-red-900/20 border border-red-500/30 rounded-xl p-6 mb-6">
+        <h4 class="font-semibold text-red-400 mb-4 flex items-center">
+          <span class="mr-2">⚠️</span> Armadilha 1: Canibalizacao Prematura
+        </h4>
+        <p class="text-sm text-neutral-300 mb-3" data-inema-block="m3-4-t6-canibal">Acontece quando a unidade de exploracao comeca a competir diretamente com o core antes de estar pronta. A lideranca, pressionada por ROI, forca uma escala prematura. O resultado: o novo estraga a margem do core sem ter validacao suficiente para sobreviver sozinho. Foi o que aconteceu com a Borders quando lancou seu e-commerce competindo com as lojas fisicas sem ter a base tecnologica da Amazon.</p>
+        <p class="text-xs text-neutral-400 bg-dark-800/50 rounded-lg p-3 mt-3"><strong class="text-red-400">Sinal de alerta:</strong> O time de inovacao comeca a ser avaliado pelos mesmos KPIs de margem do core antes dos 18 meses de exploracao.</p>
+      </div>
+
+      <div class="bg-red-900/20 border border-red-500/30 rounded-xl p-6 mb-6">
+        <h4 class="font-semibold text-red-400 mb-4 flex items-center">
+          <span class="mr-2">⚠️</span> Armadilha 2: Deixar o Novo Morrer de Fome
+        </h4>
+        <p class="text-sm text-neutral-300 mb-3" data-inema-block="m3-4-t6-fome">E o oposto: a unidade de exploracao existe no papel, tem um nome bonito, ganha press releases — mas nao tem orcamento real nem autonomia de decisao. Em momento de corte de budget, e a primeira a ser sacrificada. Sobrevive em modo "teatro de inovacao": apresenta slides em conferencias, nao muda nada no negocio.</p>
+        <p class="text-xs text-neutral-400 bg-dark-800/50 rounded-lg p-3 mt-3"><strong class="text-red-400">Sinal de alerta:</strong> A unidade de inovacao precisa pedir aprovacao do CFO para gastos acima de R$5.000.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-white mb-3">🔍 Como diagnosticar onde voce esta</h4>
+          <div class="space-y-3 text-sm text-neutral-300">
+            <div class="flex items-start space-x-2">
+              <span class="text-purple-400 mt-0.5 font-bold">1</span>
+              <span>Quanto do orcamento total vai para H3? Se menos de 5%, e teatro.</span>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="text-purple-400 mt-0.5 font-bold">2</span>
+              <span>Quantas decisoes a unidade toma sem aprovacao do core? Se zero, nao e autonoma.</span>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="text-purple-400 mt-0.5 font-bold">3</span>
+              <span>O CEO participa das reunioes de inovacao? Se nao, nao tem sponsor real.</span>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="text-purple-400 mt-0.5 font-bold">4</span>
+              <span>Houve algum projeto que foi de H3 para H1 nos ultimos 3 anos? Se nao, o funil esta quebrado.</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-white mb-3">✅ Mecanismos de protecao</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">✓</span>
+              <span>Orcamento de exploracao blindado — nao pode ser cortado sem aprovacao do board</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">✓</span>
+              <span>Metricas de aprendizado (experimentos rodados, hipoteses validadas) — nao de receita</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">✓</span>
+              <span>Criterio de "morte" pre-definido — saber quando encerrar sem drama politico</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">✓</span>
+              <span>Revisao de portfolio trimestral com presenca do CEO</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Exploration vs Exploitation (March, 1991)</strong>
+              <span class="text-neutral-400"> - as duas atividades competem pelos mesmos recursos e a exploitacao vence no curto prazo sem estrutura deliberada</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Ambidestria Estrutural vs Contextual</strong>
+              <span class="text-neutral-400"> - a escolha depende da distancia tecnologica e cultural entre o novo e o core</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">3 Horizontes McKinsey — 70/20/10</strong>
+              <span class="text-neutral-400"> - bussola de alocacao, nao linha do tempo rigida; horizontes se comprimem com aceleracao tecnologica</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Reconexao requer mecanismo deliberado</strong>
+              <span class="text-neutral-400"> - reunioes de portfolio em C-suite com criterios de graduacao pre-definidos</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Lideranca ambidestra alterna dois modos</strong>
+              <span class="text-neutral-400"> - gestor (H1) e empreendedor (H3) — aplicar o modo errado e o maior preditor de falha</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Dois erros opostos matam a ambidestria</strong>
+              <span class="text-neutral-400"> - canibalizacao prematura e morte por inanicao; ambos sao previsveis e evitaveis</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-purple-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">3.5 - IA como Acelerador de Cultura de Inovacao</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-3-5.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">
+            3.5 - IA como Acelerador &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(el => {
+          if (el !== explanation) el.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+  </script>
+  <script>
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

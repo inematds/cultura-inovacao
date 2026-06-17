@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Sprint Design | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
+      <span>/</span>
+      <span class="text-blue-400">Modulo 2.3</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MODULO 2.3</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#9889; Sprint Design</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">O metodo criado por Jake Knapp no Google Ventures: como levar uma ideia ao teste validado com usuarios reais em apenas 5 dias. Menos reunioes, menos debate, mais prototipo na frente do cliente.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">50</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="2-3" data-inema-track="2">
+
+    <!-- TOPICO 1: O que e o Design Sprint e quando usar -->
+    <section id="topico-1" data-inema-topic="modulo-2-3#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#128161; O que e o Design Sprint e quando usar</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t1-p1">
+        O Design Sprint e um processo estruturado de <strong class="text-blue-400">5 dias</strong> criado por Jake Knapp enquanto trabalhava como Design Partner no <strong class="text-blue-400">Google Ventures (GV)</strong>. Descrito no livro <em>Sprint</em> (2016, com John Zeratsky e Braden Kowitz), o metodo foi testado em mais de 150 startups do portfolio do GV antes de se tornar publico. A premissa e radical: em vez de meses de desenvolvimento, voce responde uma pergunta critica de negocio com um prototipo testado por usuarios reais em uma semana.
+      </p>
+
+      <!-- Diagrama SVG: fluxo dos 5 dias -->
+      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-4 mb-6">
+        <svg viewBox="0 0 720 200" class="w-full h-auto" role="img" aria-label="Diagrama dos 5 dias do Design Sprint: Mapear, Esbocar, Decidir, Prototipar, Testar" font-family="Inter,sans-serif">
+          <defs>
+            <linearGradient id="m2-3-grad-bg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#1e3a8a" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#0e7490" stop-opacity="0.4"/>
+            </linearGradient>
+            <filter id="m2-3-glow">
+              <feGaussianBlur stdDeviation="1.8" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <pattern id="m2-3-grid" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e3a8a" stroke-width="0.4"/>
+            </pattern>
+          </defs>
+          <!-- fundo grid -->
+          <rect width="720" height="200" fill="url(#m2-3-grid)" rx="12"/>
+          <!-- titulo -->
+          <text x="360" y="22" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="600">OS 5 DIAS DO DESIGN SPRINT</text>
+          <!-- caixas dos dias -->
+          <!-- Dia 1 -->
+          <rect x="20" y="38" width="120" height="130" rx="10" fill="#1e3a8a" fill-opacity="0.7" stroke="#3b82f6" stroke-width="2" filter="url(#m2-3-glow)" class="wf-a"/>
+          <text x="80" y="62" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="600">DIA 1</text>
+          <text x="80" y="80" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="700">Mapear</text>
+          <text x="80" y="98" text-anchor="middle" fill="#94a3b8" font-size="9">Desafio</text>
+          <text x="80" y="112" text-anchor="middle" fill="#94a3b8" font-size="9">e alvo</text>
+          <text x="80" y="150" text-anchor="middle" fill="#facc15" font-size="19">&#128506;</text>
+          <!-- Dia 2 -->
+          <rect x="155" y="38" width="120" height="130" rx="10" fill="#1e3a8a" fill-opacity="0.65" stroke="#3b82f6" stroke-width="2" class="wf-a"/>
+          <text x="215" y="62" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="600">DIA 2</text>
+          <text x="215" y="80" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="700">Esbocar</text>
+          <text x="215" y="98" text-anchor="middle" fill="#94a3b8" font-size="9">Solucoes</text>
+          <text x="215" y="112" text-anchor="middle" fill="#94a3b8" font-size="9">divergentes</text>
+          <text x="215" y="150" text-anchor="middle" fill="#facc15" font-size="19">&#9999;</text>
+          <!-- Dia 3 -->
+          <rect x="290" y="38" width="120" height="130" rx="10" fill="#1e3a8a" fill-opacity="0.60" stroke="#38bdf8" stroke-width="2" filter="url(#m2-3-glow)"/>
+          <text x="350" y="62" text-anchor="middle" fill="#7dd3fc" font-size="10" font-weight="600">DIA 3</text>
+          <text x="350" y="80" text-anchor="middle" fill="#38bdf8" font-size="13" font-weight="700">Decidir</text>
+          <text x="350" y="98" text-anchor="middle" fill="#94a3b8" font-size="9">Storyboard</text>
+          <text x="350" y="112" text-anchor="middle" fill="#94a3b8" font-size="9">da solucao</text>
+          <text x="350" y="150" text-anchor="middle" fill="#facc15" font-size="19">&#9989;</text>
+          <!-- Dia 4 -->
+          <rect x="425" y="38" width="120" height="130" rx="10" fill="#1e3a8a" fill-opacity="0.55" stroke="#3b82f6" stroke-width="2" class="wf-a"/>
+          <text x="485" y="62" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="600">DIA 4</text>
+          <text x="485" y="80" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="700">Prototipar</text>
+          <text x="485" y="98" text-anchor="middle" fill="#94a3b8" font-size="9">Fachada</text>
+          <text x="485" y="112" text-anchor="middle" fill="#94a3b8" font-size="9">realista</text>
+          <text x="485" y="150" text-anchor="middle" fill="#facc15" font-size="19">&#128295;</text>
+          <!-- Dia 5 -->
+          <rect x="560" y="38" width="120" height="130" rx="10" fill="#0e7490" fill-opacity="0.55" stroke="#38bdf8" stroke-width="2" filter="url(#m2-3-glow)" class="wf-a"/>
+          <text x="620" y="62" text-anchor="middle" fill="#7dd3fc" font-size="10" font-weight="600">DIA 5</text>
+          <text x="620" y="80" text-anchor="middle" fill="#38bdf8" font-size="13" font-weight="700">Testar</text>
+          <text x="620" y="98" text-anchor="middle" fill="#94a3b8" font-size="9">5 usuarios</text>
+          <text x="620" y="112" text-anchor="middle" fill="#94a3b8" font-size="9">reais</text>
+          <text x="620" y="150" text-anchor="middle" fill="#facc15" font-size="19">&#128101;</text>
+          <!-- setas -->
+          <path d="M140 103 L155 103" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#m2-3-arr)"/>
+          <path d="M275 103 L290 103" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#m2-3-arr)"/>
+          <path d="M410 103 L425 103" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#m2-3-arr)"/>
+          <path d="M545 103 L560 103" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#m2-3-arr)"/>
+          <defs>
+            <marker id="m2-3-arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#38bdf8"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t1-p2">
+        Knapp projetou o Sprint para empresas que precisam <strong class="text-blue-400">cortar o ciclo de feedback</strong> entre ideia e validacao. Em vez de agendar reunioes por semanas, montar um squad dedicado por 5 dias full-time e suficiente para ir de pergunta aberta a dado real de usuario. O livro descreve casos na Slack, Flatiron Health e Nest — todos com decisoes criticas respondidas antes de uma linha de codigo ser escrita.
+      </p>
+
+      <!-- Quando usar vs nao usar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5">
+          <h3 class="text-sm font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">&#10003;</span> Quando USAR o Sprint</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Problema grande, complexo ou de alto risco</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Time travado em debate sem consenso</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Lancamento de produto novo ou feature critica</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Necessidade de validar hipotese antes de investir</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Stakeholders com visoes conflitantes</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h3 class="text-sm font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">&#215;</span> Quando NAO usar</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#215;</span><span>Problema ja bem definido, solucao conhecida</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#215;</span><span>Time nao consegue 5 dias dedicados inteiros</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#215;</span><span>Decisao ja tomada (Sprint viraria teatro)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#215;</span><span>Bug ou problema operacional de rotina</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#215;</span><span>Sem acesso a usuarios reais para o dia 5</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 2: Dia 1 - Mapear -->
+    <section id="topico-2" data-inema-topic="modulo-2-3#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#128506; Dia 1 — Mapear o desafio e escolher o alvo</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t2-p1">
+        A segunda-feira do Sprint e dedicada a <strong class="text-blue-400">alinhar o time</strong> sobre o problema a ser resolvido e a escolher um alvo especifico. Jake Knapp chama esse processo de "start at the end" (comecar pelo fim): antes de pensar em solucoes, o time define o que seria o sucesso em 2-5 anos e quais sao os riscos que podem impedir isso. Sem esse alinhamento, o Sprint gera esbocos que partem de premissas diferentes.
+      </p>
+
+      <!-- Timeline das atividades do Dia 1 -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4">Agenda do Dia 1</h3>
+        <div class="space-y-4">
+          <!-- item 1 -->
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">9h</div>
+            <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 flex-1">
+              <h4 class="font-semibold text-white mb-1">Meta de longo prazo + perguntas do Sprint</h4>
+              <p class="text-neutral-400 text-sm">O Facilitador pede ao Decisor (o "Decider", papel obrigatorio no Sprint) que articule a meta de 2-5 anos. O time gera perguntas: "O que poderia nos impedir de atingir essa meta?" Essas perguntas viram hipoteses a falsificar.</p>
+            </div>
+          </div>
+          <!-- item 2 -->
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">11h</div>
+            <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 flex-1">
+              <h4 class="font-semibold text-white mb-1">Mapa do jornada (fluxo do usuario)</h4>
+              <p class="text-neutral-400 text-sm">O time cria um mapa simples (ator + passos + meta final) da jornada do usuario. Nao e um diagrama detalhado — apenas os passos principais. Tipicamente 5-15 etapas. Construido em conjunto no quadro branco.</p>
+            </div>
+          </div>
+          <!-- item 3 -->
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">13h</div>
+            <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 flex-1">
+              <h4 class="font-semibold text-white mb-1">Entrevistas com especialistas ("Ask the Experts")</h4>
+              <p class="text-neutral-400 text-sm">Cada membro do time que tem conhecimento especializado (estrategia, tecnologia, pesquisa de usuario, vendas) compartilha o que sabe em sessoes de 15-20 minutos. O time anota insights em post-its usando o formato "Como poderiamos..." (HMW).</p>
+            </div>
+          </div>
+          <!-- item 4 -->
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">16h</div>
+            <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 flex-1">
+              <h4 class="font-semibold text-white mb-1">Escolher o alvo</h4>
+              <p class="text-neutral-400 text-sm">O Decisor escolhe um momento especifico do mapa e um usuario-alvo. Isso define o escopo do Sprint. Sem alvo definido, o time tenta resolver tudo ao mesmo tempo e nao resolve nada.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-xl p-5 mb-6">
+        <h3 class="text-sm font-semibold text-primary mb-2">&#128161; Dica de Knapp</h3>
+        <p class="text-neutral-300 text-sm">O papel do "Decider" e critico. Em sprints sem um decisor claro, o time volta ao debate democratico e perde o ritmo. O Decider nao precisa ser o CEO — pode ser qualquer pessoa com autoridade real sobre a decisao em questao. Knapp recomenda que o Decider participe pelo menos na hora de escolher o alvo no fim do Dia 1.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 3: Dia 2 - Esbocar solucoes -->
+    <section id="topico-3" data-inema-topic="modulo-2-3#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#9999; Dia 2 — Esbocar solucoes (divergir)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t3-p1">
+        A terca-feira e o dia da <strong class="text-blue-400">divergencia individual</strong>. Em vez de brainstorming coletivo (que tende a ser dominado por vozes mais altas), o Sprint usa um processo chamado <strong class="text-blue-400">4-Step Sketch</strong>: cada participante trabalha sozinho para gerar e refinar ideias. O resultado e um conjunto rico de solucoes independentes, sem que uma ideia sufoque outra.
+      </p>
+
+      <!-- 4 passos do sketch -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">1&#65039;&#8419;</div>
+          <h3 class="font-semibold text-blue-400 mb-2">Notas (20 min)</h3>
+          <p class="text-neutral-400 text-sm">Cada pessoa caminha pelo espaco, revisa o mapa do Dia 1, anotacoes das entrevistas e qualquer material de referencia. Escreve notas livres — sem estrutura obrigatoria.</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">2&#65039;&#8419;</div>
+          <h3 class="font-semibold text-blue-400 mb-2">Ideias (20 min)</h3>
+          <p class="text-neutral-400 text-sm">Transforma as notas em diagramas, listas ou rabiscos grosseiros. Nada precisa ser bonito — o objetivo e externalizar o pensamento, nao criar arte.</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">3&#65039;&#8419;</div>
+          <h3 class="font-semibold text-blue-400 mb-2">Crazy 8s (8 min)</h3>
+          <p class="text-neutral-400 text-sm">Dobre uma folha A4 em 8 partes e desenhe 8 variacoes da sua ideia mais promissora em 8 minutos. Forca a geracao rapida de alternativas e quebra o perfeccionismo.</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">4&#65039;&#8419;</div>
+          <h3 class="font-semibold text-blue-400 mb-2">Esboco de solucao (30-90 min)</h3>
+          <p class="text-neutral-400 text-sm">Cada pessoa cria um esboco detalhado em 3 paineis (tipo storyboard basico). Deve ser autoexplicativo — sem apresentacao verbal. Inclui titulo e anotacoes para o juri do Dia 3.</p>
+        </div>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t3-p2">
+        O principio fundamental do Dia 2 e <strong class="text-blue-400">trabalho silencioso e individual</strong>. Knapp e explicito: o brainstorming em grupo favorece quem fala mais alto, nao quem tem a melhor ideia. O processo individual garante que ate o membro mais introvertido do time contribua com solucoes proprias. Os esbocos sao anonimos durante a votacao do Dia 3.
+      </p>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-xl p-5 mb-6">
+        <h3 class="text-sm font-semibold text-primary mb-2">&#128161; Lightning Demos</h3>
+        <p class="text-neutral-300 text-sm">Antes do 4-Step Sketch, o time faz "Lightning Demos": cada pessoa apresenta em 3 minutos um produto, app ou servico (pode ser de area completamente diferente) que tem uma solucao inspiradora para o problema. Nao e plagio — e coleta de materia-prima criativa. Knapp chama de "remixar ideias existentes em algo novo".</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 4: Dia 3 - Decidir e montar o storyboard -->
+    <section id="topico-4" data-inema-topic="modulo-2-3#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#9989; Dia 3 — Decidir e montar o storyboard</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t4-p1">
+        A quarta-feira e o dia mais critico do Sprint: o time precisa <strong class="text-blue-400">convergir</strong> de multiplos esbocos para uma unica solucao a prototipar. Knapp desenvolveu um processo de votacao estruturado que evita o problema classico de decisao por comite — onde a solucao media (agrada a todos, nao encanta ninguem) vence.
+      </p>
+
+      <!-- Processo de decisao -->
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4">Processo de Decisao Estruturado</h3>
+        <div class="space-y-3">
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-bold">A</span>
+            <div>
+              <strong class="text-white text-sm">Museo de Arte (silencioso)</strong>
+              <p class="text-neutral-400 text-sm mt-0.5">Os esbocos sao colados na parede. Todos caminham em silencio, leem e colocam pontos adesivos (stickers) nas partes que acham mais interessantes. Sem discussao — apenas marcacao.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-bold">B</span>
+            <div>
+              <strong class="text-white text-sm">Mapa de calor + discussao rapida</strong>
+              <p class="text-neutral-400 text-sm mt-0.5">O Facilitador identifica areas com muitos stickers (o "mapa de calor"). Para cada area interessante, uma discussao de 3 minutos — o criador do esboco permanece anonimo nesse momento.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-bold">C</span>
+            <div>
+              <strong class="text-white text-sm">Voto de superpoder</strong>
+              <p class="text-neutral-400 text-sm mt-0.5">Cada pessoa recebe 1 voto grande (o "super vote") para o esboco completo mais convincente. O Decisor tem 3 super votes. O resultado e uma hierarquia clara de preferencias.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-bold">D</span>
+            <div>
+              <strong class="text-white text-sm">Storyboard (15 paineis)</strong>
+              <p class="text-neutral-400 text-sm mt-0.5">Com a decisao feita, o time monta um storyboard de ~15 paineis no quadro branco. E o script do prototipo — cada painel representa uma tela ou interacao. O Dia 4 segue esse script.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+        <h3 class="text-sm font-semibold text-blue-400 mb-3">Rumble: quando duas ideias empatam</h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-3-t4-p2">Quando dois esbocos sao igualmente fortes e o time nao consegue descartar nenhum, Knapp recomenda o <strong class="text-blue-400">"Rumble"</strong>: prototipar os dois e testar ambos no Dia 5 com usuarios diferentes. E mais trabalho, mas elimina semanas de debate. A condicao e que os dois prototipos caibam no tempo disponivel do Dia 4.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 5: Dia 4 - Prototipo de fachada -->
+    <section id="topico-5" data-inema-topic="modulo-2-3#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#128295; Dia 4 — Prototipo de fachada</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t5-p1">
+        A quinta-feira e dedicada a construir um <strong class="text-blue-400">prototipo de fachada</strong> (facade prototype): algo realista o suficiente para provocar reacoes genuinas nos usuarios, mas descartavel o suficiente para ser feito em um dia. Knapp usa a metafora do cenario de cinema — parece real na frente, mas e apenas madeira atras. O objetivo nao e um MVP funcional, e uma <strong class="text-blue-400">simulacao convincente</strong>.
+      </p>
+
+      <!-- Ferramentas por tipo de prototipo -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4">
+          <div class="text-2xl mb-2">&#128241;</div>
+          <h3 class="font-semibold text-white mb-2 text-sm">App / Software</h3>
+          <p class="text-neutral-400 text-xs mb-3">Figma, Keynote, Marvel. Telas clicaveis sem codigo. Navegacao funciona, dados sao simulados (screenshots ou textos fixos).</p>
+          <div class="text-xs text-blue-400 font-medium">Tempo medio: 6-7h</div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4">
+          <div class="text-2xl mb-2">&#127760;</div>
+          <h3 class="font-semibold text-white mb-2 text-sm">Site / Landing Page</h3>
+          <p class="text-neutral-400 text-xs mb-3">Squarespace, Webflow, Carrd. Pagina real com conteudo simulado. Pode ter formulario funcional para capturar interesse.</p>
+          <div class="text-xs text-blue-400 font-medium">Tempo medio: 5-6h</div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4">
+          <div class="text-2xl mb-2">&#128247;</div>
+          <h3 class="font-semibold text-white mb-2 text-sm">Produto Fisico / Servico</h3>
+          <p class="text-neutral-400 text-xs mb-3">Impressao 3D basica, papel, encenacao ("Wizard of Oz" — humano simulando sistema automatico por tras da tela).</p>
+          <div class="text-xs text-blue-400 font-medium">Tempo medio: 6-8h</div>
+        </div>
+      </div>
+
+      <!-- Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5">
+          <h3 class="text-sm font-semibold text-blue-400 mb-3">&#10003; Fazer no Dia 4</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Dividir o time: 2 makers, 1 escritor, 1 stitcher (monta tudo) + 1 responsavel por testar internamente</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Usar templates e bibliotecas prontas (UI kits do Figma)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Simular dados reais: nomes, valores, datas plausiveis</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Testar o prototipo internamente ao final do dia</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h3 class="text-sm font-semibold text-red-400 mb-3">&#215; Evitar no Dia 4</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#215;</span><span>Escrever codigo — qualquer codigo e desperdicio neste momento</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#215;</span><span>Perfeccionismo visual: o usuario testa o conceito, nao o design final</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#215;</span><span>Adicionar funcionalidades alem do storyboard aprovado</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#215;</span><span>Trabalhar isolado — o stitcher precisa de atualizacoes constantes</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-xl p-5 mb-6">
+        <h3 class="text-sm font-semibold text-primary mb-2">&#128161; A mentalidade "Goldilocks"</h3>
+        <p class="text-neutral-300 text-sm">Knapp descreve o nivel certo de prototipo como "Goldilocks quality": nao tao ruim que os usuarios nao levem a serio, nao tao polido que eles nao sejam honestos com criticas. O prototipo perfeito do Sprint faz o usuario dizer "isso parece real" mas ainda assim apontar problemas livremente.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 6: Dia 5 - Testar com 5 usuarios + erros comuns -->
+    <section id="topico-6" data-inema-topic="modulo-2-3#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#128101; Dia 5 — Testar com 5 usuarios + erros comuns</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t6-p1">
+        A sexta-feira e o dia da verdade. O time testa o prototipo com <strong class="text-blue-400">5 usuarios reais</strong> em entrevistas individuais de 60 minutos. Por que 5? Knapp e Zeratsky citam pesquisa de Jakob Nielsen (Nielsen Norman Group): com 5 usuarios voce identifica aproximadamente <strong class="text-blue-400">85% dos problemas de usabilidade</strong>. A partir do 6o usuario, os padroes se repetem e o retorno marginal cai drasticamente. Cinco entrevistas cabem em um dia e dao dados suficientes para decidir.
+      </p>
+
+      <!-- Estrutura da entrevista -->
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4">Estrutura da Entrevista (60 min)</h3>
+        <div class="space-y-3 text-sm text-neutral-300">
+          <div class="flex justify-between items-center border-b border-dark-600 pb-2">
+            <span><strong class="text-white">Introducao amigavel</strong> — contexto, permissao para gravar</span>
+            <span class="text-blue-400 font-mono text-xs">5 min</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-dark-600 pb-2">
+            <span><strong class="text-white">Perguntas de contexto</strong> — habitos, rotina, relacao com o problema</span>
+            <span class="text-blue-400 font-mono text-xs">10 min</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-dark-600 pb-2">
+            <span><strong class="text-white">Apresentacao do prototipo</strong> (tarefa 1)</span>
+            <span class="text-blue-400 font-mono text-xs">15 min</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-dark-600 pb-2">
+            <span><strong class="text-white">Tarefa 2 (se houver)</strong> — exploracao livre</span>
+            <span class="text-blue-400 font-mono text-xs">15 min</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span><strong class="text-white">Debrief</strong> — perguntas abertas, impressoes gerais</span>
+            <span class="text-blue-400 font-mono text-xs">15 min</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t6-p2">
+        O time (exceto o entrevistador) assiste as entrevistas em sala separada, ao vivo. Cada membro anota observacoes em post-its usando 4 categorias: <strong class="text-blue-400">cita positiva, cita negativa, pergunta, ideia</strong>. No final do dia, o time mapeia os padroes no quadro branco e chega a um veredicto: continuar, pivotar ou descartar.
+      </p>
+
+      <!-- Erros comuns no Sprint (alerta) -->
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-4 flex items-center"><span class="mr-2">&#9888;</span> Erros Comuns que Destroem o Sprint</h3>
+        <div class="space-y-3 text-sm">
+          <div class="flex items-start space-x-3">
+            <span class="text-red-400 font-bold flex-shrink-0">&#10005;</span>
+            <div><strong class="text-white">Time sem autoridade de decisao.</strong> <span class="text-neutral-400">Se o Decisor nao pode estar presente, o Sprint vira consulta — ninguem implementa o resultado.</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-red-400 font-bold flex-shrink-0">&#10005;</span>
+            <div><strong class="text-white">Usuarios recrutados na hora.</strong> <span class="text-neutral-400">Recrutar participantes adequados e o maior risco de logistica. Knapp recomenda comecar o recrutamento antes do Sprint, na semana anterior.</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-red-400 font-bold flex-shrink-0">&#10005;</span>
+            <div><strong class="text-white">Sprint como teatro de inovacao.</strong> <span class="text-neutral-400">Fazer o Sprint para "mostrar que inovamos" sem intencao real de agir sobre os resultados. O Dia 5 precisa ter um responsavel por decisao pos-Sprint.</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-red-400 font-bold flex-shrink-0">&#10005;</span>
+            <div><strong class="text-white">Celulares e laptops na sala.</strong> <span class="text-neutral-400">Knapp e dogmatico: sem dispositivos nas sessoes do Sprint (exceto para pesquisa rapida). A presenca parcial mata o momentum coletivo.</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-red-400 font-bold flex-shrink-0">&#10005;</span>
+            <div><strong class="text-white">Prototipo funcional no Dia 4.</strong> <span class="text-neutral-400">Times de engenharia tendem a querer "fazer certo". Um prototipo com logica de backend consome o dia inteiro e nao agrega informacao de teste.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini-cards de conceitos-chave -->
+      <h2 class="text-2xl font-bold mb-6">Conteudo detalhado</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">5&#128467;</div>
+          <div class="text-sm font-semibold text-blue-400">5 dias</div>
+          <div class="text-xs text-neutral-500 mt-1">Full-time, time dedicado, sem interrupcoes</div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">&#128101;</div>
+          <div class="text-sm font-semibold text-blue-400">5 usuarios</div>
+          <div class="text-xs text-neutral-500 mt-1">Nielsen: 85% dos problemas revelados</div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">&#127815;</div>
+          <div class="text-sm font-semibold text-blue-400">7 pessoas</div>
+          <div class="text-xs text-neutral-500 mt-1">Time ideal: multidisciplinar, maximo 7</div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">&#128161;</div>
+          <div class="text-sm font-semibold text-blue-400">1 Decider</div>
+          <div class="text-xs text-neutral-500 mt-1">Sem Decider nao ha Sprint — ha workshop</div>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- RESUMO DO MODULO -->
+    <section class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-2xl border border-blue-500/30 p-8">
+      <h2 class="text-2xl font-bold mb-6 text-blue-400">Resumo do Modulo 2.3</h2>
+      <div class="space-y-3 mb-8 text-neutral-300 text-sm">
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <div><strong class="text-white">Design Sprint</strong><span class="text-neutral-400"> — 5 dias para ir de pergunta critica a prototipo testado. Criado por Jake Knapp no Google Ventures</span></div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <div><strong class="text-white">Dia 1: Mapear</strong><span class="text-neutral-400"> — meta de longo prazo, mapa da jornada, entrevistas com especialistas, escolha do alvo</span></div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <div><strong class="text-white">Dia 2: Esbocar</strong><span class="text-neutral-400"> — 4-Step Sketch individual, Lightning Demos, Crazy 8s. Sem brainstorming coletivo</span></div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <div><strong class="text-white">Dia 3: Decidir</strong><span class="text-neutral-400"> — Museo de Arte, votacao por stickers, super vote do Decider, storyboard de 15 paineis</span></div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <div><strong class="text-white">Dia 4: Prototipar</strong><span class="text-neutral-400"> — fachada realista sem codigo. Qualidade Goldilocks: real o suficiente, descartavel o suficiente</span></div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <div><strong class="text-white">Dia 5: Testar</strong><span class="text-neutral-400"> — 5 usuarios, 60 min cada, 85% dos problemas revelados. Veredicto: continuar, pivotar ou descartar</span></div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+        <h3 class="font-semibold text-blue-400 mb-2">Proximo Modulo:</h3>
+        <p class="text-neutral-300">2.4 - SCAMPER e Brainstorming: tecnicas estruturadas para gerar e expandir ideias</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+          &#8592; Voltar para Trilha
+        </a>
+        <a href="modulo-2-4.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">
+          2.4 - SCAMPER e Brainstorming &#8594;
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

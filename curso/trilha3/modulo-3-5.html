@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>IA como Acelerador | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha purple) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a>
+      <span>/</span>
+      <span class="text-purple-400">Modulo 3.5</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MODULO 3.5</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#129302; IA como Acelerador</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Onde a inteligencia artificial multiplica o sistema de inovacao sem virar hype. Mapa de oportunidades, aplicacoes por fase, riscos reais e como adotar com maturidade.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">55</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Avancado</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Pratico</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="3-5" data-inema-track="3">
+
+    <!-- TOPICO 1: Mapa de oportunidades -->
+    <section id="topico-1" data-inema-topic="modulo-3-5#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#128272; Onde a IA Multiplica a Inovacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-5-t1-p1">
+        Inteligencia artificial nao substitui o sistema de inovacao — ela <strong class="text-purple-400">multiplica a capacidade de cada componente</strong>. Um time com cultura fraca e IA continua inovando mal, so que mais rapido. Um time com cultura forte e IA consegue explorar mais hipoteses, aprender mais rapido e escalar descobertas com menos atrito. O ponto de entrada e entender em QUAIS nos do sistema a IA gera mais alavancagem.
+      </p>
+
+      <!-- SVG: Mapa de alavancagem IA x fases da inovacao -->
+      <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 900 360" class="w-full h-auto" role="img" aria-label="Mapa de alavancagem da IA nas fases do ciclo de inovacao: Descoberta, Ideacao, Prototipagem, Experimentacao e Escala, com indicadores de impacto por fase">
+          <defs>
+            <linearGradient id="m3-5-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#a855f7"/>
+            </linearGradient>
+            <linearGradient id="m3-5-grad2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#a855f7" stop-opacity="0.6"/><stop offset="1" stop-color="#38bdf8" stop-opacity="0.6"/>
+            </linearGradient>
+            <filter id="m3-5-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m3-5-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+              <circle cx="1.2" cy="1.2" r="1.2" fill="#a855f7" opacity="0.10"/>
+            </pattern>
+          </defs>
+          <rect x="0" y="0" width="900" height="360" fill="url(#m3-5-grid)"/>
+
+          <!-- Linha base de fluxo -->
+          <line x1="60" y1="200" x2="840" y2="200" stroke="url(#m3-5-grad2)" stroke-width="2" opacity="0.4"/>
+
+          <!-- Nos de fase: Descoberta -->
+          <g filter="url(#m3-5-glow)" class="wf-a">
+            <circle cx="130" cy="200" r="38" fill="#1a1230" stroke="#c084fc" stroke-width="2"/>
+          </g>
+          <text x="130" y="196" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10" font-weight="600">Descoberta</text>
+          <text x="130" y="211" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="9">Alto impacto</text>
+
+          <!-- Nos de fase: Ideacao -->
+          <g filter="url(#m3-5-glow)" class="wf-a">
+            <circle cx="280" cy="200" r="38" fill="#1a1230" stroke="#c084fc" stroke-width="2"/>
+          </g>
+          <text x="280" y="196" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10" font-weight="600">Ideacao</text>
+          <text x="280" y="211" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="9">Alto impacto</text>
+
+          <!-- Nos de fase: Prototipagem -->
+          <g filter="url(#m3-5-glow)" class="wf-a">
+            <circle cx="450" cy="200" r="38" fill="#1a1230" stroke="#c084fc" stroke-width="2"/>
+          </g>
+          <text x="450" y="196" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10" font-weight="600">Prototipagem</text>
+          <text x="450" y="211" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="9">Medio impacto</text>
+
+          <!-- Nos de fase: Experimentacao -->
+          <g filter="url(#m3-5-glow)" class="wf-a">
+            <circle cx="620" cy="200" r="38" fill="#1a1230" stroke="url(#m3-5-grad)" stroke-width="2.5"/>
+          </g>
+          <text x="620" y="196" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10" font-weight="600">Experim.</text>
+          <text x="620" y="211" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="9">Alto impacto</text>
+
+          <!-- Nos de fase: Escala -->
+          <g filter="url(#m3-5-glow)" class="wf-a">
+            <circle cx="780" cy="200" r="38" fill="#1a1230" stroke="#c084fc" stroke-width="2"/>
+          </g>
+          <text x="780" y="196" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10" font-weight="600">Escala</text>
+          <text x="780" y="211" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="9">Medio impacto</text>
+
+          <!-- Barras de impacto acima dos nos -->
+          <rect x="100" y="100" width="60" height="60" rx="6" fill="#a855f7" opacity="0.28"/>
+          <text x="130" y="136" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="22" font-weight="800">3x</text>
+          <text x="130" y="152" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="9">mais rapido</text>
+
+          <rect x="250" y="100" width="60" height="60" rx="6" fill="#a855f7" opacity="0.28"/>
+          <text x="280" y="136" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="22" font-weight="800">5x</text>
+          <text x="280" y="152" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="9">mais ideias</text>
+
+          <rect x="420" y="110" width="60" height="50" rx="6" fill="#38bdf8" opacity="0.18"/>
+          <text x="450" y="142" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="22" font-weight="800">2x</text>
+          <text x="450" y="156" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="9">iteracoes</text>
+
+          <rect x="590" y="100" width="60" height="60" rx="6" fill="#a855f7" opacity="0.28"/>
+          <text x="620" y="136" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="22" font-weight="800">10x</text>
+          <text x="620" y="152" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="9">dados analis.</text>
+
+          <!-- Label IA como multiplicador -->
+          <rect x="310" y="270" width="280" height="36" rx="10" fill="#1a1230" stroke="url(#m3-5-grad)" stroke-width="1.5"/>
+          <text x="450" y="293" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="12" font-weight="600">IA = multiplicador do sistema, nao substituto</text>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2">&#128270; Alta alavancagem</h4>
+          <p class="text-sm text-neutral-300">Descoberta de tendencias, sintese de sinais, geracao e iteracao de ideias, analise de dados de experimentos. A IA comprime semanas em horas.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2">&#9881;&#65039; Media alavancagem</h4>
+          <p class="text-sm text-neutral-300">Prototipagem visual e de codigo, automacao de tarefas operacionais, documentacao de aprendizados. Ganhos reais, mas menos dramaticos.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2">&#128683; Baixa (ou contra) alavancagem</h4>
+          <p class="text-sm text-neutral-300">Definir a visao estrategica, construir confianca com clientes, fazer escolhas eticas, liderar mudanca cultural. Estas sao profundamente humanas.</p>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-4">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">&#128161;</span> Principio do Multiplicador
+        </h3>
+        <p class="text-neutral-300">A IA multiplica o que ja existe. Times com boa cultura de experimentacao tornam-se muito mais produtivos. Times sem cultura de experimentacao podem usar IA para gerar mais hipoteses ruins mais rapido. O investimento em cultura (Trilha 1) e o pre-requisito para extrair valor real da IA.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: IA na descoberta -->
+    <section id="topico-2" data-inema-topic="modulo-3-5#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#128269; IA na Descoberta: Pesquisa, Sintese e Tendencias</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-5-t2-p1">
+        A fase de descoberta — entender o usuario, mapear o mercado, identificar sinais fracos de mudanca — historicamente consumia semanas de pesquisa. Assistentes de linguagem como Claude, GPT-4 e Gemini transformaram esse processo: <strong class="text-purple-400">um analista bem treinado com acesso a IA processa hoje o volume de informacao que antes exigia uma equipe de 5 em um trimestre</strong>. O risco e igual: velocidade amplifica tanto insights reais quanto preconceitos do pesquisador.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5 flex items-center">
+          <span class="mr-2">&#128203;</span> Aplicacoes de IA na Fase de Descoberta
+        </h3>
+        <div class="space-y-5">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">A</span>
+            </div>
+            <div>
+              <h4 class="font-semibold text-purple-400 mb-1">Sintese de entrevistas e feedbacks</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-5-t2-a">Transcrever e analisar 50 entrevistas com usuarios levava dias. Hoje um assistente de linguagem extrai temas recorrentes, contradicoes e citacoes-chave em minutos. Empresas como Dovetail e Notion AI embarcaram isso direto no fluxo de pesquisa de produto. O pesquisador ganha tempo para o que realmente importa: formular as perguntas certas e interpretar nuances.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">B</span>
+            </div>
+            <div>
+              <h4 class="font-semibold text-purple-400 mb-1">Mapeamento de tendencias e sinais fracos</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-5-t2-b">Ferramentas de IA vasculham publicacoes academicas, patentes, discussoes em comunidades e relatorios setoriais para identificar temas emergentes antes que virem mainstream. O MIT Media Lab e o Stanford d.school usam IA para monitorar sinais de disrupcao em seus setores de pesquisa. Para equipes de inovacao corporativa, isso significa antecipar ameacas e oportunidades com 12-18 meses de antecedencia.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">C</span>
+            </div>
+            <div>
+              <h4 class="font-semibold text-purple-400 mb-1">Analise competitiva acelerada</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-5-t2-c">Mapear posicionamento, estrategia de produto e movimentos recentes de 20 concorrentes costumava ser um projeto de consultoria. Hoje um analista com acesso a IA faz uma versao inicial em 2 horas. O BCG reportou reducao de 40-60% no tempo de analise competitiva em times que adotaram IA como co-piloto de pesquisa (BCG, "AI-Powered Innovation", 2024).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">&#9888;&#65039;</span> Armadilha: Pesquisa de Echo Chamber
+        </h3>
+        <p class="text-neutral-300">Se voce pede a um assistente de IA para "confirmar que sua hipotese faz sentido", ele vai encontrar evidencias para isso — mesmo que a hipotese seja errada. IA e extremamente boa em confirmar o que voce ja acredita. A disciplina de pesquisa exige formular perguntas abertas: "Quais evidencias contradizem nossa hipotese?" e "O que poderiamos estar ignorando?" O ceticismo metodico e uma habilidade humana insubstituivel.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: IA na ideacao e prototipagem -->
+    <section id="topico-3" data-inema-topic="modulo-3-5#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#128161; IA na Ideacao e Prototipagem: Gerar e Iterar Rapido</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-5-t3-p1">
+        A ideacao classica sofre de dois problemas: <strong class="text-purple-400">vieses de disponibilidade</strong> (pensamos em solucoes que ja vimos) e <strong class="text-purple-400">inibicao social</strong> (nao falamos as ideias mais loucas em grupo). IA resolve os dois. Assistentes de linguagem geram dezenas de variacoes de uma ideia sem julgamento, cruzam dominios distantes e propoe analogias inusitadas — exatamente o que os melhores facilitadores de brainstorming tentam provocar manualmente.
+      </p>
+
+      <!-- Timeline de maturidade da prototipagem com IA -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5 flex items-center">
+          <span class="mr-2">&#9654;&#65039;</span> Da Ideia ao Prototipo Testavel em Horas
+        </h3>
+        <div class="space-y-5">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-sm">1</div>
+            <div class="flex-1 pb-5 border-b border-dark-600">
+              <h4 class="font-semibold text-purple-400 mb-1">Geracao de variantes (30 min)</h4>
+              <p class="text-sm text-neutral-300">Descrever o problema para um assistente de linguagem e pedir 20 abordagens distintas de solucao, incluindo analogias de outros setores. O time avalia e seleciona as 3-5 mais promissoras. Reduz de 2 dias de brainstorming para meia hora.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-sm">2</div>
+            <div class="flex-1 pb-5 border-b border-dark-600">
+              <h4 class="font-semibold text-purple-400 mb-1">Prototipo de texto (1-2h)</h4>
+              <p class="text-sm text-neutral-300">Roteiro de onboarding, copy de landing page, fluxo de conversa de chatbot — tudo pode virar um rascunho testavel em horas. O "prototipo de papel" do Design Thinking ganha uma camada de realismo sem custo de desenvolvimento.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-sm">3</div>
+            <div class="flex-1 pb-5 border-b border-dark-600">
+              <h4 class="font-semibold text-purple-400 mb-1">Prototipo funcional (1-3 dias)</h4>
+              <p class="text-sm text-neutral-300">Assistentes de codigo (GitHub Copilot, Cursor) permitem que um designer ou analista de negocio construa um MVP funcional sem ser desenvolvedor senior. Empresas como Klarna reportaram reducao de 50% no time-to-first-prototype (Klarna, relatorio anual 2024).</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-sm">4</div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Iteracao acelerada</h4>
+              <p class="text-sm text-neutral-300">Feedback do usuario vira input para nova rodada de IA em horas. O ciclo Build-Measure-Learn (Lean Startup) encurta de semanas para dias. Startups que usam IA no loop de prototipagem chegam ao product-market fit em media 40% mais rapido (a16z, 2024).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Usar IA para ideacao quando</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span>O problema esta bem definido (JTBD, HMW)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span>Precisa de volume de opcoes para filtrar</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span>Quer cruzar solucoes de outros setores</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span>Prototipar texto, UI, fluxos rapido</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Nao delegar a IA</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span>Definir o problema (isso e descoberta humana)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span>Escolher qual ideia perseguir (julgamento estrategico)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span>Validar com usuario real (empatia nao se delega)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span>Tomar decisao de investimento</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: IA na experimentacao e analise de dados -->
+    <section id="topico-4" data-inema-topic="modulo-3-5#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#128200; IA na Experimentacao e Analise de Dados</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-5-t4-p1">
+        Experimentar rapido nao basta se voce nao consegue aprender rapido com os resultados. A fase de experimentacao tem dois gargalos classicos: <strong class="text-purple-400">planejar experimentos rigoros</strong> (exige conhecimento de estatistica que a maioria dos times nao tem) e <strong class="text-purple-400">analisar e interpretar dados</strong> (exige tempo e expertise analitica). IA resolve os dois. Com um bom prompt, qualquer gerente de produto consegue planejar um teste A/B estatisticamente valido e interpretar os resultados sem ser cientista de dados.
+      </p>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">&#128202;</span> Dados: IA no Ciclo de Experimentacao
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Design de experimento</h4>
+            <p class="text-xs text-neutral-300">IA ajuda a formular hipoteses testaveis, calcular tamanho de amostra, identificar variaveis de confusao e escolher a metrica certa. O Google e a Booking.com usam IA para automatizar o design de centenas de experimentos simultaneos.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Analise e interpretacao</h4>
+            <p class="text-xs text-neutral-300">Apos o experimento, IA sintetiza os resultados, identifica segmentos com comportamento diferente (ex: "o teste funcionou para usuarios mobile mas nao para desktop") e sugere proximos passos. O que levava 2 semanas de analise leva 2 horas.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Deteccao de anomalias</h4>
+            <p class="text-xs text-neutral-300">Modelos de ML identificam padroes inusitados nos dados de experimento — usuarios que se comportam diferente, efeitos colaterais inesperados, metricas que pioram enquanto outras melhoram. Amazon e Netflix usam isso em escala industrial.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Democratizacao da analise</h4>
+            <p class="text-xs text-neutral-300">Com ferramentas como Julius AI e ChatGPT com Code Interpreter, qualquer colaborador carrega um CSV e faz analise exploratoria em linguagem natural. O gargalo de dados deixa de ser "acesso ao time de dados" e passa a ser "qualidade da pergunta".</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-4">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">&#128161;</span> Regra dos 10x Experimentos
+        </h3>
+        <p class="text-neutral-300">Uma das metricas mais poderosas para avaliar o impacto da IA no sistema de inovacao e o numero de experimentos rodados por trimestre. Empresas que adotam IA no ciclo de experimentacao tipicamente chegam a <strong class="text-white">10x mais experimentos com o mesmo time</strong> (McKinsey, "The State of AI", 2024). Nao porque ficam mais lentas, mas porque o custo de cada experimento cai drasticamente. Se voce esta rodando 10 experimentos por trimestre, a meta com IA e 100. O aprendizado acumulado e exponencial.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Riscos -->
+    <section id="topico-5" data-inema-topic="modulo-3-5#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#9888;&#65039; Riscos Reais: Vies, Alucinacao, Etica e Governanca</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-5-t5-p1">
+        O otimismo com IA e real, mas o hype frequentemente esconde riscos sistemicos que podem corroer a credibilidade do programa de inovacao. <strong class="text-purple-400">Adotar IA sem governanca e como contratar 100 consultores junior ao mesmo tempo sem processo de revisao</strong> — velocidade alta, qualidade inconsistente, e os erros sao magnificados. Conhecer os riscos nao e razao para nao adotar; e razao para adotar com maturidade.
+      </p>
+
+      <div class="space-y-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-red-500/30 p-5">
+          <div class="flex items-start space-x-4">
+            <span class="text-red-400 text-2xl mt-0.5">&#9888;&#65039;</span>
+            <div>
+              <h4 class="font-semibold text-red-400 mb-2">Vies e discriminacao</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-5-t5-vies">Modelos de linguagem sao treinados em dados historicos que refletem preconceitos humanos. Em inovacao, isso significa que ao pedir "exemplos de empreendedores de sucesso", o modelo vai super-representar homens brancos do Vale do Silicio. Insights sobre usuarios podem estar enviesados para determinados demograficos. Auditoria regularar de outputs e diversidade de pessoas que usam e revisam a IA sao contra-medidas essenciais.</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-red-500/30 p-5">
+          <div class="flex items-start space-x-4">
+            <span class="text-red-400 text-2xl mt-0.5">&#128308;</span>
+            <div>
+              <h4 class="font-semibold text-red-400 mb-2">Alucinacao e conteudo incorreto</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-5-t5-aluc">Modelos de linguagem inventam fatos com confianca. Um relatorio de tendencias gerado por IA pode citar estatisticas que nao existem, atribuir citacoes a pessoas erradas ou descrever estudos ficticios. Em 2023, um advogado americano submeteu peticao com casos juridicos inventados pelo ChatGPT e foi multado. Em inovacao, decisoes estrategicas baseadas em dados alucinados podem custar milhoes. Regra obrigatoria: toda claim factual gerada por IA precisa de verificacao em fonte primaria.</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-red-500/30 p-5">
+          <div class="flex items-start space-x-4">
+            <span class="text-red-400 text-2xl mt-0.5">&#128274;</span>
+            <div>
+              <h4 class="font-semibold text-red-400 mb-2">Privacidade e governanca de dados</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-5-t5-priv">Ao usar ferramentas de IA na nuvem com dados de clientes, entrevistas de usuarios ou informacoes estrategicas confidenciais, voce pode estar violando LGPD, GDPR ou contratos de confidencialidade. Samsung proibiu o uso do ChatGPT apos funcionarios enviarem codigo-fonte proprietario para o servico. Toda empresa precisa de uma politica clara: quais dados podem entrar em qual ferramenta de IA. Isso nao e opcional — e pre-requisito juridico.</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-red-500/30 p-5">
+          <div class="flex items-start space-x-4">
+            <span class="text-red-400 text-2xl mt-0.5">&#129302;</span>
+            <div>
+              <h4 class="font-semibold text-red-400 mb-2">Dependencia e atrofia de capacidades</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-5-t5-dep">Times que delegam todo o pensamento critico para IA perdem a capacidade de pensar sem ela. Em inovacao, isso e especialmente perigoso: a intuicao sobre o usuario, o senso critico sobre dados e a capacidade de fazer perguntas disruptivas sao musculos que atrofiam sem uso. Use IA para amplificar o pensamento, nao para substitui-lo. O melhor indicador: voce consegue defender cada decisao com seu proprio raciocinio?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5">
+        <h3 class="text-base font-semibold text-primary mb-2">&#128161; A Regra do Copiloto</h3>
+        <p class="text-neutral-300 text-sm">Um piloto de aviao usa o autopiloto, mas nunca delega a decisao de pousar em condicoes adversas. Trate a IA como copiloto: ela mantem altitude, voce decide as curvas criticas. Em inovacao, as curvas criticas sao: definir o problema, julgar insights sobre o usuario, tomar decisoes de portfolio e defender a etica das solucoes.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Como adotar bem -->
+    <section id="topico-6" data-inema-topic="modulo-3-5#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#128640; Como Adotar Bem: Casos de Uso, Pilotos e Upskilling</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-5-t6-p1">
+        A maioria das empresas falha na adocao de IA por dois motivos opostos: ou vai amplo demais ("todos vao usar IA em tudo") sem profundidade, ou vai profundo demais em um caso isolado sem escalar o aprendizado. O caminho certo e <strong class="text-purple-400">pilotos focados em casos de uso especificos, com metricas claras, conectados a upskilling progressivo do time</strong>. Nao e sobre a ferramenta — e sobre o novo fluxo de trabalho.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-5 flex items-center">
+          <span class="mr-2">&#128196;</span> Framework de Adocao em 3 Fases
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Fase 1: Piloto (0-3 meses)</h4>
+            <ul class="text-xs text-neutral-300 space-y-1">
+              <li>&#8226; Escolher 1-2 casos de uso de alto impacto</li>
+              <li>&#8226; Time pequeno (5-8 pessoas)</li>
+              <li>&#8226; Medir antes e depois (tempo, qualidade)</li>
+              <li>&#8226; Documentar o novo fluxo de trabalho</li>
+              <li>&#8226; Identificar riscos e criar guardrails</li>
+            </ul>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Fase 2: Expansao (3-9 meses)</h4>
+            <ul class="text-xs text-neutral-300 space-y-1">
+              <li>&#8226; Publicar o playbook do piloto</li>
+              <li>&#8226; Treinar 3-4 times adicionais</li>
+              <li>&#8226; Adicionar 2-3 novos casos de uso</li>
+              <li>&#8226; Criar comunidade interna de pratica</li>
+              <li>&#8226; Refinar politica de dados e uso</li>
+            </ul>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Fase 3: Institucional (9-18 meses)</h4>
+            <ul class="text-xs text-neutral-300 space-y-1">
+              <li>&#8226; IA embutida nos processos core</li>
+              <li>&#8226; Upskilling continuo e onboarding</li>
+              <li>&#8226; Governanca formal de IA (AI council)</li>
+              <li>&#8226; KPIs de adocao e impacto</li>
+              <li>&#8226; Revisao de ferramentas anualmente</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5 flex items-center">
+          <span class="mr-2">&#127919;</span> Casos de Uso de Alta Alavancagem para Comecar
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">&#128269; Pesquisa e sintese</h4>
+            <p class="text-xs text-neutral-300">Sintetizar entrevistas de usuario, mapear mercado, analisar feedback de produto. Impacto imediato, risco baixo, facil de medir (tempo antes vs. depois).</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">&#9997;&#65039; Geracao de conteudo interno</h4>
+            <p class="text-xs text-neutral-300">Rascunho de documentos de estrategia, apresentacoes, emails de comunicacao de projetos. Time gasta tempo em decisao, nao em digitacao.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">&#128202; Analise de dados</h4>
+            <p class="text-xs text-neutral-300">Interpretar resultados de experimentos, identificar padroes em feedback de clientes, monitorar KPIs. Democratiza acesso a insights sem bottleneck de dados.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">&#128296; Prototipagem tecnica</h4>
+            <p class="text-xs text-neutral-300">Codigo de MVPs, automacoes de fluxo, scripts de analise. Times de produto sem desenvolvedor dedicado ganham autonomia para testar hipoteses tecnicas.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Upskilling que funciona</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span>Aprender fazendo: missoes praticas em casos reais do time</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span>Comunidade interna: Slack de "prompts que funcionaram"</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span>Horas protegidas para experimentar (ex.: 2h/semana)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span>Reconhecer quem compartilha descobertas publicamente</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Erros de adocao comuns</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span>Treinamento teorico sem aplicacao imediata</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span>Comprar licencas sem definir casos de uso</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span>Nao medir o impacto (impossivel justificar o investimento)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span>Tratar IA como projeto de TI, nao de negocio</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">&#128203;</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">IA como multiplicador, nao substituto</strong>
+              <span class="text-neutral-400"> - Amplifica o que ja existe; cultura forte + IA = resultado exponencial</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Alta alavancagem nas fases de descoberta, ideacao e experimentacao</strong>
+              <span class="text-neutral-400"> - Pesquisa 3x mais rapida, 5x mais ideias, 10x mais experimentos</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Riscos reais exigem governanca real</strong>
+              <span class="text-neutral-400"> - Vies, alucinacao, privacidade e dependencia sao riscos sistemicos, nao teoricos</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Adotar em fases com casos de uso claros</strong>
+              <span class="text-neutral-400"> - Piloto, expansao, institucional; medir impacto em cada etapa</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Upskilling e cultura de compartilhamento</strong>
+              <span class="text-neutral-400"> - Times aprendem fazendo, nao em aulas; comunidade interna acelera a curva</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-purple-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">3.6 - Casos Reais de Inovacao</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-3-6.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">
+            3.6 - Casos Reais &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

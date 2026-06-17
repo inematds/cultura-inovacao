@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Prototipagem Rapida | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
+      <span>/</span>
+      <span class="text-blue-400">Modulo 2.8</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MODULO 2.8</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#128296; Prototipagem Rapida</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Pensar com as maos: como construir na fidelidade certa, pelo menor custo possivel, para aprender o maximo antes de investir. Da IDEO a empresas como Airbnb e Dropbox, o prototipo e a ferramenta mais poderosa contra o desperdicio.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">40</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="2-8" data-inema-track="2">
+
+    <!-- TOPICO 1: Por que prototipar -->
+    <section id="topico-1" data-inema-topic="modulo-2-8#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#129504; Por que Prototipar</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-8-t1-p1">
+        Na IDEO, a empresa de design fundada por David Kelley em 1991, existe uma maxima que guia cada projeto: <strong class="text-blue-400">"Nunca va a uma reuniao sem um prototipo."</strong> Tom Kelley, em "The Art of Innovation" (2001), descreve como a cultura de prototipar rapidamente distingue equipes que inovam de equipes que apenas planejam inovar. O prototipo nao e a solucao final — e uma pergunta fisica que voce faz ao mundo real.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">&#128218;</span> Tom Kelley, IDEO
+        </h3>
+        <p class="text-neutral-300 mb-3">"Prototyping is the shorthand of innovation. The faster you can make your ideas physical, the sooner you can start learning."</p>
+        <p class="text-neutral-400 text-sm">Tom Kelley &amp; Jonathan Littman, "The Art of Innovation" (2001) — IDEO</p>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-8-t1-p2">
+        Prototipar e <strong class="text-blue-400">pensar com as maos</strong>. Quando voce tira uma ideia da cabeca e a torna tangivel — mesmo que seja um cartao de papel ou uma sequencia de post-its — o seu cerebro, e o cerebro dos outros, comeca a ver problemas que nenhuma apresentacao revelaria. Harvard Business School estima que times que prototipam cedo reduzem o custo de correccao de erros em ate <strong class="text-blue-400">5x</strong> comparado a corrigir no produto final. A logica e simples: errar no papel custa nada; errar no codigo custa uma sprint; errar no lancamento custa uma empresa.
+      </p>
+
+      <!-- SVG FUTURISTA: Custo do erro por fase -->
+      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-4 mb-6">
+        <svg viewBox="0 0 680 220" class="w-full h-auto" role="img" aria-label="Diagrama: custo do erro aumenta exponencialmente da prototipagem ao lancamento" font-family="Inter,sans-serif">
+          <defs>
+            <linearGradient id="m2-8-grad-bar" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.5"/>
+            </linearGradient>
+            <linearGradient id="m2-8-grad-cyan" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.5"/>
+            </linearGradient>
+            <filter id="m2-8-glow">
+              <feGaussianBlur stdDeviation="1.8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m2-8-grid" patternUnits="userSpaceOnUse" width="20" height="20">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e3a5f" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <!-- fundo grid -->
+          <rect width="680" height="220" fill="url(#m2-8-grid)" rx="12"/>
+          <rect width="680" height="220" fill="#0e1622" fill-opacity="0.6" rx="12"/>
+          <!-- titulo -->
+          <text x="340" y="26" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="600">Custo do Erro por Fase — Prototipar Cedo Poupa Muito</text>
+          <!-- barras -->
+          <!-- Prototipo papel -->
+          <rect x="60" y="155" width="60" height="18" rx="4" fill="url(#m2-8-grad-bar)" filter="url(#m2-8-glow)" class="wf-a"/>
+          <text x="90" y="148" text-anchor="middle" fill="#9ad6ff" font-size="10">1x</text>
+          <text x="90" y="187" text-anchor="middle" fill="#94a3b8" font-size="10">Papel</text>
+          <!-- Prototipo digital -->
+          <rect x="170" y="135" width="60" height="38" rx="4" fill="url(#m2-8-grad-bar)" class="wf-a"/>
+          <text x="200" y="128" text-anchor="middle" fill="#9ad6ff" font-size="10">3x</text>
+          <text x="200" y="187" text-anchor="middle" fill="#94a3b8" font-size="10">Digital</text>
+          <!-- MVP -->
+          <rect x="280" y="105" width="60" height="68" rx="4" fill="url(#m2-8-grad-cyan)" class="wf-a"/>
+          <text x="310" y="98" text-anchor="middle" fill="#38bdf8" font-size="10">10x</text>
+          <text x="310" y="187" text-anchor="middle" fill="#94a3b8" font-size="10">MVP</text>
+          <!-- Beta -->
+          <rect x="390" y="75" width="60" height="98" rx="4" fill="url(#m2-8-grad-cyan)" class="wf-a"/>
+          <text x="420" y="68" text-anchor="middle" fill="#38bdf8" font-size="10">30x</text>
+          <text x="420" y="187" text-anchor="middle" fill="#94a3b8" font-size="10">Beta</text>
+          <!-- Lancamento -->
+          <rect x="500" y="45" width="60" height="128" rx="4" fill="#f43f5e" fill-opacity="0.7" class="wf-a"/>
+          <text x="530" y="38" text-anchor="middle" fill="#fb7185" font-size="10">100x</text>
+          <text x="530" y="187" text-anchor="middle" fill="#94a3b8" font-size="10">Lancamento</text>
+          <!-- linha base -->
+          <line x1="40" y1="173" x2="640" y2="173" stroke="#374151" stroke-width="1"/>
+          <!-- label custo -->
+          <text x="24" y="177" fill="#6b7280" font-size="9" transform="rotate(-90 24 177)">Custo</text>
+        </svg>
+        <p class="text-xs text-neutral-500 mt-2 text-center">Ilustrativo — baseado em estimativas da literatura de inovacao (IDEO, HBR)</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800/50 rounded-lg p-4 border border-blue-500/30">
+          <div class="text-blue-400 font-bold text-sm mb-1">&#128170; Tangibilidade</div>
+          <p class="text-neutral-400 text-sm">Ideias abstratas tornam-se objetos concretos que outras pessoas podem ver, tocar e criticar.</p>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-4 border border-blue-500/30">
+          <div class="text-blue-400 font-bold text-sm mb-1">&#9889; Velocidade</div>
+          <p class="text-neutral-400 text-sm">Uma tarde de prototipagem substitui semanas de debate em reuniao — voce aprende fazendo.</p>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-4 border border-blue-500/30">
+          <div class="text-blue-400 font-bold text-sm mb-1">&#128270; Clareza</div>
+          <p class="text-neutral-400 text-sm">O prototipo revela suposicoes ocultas que nem o time sabia que estava fazendo.</p>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 2: Niveis de fidelidade -->
+    <section id="topico-2" data-inema-topic="modulo-2-8#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#128207; Niveis de Fidelidade: Low vs High</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-8-t2-p1">
+        Fidelidade e o grau de acabamento e realismo de um prototipo. Nao existe fidelidade universalmente "melhor" — existe <strong class="text-blue-400">fidelidade adequada para a pergunta que voce quer responder</strong>. A IDEO usa o principio de construir "rough, rapid, right": o prototipo deve ser grosseiro o suficiente para nao ser confundido com o produto final, rapido o suficiente para nao criar apego, e certo o suficiente para testar a hipotese central.
+      </p>
+
+      <!-- Timeline de fidelidade -->
+      <div class="space-y-4 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">L1</div>
+          <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-700 flex-1">
+            <div class="font-semibold text-blue-400 mb-1">Papel e Caneta (minutos)</div>
+            <p class="text-neutral-400 text-sm">Esbocos, fluxogramas, storyboards. Custo quase zero. Ideal para explorar 10 ideias antes de escolher 1. Tom Kelley chama de "the napkin stage" — a fase do guardanapo.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">L2</div>
+          <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-700 flex-1">
+            <div class="font-semibold text-blue-400 mb-1">Prototipo Fisico Basico (horas)</div>
+            <p class="text-neutral-400 text-sm">Cartolina, EVA, impressao 3D rapida, mockup de papel de tela. Testa forma, ergonomia, fluxo de interacao. A IDEO utilizou essa abordagem no redesenho do carrinho de supermercado (1999, ABC Nightline).</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">L3</div>
+          <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-700 flex-1">
+            <div class="font-semibold text-blue-400 mb-1">Wireframe e Mockup Digital (dias)</div>
+            <p class="text-neutral-400 text-sm">Figma, Balsamiq, Adobe XD. Testa fluxo de navegacao e arquitetura de informacao sem escrever codigo. Feedback de usuarios ja e valido nesse nivel.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">L4</div>
+          <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-700 flex-1">
+            <div class="font-semibold text-blue-400 mb-1">Prototipo de Alta Fidelidade (semanas)</div>
+            <p class="text-neutral-400 text-sm">Codigo funcional, design system aplicado, dados reais ou simulados. Use somente quando ja tiver validado hipoteses de valor e usabilidade nos niveis anteriores.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid fazer vs evitar -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-emerald-900/20 rounded-lg p-4 border border-emerald-500/30">
+          <div class="font-semibold text-emerald-400 mb-3 flex items-center"><span class="mr-2">&#10003;</span> Baixa fidelidade quando...</div>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li>Voce ainda esta explorando o espaco do problema</li>
+            <li>Ha mais de 2 direcoes possiveis em discussao</li>
+            <li>O time nao chegou a consenso sobre o que testar</li>
+            <li>O prazo e medido em dias, nao semanas</li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-lg p-4 border border-red-500/30">
+          <div class="font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">&#10007;</span> Alta fidelidade prematura quando...</div>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li>Voce ainda nao sabe se o usuario quer o produto</li>
+            <li>A hipotese de valor nao foi testada</li>
+            <li>O feedback do usuario seria sobre estetica, nao substancia</li>
+            <li>O prototipo ficou "bonito demais para destruir"</li>
+          </ul>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 3: Tipos de prototipo -->
+    <section id="topico-3" data-inema-topic="modulo-2-8#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#127912; Tipos de Prototipo</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-8-t3-p1">
+        Nao existe um unico tipo de prototipo. A escolha depende do que voce quer aprender: comportamento do usuario, viabilidade tecnica, modelo de negocio ou demanda de mercado. Cada tipo de prototipo cobre um dominio diferente de incerteza. A IDEO cataloga dezenas de tecnicas; aqui estao as cinco mais utilizadas em inovacao corporativa e startups.
+      </p>
+
+      <!-- Cards de tipos -->
+      <div class="space-y-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="flex items-start space-x-4">
+            <span class="text-2xl flex-shrink-0">&#128196;</span>
+            <div>
+              <div class="font-bold text-blue-400 mb-1">Paper Prototype</div>
+              <p class="text-neutral-400 text-sm mb-2">Interfaces desenhadas a mao em papel. Testador simula a tecnologia respondendo a acoes do usuario. Criado por Rettig (1994) e popularizado pela IDEO para telas de software antes de qualquer codigo.</p>
+              <div class="text-xs text-neutral-500">Custo: R$ 0 — Tempo: 1 hora — Aprende: fluxo e arquitetura de informacao</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="flex items-start space-x-4">
+            <span class="text-2xl flex-shrink-0">&#129302;</span>
+            <div>
+              <div class="font-bold text-blue-400 mb-1">Wizard of Oz</div>
+              <p class="text-neutral-400 text-sm mb-2">O usuario acredita estar interagindo com um sistema real, mas um humano por traz executa as respostas. Classico em IA conversacional: a IBM usou para validar o Watson Assistant antes de construir o NLP. Airbnb testou fotografia profissional de quartos pagando fotografos pessoalmente antes de automatizar.</p>
+              <div class="text-xs text-neutral-500">Custo: baixo — Tempo: dias — Aprende: se o comportamento do usuario muda com a solucao</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="flex items-start space-x-4">
+            <span class="text-2xl flex-shrink-0">&#128640;</span>
+            <div>
+              <div class="font-bold text-blue-400 mb-1">MVP (Minimum Viable Product)</div>
+              <p class="text-neutral-400 text-sm mb-2">Produto funcional com o minimo de features para gerar aprendizado. Conceito de Eric Ries em "The Lean Startup" (2011). Dropbox lancou um video de 3 minutos antes de escrever uma linha de codigo — 75.000 cadastros em uma noite validaram a demanda.</p>
+              <div class="text-xs text-neutral-500">Custo: variavel — Tempo: semanas — Aprende: se o mercado quer a solucao</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="flex items-start space-x-4">
+            <span class="text-2xl flex-shrink-0">&#128101;</span>
+            <div>
+              <div class="font-bold text-blue-400 mb-1">Concierge</div>
+              <p class="text-neutral-400 text-sm mb-2">Voce entrega o servico manualmente, sem tecnologia, para um pequeno grupo de usuarios reais. Food on the Table (startup de receitas) atendeu pessoalmente 1 familia antes de escalar. Manual Insurance (fintech) processava apolices via planilha antes de automatizar. Aprende-se tudo sobre o fluxo real de entrega.</p>
+              <div class="text-xs text-neutral-500">Custo: tempo da equipe — Tempo: dias a semanas — Aprende: como o servico funciona na pratica</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="flex items-start space-x-4">
+            <span class="text-2xl flex-shrink-0">&#128168;</span>
+            <div>
+              <div class="font-bold text-blue-400 mb-1">Smoke Test</div>
+              <p class="text-neutral-400 text-sm mb-2">Anuncio ou landing page que vende algo que ainda nao existe para medir intencao real de compra. Buffer (app de agendamento) vendeu assinaturas via landing page simples antes de escrever codigo. Metricas: CTR, cadastro, e ate compra — se alguem clica em "Comprar", a hipotese de demanda esta validada.</p>
+              <div class="text-xs text-neutral-500">Custo: R$ 100-500 em ads — Tempo: 1 semana — Aprende: intencao de pagamento do mercado</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-lg p-4 mb-6">
+        <div class="font-semibold text-primary mb-2">&#128161; Dica IDEO</div>
+        <p class="text-neutral-300 text-sm">Tom Kelley recomenda combinar tipos em sequencia: comece com Paper Prototype para o fluxo, avance para Wizard of Oz quando o fluxo estiver certo, e use Concierge ou Smoke Test para validar demanda de mercado. Cada tipo responde uma pergunta diferente — nao os use em paralelo sem uma hipotese clara por tipo.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 4: Escolher a fidelidade certa -->
+    <section id="topico-4" data-inema-topic="modulo-2-8#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#127919; Escolher a Fidelidade Certa para a Pergunta</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-8-t4-p1">
+        A maior fonte de desperdicio em prototipagem nao e construir o prototipo errado — e construir o prototipo certo com a fidelidade errada. Um time que usa Figma interativo para descobrir se o usuario quer o produto gastou 3 dias em vez de 3 horas. Um time que usa um cartao de papel para testar performance tecnica nunca vai conseguir o dado que precisa. A fidelidade deve ser guiada pela <strong class="text-blue-400">hipotese que voce esta testando</strong>, nao pelo nivel de conforto do time ou pelo desejo de impressionar stakeholders.
+      </p>
+
+      <!-- Matriz de decisao -->
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-blue-900/30">
+              <th class="text-left p-3 border border-blue-500/20 text-blue-400">Pergunta / Hipotese</th>
+              <th class="text-left p-3 border border-blue-500/20 text-blue-400">Fidelidade Ideal</th>
+              <th class="text-left p-3 border border-blue-500/20 text-blue-400">Tipo Recomendado</th>
+            </tr>
+          </thead>
+          <tbody class="text-neutral-300">
+            <tr class="border-b border-dark-700 hover:bg-dark-800/50">
+              <td class="p-3 border border-dark-700">O usuario entende o fluxo?</td>
+              <td class="p-3 border border-dark-700">Baixa</td>
+              <td class="p-3 border border-dark-700">Paper Prototype</td>
+            </tr>
+            <tr class="border-b border-dark-700 hover:bg-dark-800/50">
+              <td class="p-3 border border-dark-700">O usuario consegue completar a tarefa?</td>
+              <td class="p-3 border border-dark-700">Media</td>
+              <td class="p-3 border border-dark-700">Wireframe clicavel (Figma)</td>
+            </tr>
+            <tr class="border-b border-dark-700 hover:bg-dark-800/50">
+              <td class="p-3 border border-dark-700">O mercado quer pagar pela solucao?</td>
+              <td class="p-3 border border-dark-700">Baixa (comunicacao)</td>
+              <td class="p-3 border border-dark-700">Smoke Test / Landing Page</td>
+            </tr>
+            <tr class="border-b border-dark-700 hover:bg-dark-800/50">
+              <td class="p-3 border border-dark-700">O servico e operacionalmente viavel?</td>
+              <td class="p-3 border border-dark-700">Funcional manual</td>
+              <td class="p-3 border border-dark-700">Concierge</td>
+            </tr>
+            <tr class="border-b border-dark-700 hover:bg-dark-800/50">
+              <td class="p-3 border border-dark-700">A IA responde de forma util?</td>
+              <td class="p-3 border border-dark-700">Funcional simulada</td>
+              <td class="p-3 border border-dark-700">Wizard of Oz</td>
+            </tr>
+            <tr class="hover:bg-dark-800/50">
+              <td class="p-3 border border-dark-700">O produto e robusto para escala?</td>
+              <td class="p-3 border border-dark-700">Alta</td>
+              <td class="p-3 border border-dark-700">MVP tecnico</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-8-t4-p2">
+        Uma regra pratica da IDEO: <strong class="text-blue-400">construa o prototipo com a fidelidade minima que ainda gera o dado que voce precisa para tomar a decisao</strong>. Se um post-it responde a pergunta, nao abra o Figma. Se o Figma responde, nao escreva codigo. Se o codigo responde, nao lance. Cada nivel de fidelidade acima do necessario e custo de oportunidade — tempo que voce poderia ter usado para testar a proxima hipotese.
+      </p>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-lg p-4 mb-6">
+        <div class="font-semibold text-primary mb-2">&#128161; Framework de 3 Perguntas (IDEO)</div>
+        <ol class="list-decimal list-inside space-y-2 text-neutral-300 text-sm">
+          <li><strong class="text-white">O que eu preciso aprender?</strong> — Define a hipotese central do prototipo.</li>
+          <li><strong class="text-white">Qual e a fidelidade minima que gera esse aprendizado?</strong> — Evita overkill.</li>
+          <li><strong class="text-white">Quanto tempo tenho?</strong> — Divide o tempo disponivel por 3; o prototipo deve caber no primeiro terco.</li>
+        </ol>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 5: O que testar em cada prototipo -->
+    <section id="topico-5" data-inema-topic="modulo-2-8#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#128202; O que Testar em Cada Prototipo</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-8-t5-p1">
+        Testar um prototipo sem saber o que voce quer medir e como realizar uma pesquisa sem hipotese: voce colhe dados mas nao sabe o que fazer com eles. A IDEO treina suas equipes a definir <strong class="text-blue-400">metricas de aprendizado</strong> antes de construir — nao metricas de vaidade. "Quantas pessoas gostaram?" e uma metrica de vaidade. "Quantas pessoas completaram a tarefa sem ajuda?" e uma metrica de aprendizado.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-dark-800/50 rounded-lg p-4 border border-blue-500/30">
+          <div class="text-blue-400 font-semibold mb-3">Paper Prototype — o que medir</div>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Numero de erros de navegacao sem assistencia</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Tempo para completar o fluxo principal</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Pontos de confusao (onde o usuario para e pergunta)</span></li>
+          </ul>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-4 border border-blue-500/30">
+          <div class="text-blue-400 font-semibold mb-3">Wizard of Oz — o que medir</div>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>O usuario percebe que e humano atras? (Teste de Turing basico)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>A resposta do "sistema" resolve o problema do usuario?</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Quantas interacoes sao necessarias para satisfazer a necessidade?</span></li>
+          </ul>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-4 border border-blue-500/30">
+          <div class="text-blue-400 font-semibold mb-3">Smoke Test — o que medir</div>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Taxa de clique no CTA (CTR)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Taxa de cadastro / pre-compra</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Custo por lead qualificado (benchmark: &lt;R$ 30 B2C)</span></li>
+          </ul>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-4 border border-blue-500/30">
+          <div class="text-blue-400 font-semibold mb-3">Concierge — o que medir</div>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Horas de trabalho manual por entrega (define custo de escala)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>Quais etapas os usuarios mais valorizam</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#10003;</span><span>NPS apos 1a experiencia (meta: acima de +50)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4 mb-6">
+        <div class="font-semibold text-blue-400 mb-3">&#128200; Dados reais de aprendizado — casos</div>
+        <div class="space-y-3 text-sm text-neutral-300">
+          <div><strong class="text-white">Airbnb (2008):</strong> Paper prototype + Concierge — Brian Chesky e Joe Gebbia hospedaram pessoalmente os primeiros 3 usuarios para entender o que tornava a experiencia boa. Aprendizado: fotos profissionais eram o principal driver de conversao. Resultado: +200% de receita apos implementar fotografia.</div>
+          <div><strong class="text-white">Dropbox (2008):</strong> Smoke Test — video de 3 minutos gerou 75.000 cadastros em 1 noite. Aprendizado principal: o problema de sincronizacao de arquivos era mais comum e mais doloroso do que qualquer pesquisa de mercado sugeria.</div>
+          <div><strong class="text-white">IDEO — carrinho de compras (1999):</strong> Paper + prototipo fisico rapido em 5 dias. Aprendizado: pais odiavam perder os filhos de vista; a solucao (suporte de cesto na lateral) surgiu do prototipo, nao do briefing.</div>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 6: Armadilhas -->
+    <section id="topico-6" data-inema-topic="modulo-2-8#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#9888;&#65039; Armadilhas da Prototipagem</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-8-t6-p1">
+        Tom Kelley dedica um capitulo inteiro de "The Ten Faces of Innovation" (2005) ao que chama de <strong class="text-blue-400">"the prototyping traps"</strong>: armadilhas que transformam uma ferramenta poderosa em fonte de desperdicio. A mais comum e a mais devastadora e o apego emocional ao prototipo — o que a IDEO chama de "falling in love with the prototype". Quando o time investe dias num prototipo bonito, o cerebro para de tratar o prototipo como hipotese e comeca a trata-lo como produto.
+      </p>
+
+      <!-- Grid armadilhas -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-red-900/20 rounded-lg p-4 border border-red-500/30">
+          <div class="font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">&#128148;</span> Apaixonar-se pelo Prototipo</div>
+          <p class="text-neutral-300 text-sm mb-2">O time investe tempo demais no prototipo e passa a defende-lo nos testes em vez de observar. Sintomas: "o usuario nao entendeu a interface", "o teste estava mal configurado", "esse usuario nao e o nosso publico-alvo".</p>
+          <div class="text-red-400 text-xs font-medium">Fix: limite de tempo rigido + descarte obrigatorio apos o teste</div>
+        </div>
+        <div class="bg-red-900/20 rounded-lg p-4 border border-red-500/30">
+          <div class="font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">&#127374;</span> Alta Fidelidade Cedo Demais</div>
+          <p class="text-neutral-300 text-sm mb-2">Pular para Figma hi-fi ou codigo antes de validar o fluxo basico. Resultado: feedback do usuario e sobre estetica ("essa cor nao e boa") e nao sobre substancia ("eu nao entendo para que serve isso").</p>
+          <div class="text-red-400 text-xs font-medium">Fix: regra da IDEO — sempre comece em papel, mesmo se a solucao final for digital</div>
+        </div>
+        <div class="bg-red-900/20 rounded-lg p-4 border border-red-500/30">
+          <div class="font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">&#127936;</span> Prototipo sem Hipotese</div>
+          <p class="text-neutral-300 text-sm mb-2">Construir para "ver o que os usuarios acham" sem uma pergunta especifica. Gera dados difusos que nao embasam nenhuma decisao. O time sai do teste sem saber o que fazer a seguir.</p>
+          <div class="text-red-400 text-xs font-medium">Fix: escreva a hipotese e o criterio de sucesso ANTES de construir</div>
+        </div>
+        <div class="bg-red-900/20 rounded-lg p-4 border border-red-500/30">
+          <div class="font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">&#128274;</span> Prototipo Privado</div>
+          <p class="text-neutral-300 text-sm mb-2">Esconder o prototipo de usuarios reais por vergonha ou medo de "roubo de ideia". Tom Kelley: "Se voce esta com vergonha de mostrar seu prototipo, e porque voce esperou tempo demais para construi-lo." Um prototipo feio que aprendeu algo vale mais que um bonito que ficou na gaveta.</p>
+          <div class="text-red-400 text-xs font-medium">Fix: politica de "mostrar cedo, mostrar feio, mostrar sempre"</div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-lg p-4 mb-6">
+        <div class="font-semibold text-primary mb-2">&#128161; A regra dos 3 "R" da IDEO</div>
+        <div class="grid grid-cols-3 gap-4 text-sm">
+          <div class="text-center">
+            <div class="text-blue-400 font-bold text-lg mb-1">Rough</div>
+            <div class="text-neutral-400">Grosseiro — para nao parecer produto final e liberar critica honesta</div>
+          </div>
+          <div class="text-center">
+            <div class="text-blue-400 font-bold text-lg mb-1">Rapid</div>
+            <div class="text-neutral-400">Rapido — para nao criar apego emocional e poder descartar sem dor</div>
+          </div>
+          <div class="text-center">
+            <div class="text-blue-400 font-bold text-lg mb-1">Right</div>
+            <div class="text-neutral-400">Certo — suficiente para responder a hipotese, nem mais nem menos</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini-cards conceitos-chave -->
+      <h3 class="text-lg font-semibold mb-4 text-neutral-200">Conceitos-chave do modulo</h3>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div class="bg-dark-800 rounded-lg p-3 border border-dark-700 text-center">
+          <div class="text-blue-400 text-lg mb-1">&#128296;</div>
+          <div class="font-semibold text-sm text-white mb-1">Pensar com as Maos</div>
+          <div class="text-xs text-neutral-500">Tangibilizar hipoteses para aprender mais rapido</div>
+        </div>
+        <div class="bg-dark-800 rounded-lg p-3 border border-dark-700 text-center">
+          <div class="text-blue-400 text-lg mb-1">&#127919;</div>
+          <div class="font-semibold text-sm text-white mb-1">Fidelidade Minima</div>
+          <div class="text-xs text-neutral-500">Menor fidelidade que ainda gera o dado necessario</div>
+        </div>
+        <div class="bg-dark-800 rounded-lg p-3 border border-dark-700 text-center">
+          <div class="text-blue-400 text-lg mb-1">&#128203;</div>
+          <div class="font-semibold text-sm text-white mb-1">Hipotese Antes</div>
+          <div class="text-xs text-neutral-500">Definir o que testar antes de construir qualquer coisa</div>
+        </div>
+        <div class="bg-dark-800 rounded-lg p-3 border border-dark-700 text-center">
+          <div class="text-blue-400 text-lg mb-1">&#128148;</div>
+          <div class="font-semibold text-sm text-white mb-1">Nao se Apaixone</div>
+          <div class="text-xs text-neutral-500">Prototipo e hipotese, nao produto — descarte e aprenda</div>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">&#128203;</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Prototipar e pensar com as maos</strong>
+              <span class="text-neutral-400"> — tornar ideias tangiveis acelera o aprendizado e reduz o custo do erro em ate 5x antes do lancamento</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Fidelidade deve ser guiada pela hipotese</strong>
+              <span class="text-neutral-400"> — nao pelo conforto do time; a IDEO usa "rough, rapid, right" como criterio</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Cinco tipos cobrem diferentes dominios de incerteza</strong>
+              <span class="text-neutral-400"> — Paper (fluxo), Wizard of Oz (comportamento), MVP (mercado), Concierge (operacao), Smoke Test (demanda)</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Metricas de aprendizado antes de construir</strong>
+              <span class="text-neutral-400"> — definir o criterio de sucesso antes do teste evita dados difusos e decisoes sem embasamento</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Apego ao prototipo e a armadilha mais cara</strong>
+              <span class="text-neutral-400"> — prototipo e hipotese, nao produto; alta fidelidade cedo demais bloqueia o aprendizado honesto</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-blue-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">2.9 - Feedback Loops: como construir ciclos de aprendizado continuo que alimentam a inovacao</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-2-9.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">
+            Proximo Modulo &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation').forEach(e => {
+          if (e !== explanation) e.classList.remove('active');
+        });
+      }
+      if (explanation) explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

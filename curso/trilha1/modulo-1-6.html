@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Barreiras Comuns | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC: bloqueante, antes de tudo -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides - OBRIGATORIO */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha emerald) */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5, 150, 105, 0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5, 150, 105, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas e linhas divisorias mais suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG pulse animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-emerald-400">Trilha 1</a>
+      <span>/</span>
+      <span class="text-emerald-400">Modulo 1.6</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">
+        MODULO 1.6
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🧱 Barreiras Comuns</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Os anticorpos culturais nao chegam anunciados. Eles operam em silencio — como medo disfarcado de prudencia, burocracia disfarcada de processo e curto-prazismo disfarcado de foco. Aprenda a identifica-los e remove-los.</p>
+
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">50</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Basico</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Teoria</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEUDO -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="1-6" data-inema-track="1">
+
+    <!-- TOPICO 1: Anticorpos Culturais -->
+    <section id="topico-1" data-inema-topic="modulo-1-6#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🦠 Anticorpos Culturais: Medo do Erro e "Sempre Fizemos Assim"</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-6-t1-p1">
+        Todo organismo saudavel tem um sistema imunologico. O problema e quando esse sistema ataca as proprias celulas saudaveis. Nas organizacoes, os <strong class="text-emerald-400">anticorpos culturais</strong> sao mecanismos de defesa que surgiram para proteger a estabilidade do negocio — mas que, com o tempo, passaram a destruir qualquer tentativa de mudanca e inovacao. Os dois mais poderosos: o medo do erro e a repeticao acritica do passado.
+      </p>
+
+      <!-- SVG: Anticorpos culturais atacando inovacao -->
+      <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 800 420" class="w-full h-auto" role="img" aria-label="Diagrama mostrando anticorpos culturais — medo do erro e sempre fizemos assim — cercando e bloqueando uma ideia nova no centro">
+          <defs>
+            <linearGradient id="m1-6-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/>
+            </linearGradient>
+            <filter id="m1-6-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="m1-6-glow-red" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m1-6-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <circle cx="1.3" cy="1.3" r="1.3" fill="#10b981" opacity="0.10"/>
+            </pattern>
+            <marker id="m1-6-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto">
+              <path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#f87171"/>
+            </marker>
+          </defs>
+
+          <!-- Background -->
+          <rect x="0" y="0" width="800" height="420" fill="url(#m1-6-grid)"/>
+
+          <!-- Ideia central -->
+          <g filter="url(#m1-6-glow)">
+            <rect x="310" y="155" width="180" height="110" rx="16" fill="#0e2018" stroke="url(#m1-6-grad)" stroke-width="2.5"/>
+          </g>
+          <text x="400" y="200" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="600" font-size="16">IDEIA NOVA</text>
+          <text x="400" y="222" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="12">tentativa de</text>
+          <text x="400" y="238" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="12">inovacao</text>
+
+          <!-- Anticorpo 1: Medo do erro (esquerda) -->
+          <rect x="60" y="90" width="185" height="90" rx="12" fill="#2d0a0a" stroke="#f87171" stroke-width="2" opacity="0.92" class="wf-a"/>
+          <text x="152" y="126" text-anchor="middle" fill="#f87171" font-family="Inter,sans-serif" font-weight="600" font-size="14">Medo do Erro</text>
+          <text x="152" y="147" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="11">"E se der errado?"</text>
+          <text x="152" y="163" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="11">"Nao e o momento certo"</text>
+          <line x1="245" y1="135" x2="308" y2="190" stroke="#f87171" stroke-width="1.8" marker-end="url(#m1-6-ah)" opacity="0.7"/>
+
+          <!-- Anticorpo 2: Sempre fizemos assim (direita) -->
+          <rect x="555" y="90" width="185" height="90" rx="12" fill="#2d0a0a" stroke="#f87171" stroke-width="2" opacity="0.92" class="wf-a"/>
+          <text x="648" y="122" text-anchor="middle" fill="#f87171" font-family="Inter,sans-serif" font-weight="600" font-size="14">Sempre Fizemos</text>
+          <text x="648" y="140" text-anchor="middle" fill="#f87171" font-family="Inter,sans-serif" font-weight="600" font-size="14">Assim</text>
+          <text x="648" y="163" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="11">"Isso nunca vai funcionar"</text>
+          <line x1="555" y1="135" x2="494" y2="190" stroke="#f87171" stroke-width="1.8" marker-end="url(#m1-6-ah)" opacity="0.7"/>
+
+          <!-- Anticorpo 3: Hirarquia (baixo-esquerda) -->
+          <rect x="60" y="270" width="185" height="90" rx="12" fill="#2d0a0a" stroke="#f87171" stroke-width="2" opacity="0.92" class="wf-a"/>
+          <text x="152" y="306" text-anchor="middle" fill="#f87171" font-family="Inter,sans-serif" font-weight="600" font-size="14">Hierarquia Rigida</text>
+          <text x="152" y="327" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="11">"Quem mandou fazer?"</text>
+          <text x="152" y="343" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="11">"Nao e seu papel"</text>
+          <line x1="245" y1="315" x2="308" y2="245" stroke="#f87171" stroke-width="1.8" marker-end="url(#m1-6-ah)" opacity="0.7"/>
+
+          <!-- Anticorpo 4: Curto prazo (baixo-direita) -->
+          <rect x="555" y="270" width="185" height="90" rx="12" fill="#2d0a0a" stroke="#f87171" stroke-width="2" opacity="0.92" class="wf-a"/>
+          <text x="648" y="306" text-anchor="middle" fill="#f87171" font-family="Inter,sans-serif" font-weight="600" font-size="14">Curto-Prazismo</text>
+          <text x="648" y="327" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="11">"Precisamos de resultado</text>
+          <text x="648" y="343" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="11">agora, nao experimentos"</text>
+          <line x1="555" y1="315" x2="494" y2="245" stroke="#f87171" stroke-width="1.8" marker-end="url(#m1-6-ah)" opacity="0.7"/>
+
+          <!-- Label central -->
+          <text x="400" y="390" text-anchor="middle" fill="#6b7280" font-family="Inter,sans-serif" font-size="11" font-style="italic">anticorpos culturais bloqueiam a inovacao antes que ela possa ser testada</text>
+        </svg>
+      </div>
+
+      <!-- Conceito Principal -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔬</span> O Mecanismo do Anticorpo
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-6-t1-p2">
+          O medo do erro e o anticorpo mais antigo e mais poderoso. Ele nao se manifesta como "tenho medo". Ele aparece disfarcado de prudencia: "ainda nao e o momento", "precisamos de mais dados", "e muito arriscado". Em organizacoes com cultura de punicao ao erro, esse medo e racional — as pessoas aprenderam que errar tem custo. O problema e que essa racionalidade individual cria irracionalidade coletiva: ninguem testa nada, ninguem aprende, ninguem inova.
+        </p>
+        <p class="text-neutral-300" data-inema-block="m1-6-t1-p3">
+          O "sempre fizemos assim" e o anticorpo da inercial cognitiva. Nao e preguica — e um atalho mental. Processos que funcionaram no passado geram rotinas que o cerebro automatiza para economizar energia. O problema surge quando o ambiente muda mas as rotinas permanecem congeladas. Clayton Christensen chamou isso de "innovator's dilemma": as mesmas praticas que geraram sucesso ontem sao as que impedem a transformacao amanha.
+        </p>
+      </div>
+
+      <!-- Dados -->
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> O Custo dos Anticorpos
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong>85%</strong> dos colaboradores dizem que teriam mais ideias se soubessem que nao seriam julgados por propor algo que nao funciona (Gallup, 2022)</li>
+          <li><strong>67%</strong> das iniciativas de inovacao morrem antes de chegar ao cliente — e a causa principal e resistencia interna, nao falta de ideia (BCG, 2024)</li>
+          <li>Em empresas com cultura de culpa por falhas, o tempo de ciclo de experimentos e <strong>4,2x maior</strong> do que em empresas com cultura de aprendizado (Harvard Business Review, 2023)</li>
+        </ul>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 2: Burocracia e excesso de aprovacoes -->
+    <section id="topico-2" data-inema-topic="modulo-1-6#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">📋 Burocracia e Excesso de Aprovacoes</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-6-t2-p1">
+        A burocracia e o anticorpo mais subestimado. Diferente do medo do erro — que e emocional — a burocracia e estrutural. Ela se esconde em processos legitimos: governanca, conformidade, gestao de risco. O problema nao e ter processos. O problema e quando o processo se torna um fim em si mesmo, e uma ideia que poderia ser testada em uma semana leva seis meses para receber aprovacao — e quando chega, o mercado ja mudou.
+      </p>
+
+      <!-- Timeline: A morte burocratica de uma ideia -->
+      <div class="space-y-4 mb-8">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4">A Morte Burocratica de uma Ideia: Cronologia Tipica</h3>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold">S1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Semana 1 — A Ideia Surge</h4>
+            <p class="text-neutral-300 text-sm">Um colaborador identifica uma oportunidade clara. A energia e alta. O timing e perfeito. Ele escreve uma proposta de 2 paginas e leva ao gestor imediato.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold">S4</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Semana 4 — Primeiro Comite</h4>
+            <p class="text-neutral-300 text-sm">O gestor aprova e encaminha para o comite de inovacao. Ele se reune mensalmente. A proxima reuniao e em 3 semanas. A proposta precisa ser reformatada para o template oficial.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold">S10</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Semana 10 — Segundo Comite e Revisoes</h4>
+            <p class="text-neutral-300 text-sm">O comite aprova "em principio" mas pede analise de ROI formal, validacao juridica e alinhamento com TI. Mais 4 semanas. O colaborador original comecou a trabalhar em outra coisa.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
+            <span class="text-red-400 font-bold">S20</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-red-500/20">
+            <h4 class="font-semibold text-red-400 mb-1">Semana 20 — A Oportunidade Passou</h4>
+            <p class="text-neutral-300 text-sm">A ideia finalmente e aprovada. Mas um concorrente lancou algo similar na semana 12. O projeto e cancelado por "mudanca de contexto". A organizacao perdeu a janela.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Governanca Habilitadora</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>Aprovacao por limites</strong> — experimentos ate R$5k sao autonomos; acima disso, 1 nivel de aprovacao</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>Ciclos curtos</strong> — revisoes semanais ou quinzenais, nao mensais</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>"Aprovado ate prova em contrario"</strong> — o default e sim, nao nao</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>Templates minimos</strong> — uma pagina, nao um deck de 40 slides</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Burocracia Paralisante</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Todo experimento precisa de Business Case completo com ROI projetado</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>5 ou mais assinaturas para qualquer mudanca de processo</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Comites mensais como unico canal de aprovacao</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Formato obrigatorio de proposta que leva mais tempo que o experimento em si</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Dica Pratica -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Teste do "Custo de Tentativa"
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-6-t2-p2">Pergunte: quanto tempo, dinheiro e energia politica custa tentar uma ideia nova aqui? Se a resposta for mais do que o valor da ideia em si, sua burocracia esta matando a inovacao antes do nascimento. Amazon chama isso de "one-way door test": se voce pode desfazer, aprove rapido. Se for irreversivel, ai sim vale a burocracia.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 3: Silos e falta de colaboracao cross-area -->
+    <section id="topico-3" data-inema-topic="modulo-1-6#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🏚️ Silos e Falta de Colaboracao Cross-Area</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-6-t3-p1">
+        Inovacao raramente nasce dentro de uma unica area. Ela emerge do <strong class="text-emerald-400">atrito produtivo entre perspectivas diferentes</strong> — engenharia que entende o que e tecnica possivel, marketing que sabe o que o cliente quer, operacoes que conhece o que e viavel em escala. Quando essas perspectivas vivem em silos separados por KPIs conflitantes, reunioes paralelas e culturas de sub-tribo, a inovacao perde sua materia-prima: a diversidade cognitiva.
+      </p>
+
+      <!-- Conceito Principal -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔗</span> Por Que Silos Existem — e Por Que Persistem
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-6-t3-p2">
+          Silos nao sao acidente — sao uma solucao de eficiencia. Especializar equipes em funcoes reduz a necessidade de coordenacao diaria e aumenta a proficiencia tecnica. O problema e quando a logica da especializacao se torna logica territorial: "isso e responsabilidade da TI, nao do meu time", "marketing nao entende de produto", "operacoes vai travar a ideia".
+        </p>
+        <p class="text-neutral-300" data-inema-block="m1-6-t3-p3">
+          O pesquisador Morten Hansen (UC Berkeley) identificou que o maior preditor de performance em inovacao nao e o talento individual nem o investimento em P&D — e a capacidade de <strong class="text-emerald-400">colaboracao disciplinada</strong>: saber quando buscar ajuda fora da propria area e como integrar as contribuicoes sem perder velocidade. Ele chama isso de "T-shaped collaboration": profundidade na propria area + capacidade de conectar com outras.
+        </p>
+      </div>
+
+      <!-- Grid de Mini-Cards: sintomas de silos -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">📊</div>
+          <h4 class="font-semibold text-red-400 mb-2">KPIs Conflitantes</h4>
+          <p class="text-neutral-300 text-sm">Vendas quer velocidade de lancamento; qualidade quer zero defeitos; financeiro quer custo minimo. Sem meta compartilhada de inovacao, cada area otimiza contra a outra.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🗂️</div>
+          <h4 class="font-semibold text-red-400 mb-2">Reunioes Paralelas</h4>
+          <p class="text-neutral-300 text-sm">Cada area tem sua propria agenda de planejamento. Projetos cross-funcionais dependem de alinhamento informal que nunca acontece sistematicamente.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🏳️</div>
+          <h4 class="font-semibold text-red-400 mb-2">Identidades de Tribo</h4>
+          <p class="text-neutral-300 text-sm">"Nos do comercial vs. eles do produto." Sub-culturas fortes criam fronteiras implicitas. Quem cruza fronteiras e visto como intruso, nao como colaborador.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">💾</div>
+          <h4 class="font-semibold text-red-400 mb-2">Dados Proprietarios</h4>
+          <p class="text-neutral-300 text-sm">Informacoes de cliente ficam em planilhas privadas de cada area. Sem visao integrada, ninguem enxerga o problema completo — e as solucoes sao parciais.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🔄</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Solucao: Squads Cross-Funcionais</h4>
+          <p class="text-neutral-300 text-sm">Times temporarios com representantes de diferentes areas em torno de um problema especifico. Spotify, Amazon e ING adotaram como modelo padrao para inovacao.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🏗️</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Solucao: Espaco Fisico/Digital</h4>
+          <p class="text-neutral-300 text-sm">Pixar projeta espacos que forcam encontros nao planejados entre animadores, tecnicos e roteiristas. Em remoto, canais abertos por problema substituem canais fechados por departamento.</p>
+        </div>
+      </div>
+
+      <!-- Alerta -->
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> O Silo Mais Perigoso: o da Alta Lideranca
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-6-t3-p4">Quando a propria lideranca opera em silo — diretores que nao conversam entre si, VP de produto que nao fala com VP de tecnologia — o silo se torna norma cultural. Equipes aprendem que colaborar nao e valorizado no topo, entao por que seria valorizado na base? Mudanca de silos comeca sempre pela mudanca na colaboracao visivel da lideranca.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 4: Curto-prazismo e tirania do core business -->
+    <section id="topico-4" data-inema-topic="modulo-1-6#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">⏱️ Curto-Prazismo e a Tirania do Core Business</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-6-t4-p1">
+        O curto-prazismo e o anticorpo mais racional de todos — e por isso o mais dificil de combater. O argumento e irrefutavel a curto prazo: "precisamos fechar o trimestre", "investidores querem resultado agora", "a equipe esta sobrecarregada com o dia a dia". Inovacao pede tempo, recursos e tolerancia a incerteza — tudo que o core business consome vorazmente. O resultado e a <strong class="text-emerald-400">tirania do urgente sobre o importante</strong>: o futuro e sempre sacrificado pelo presente.
+      </p>
+
+      <!-- Dados -->
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> O Preco do Curto-Prazismo
+        </h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span>CEO medio nos EUA dura <strong>5 anos</strong> no cargo — ciclo insuficiente para qualquer transformacao cultural profunda. O incentivo e maximizar o proximo trimestre, nao construir capacidade de inovacao</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span><strong>79%</strong> dos gestores admitem ter cancelado projetos de inovacao de longo prazo para atingir metas de curto prazo (McKinsey Global Survey, 2023)</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span>Empresas que mantiveram investimento em inovacao durante recessoes cresceram <strong>3x mais</strong> nos 3 anos seguintes do que as que cortaram (Innosight / BCG, 2021)</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span>Amazon investe em iniciativas com horizonte de <strong>5-7 anos</strong>. AWS, Kindle e Alexa tiveram prejuizo por varios anos antes de se tornarem negocios lucrativos</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Conceito: O modelo 70/20/10 -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🧮</span> A Solucao Estrutural: O Modelo 70/20/10
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-6-t4-p2">
+          O modelo 70/20/10, popularizado pelo Google e adotado por decenas de empresas inovadoras, divide o esforco de inovacao de forma explicita: 70% dos recursos vao para o core business atual, 20% para expansoes adjacentes e 10% para apostas transformacionais. O ponto critico e que os <strong class="text-emerald-400">10% precisam ser protegidos</strong> — nao sao o que sobra depois de apagar todos os incendios do core.
+        </p>
+        <div class="grid grid-cols-3 gap-4">
+          <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-600 text-center">
+            <div class="text-3xl font-bold text-emerald-400 mb-1">70%</div>
+            <div class="text-sm font-semibold text-white mb-1">Core</div>
+            <div class="text-xs text-neutral-400">Melhorar o que ja existe e rentavel. Inovacao incremental.</div>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-600 text-center">
+            <div class="text-3xl font-bold text-blue-400 mb-1">20%</div>
+            <div class="text-sm font-semibold text-white mb-1">Adjacente</div>
+            <div class="text-xs text-neutral-400">Expansao para novos clientes, mercados ou canais proximos.</div>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 border border-dark-600 text-center">
+            <div class="text-3xl font-bold text-primary mb-1">10%</div>
+            <div class="text-sm font-semibold text-white mb-1">Transformacional</div>
+            <div class="text-xs text-neutral-400">Apostas de futuro. Pode fracassar. E o futuro do negocio.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerta -->
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> A Armadilha do "Depois Que o Trimestre Fechar"
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-6-t4-p3">O "depois" nunca chega. Ha sempre outro trimestre para fechar, outra crise para apagar, outro cliente para atender. Organizacoes que nao protegem tempo e budget para inovacao de forma nao-negociavel — mesmo em periodos de pressao — inevitavelmente descobrem, 3 a 5 anos depois, que um concorrente ou startup construiu silenciosamente a capacidade que elas adiaram.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 5: Falta de tempo, recursos e incentivos -->
+    <section id="topico-5" data-inema-topic="modulo-1-6#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">⚡ Falta de Tempo, Recursos e Incentivos</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-6-t5-p1">
+        "Queremos inovar, mas a equipe nao tem tempo." Esta frase aparece em praticamente toda conversa sobre cultura de inovacao — e ela e simultaneamente verdadeira e uma desculpa. Verdadeira porque as equipes estao de fato sobrecarregadas. Uma desculpa porque o tempo para inovacao nao aparece naturalmente: ele precisa ser <strong class="text-emerald-400">protegido, ritualizado e remunerado</strong>. Se inovar nao aparece no OKR de ninguem, se nao ha reward por experimentar, se o unico reconhecimento e pelo core business — nao e surpresa que ninguem inove.
+      </p>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Como Criar Espaco Real para Inovacao</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>Tempo protegido</strong>: Google 20%, 3M 15%, Atlassian ShipIt Days — tempo bloqueado no calendario, nao opcional</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>Budget de experimentos</strong>: envelope dedicado, sem necessidade de justificativa caso a caso</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>OKRs de inovacao</strong>: metas que incluem tentativas e aprendizados, nao so entregaveis de core</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>Reconhecimento publico</strong>: celebrar o melhor experimento do trimestre, mesmo que nao tenha dado certo</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span><strong>Capacitacao continuada</strong>: acesso a ferramentas, cursos e comunidades de inovacao como beneficio, nao como excecao</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Sinais de Que Inovacao Nao e Prioridade Real</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>"Inovacao" aparece no discurso da lideranca mas nao nos OKRs nem nas avaliacoes de desempenho</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Quem passa tempo em experimentacao e cobrado por "baixa produtividade" nas revisoes</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>O budget de inovacao e o primeiro a cortar em momento de pressao</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Promocoes e bonos sao exclusivamente ligados ao core business</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Nao existe nenhum mecanismo formal para propor, testar e escalar ideias</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Dica Pratica -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">🛠️</span> O Principio da Prioridade Real
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-6-t5-p2">Descubra o que a organizacao realmente prioriza olhando para tres coisas: onde vai o dinheiro, quem e promovido e o que o CEO menciona em all-hands. Se inovacao nao aparece consistentemente nessas tres dimensoes, nenhum programa ou workshop vai mudar o comportamento. Incentivos sao mais poderosos que discursos.</p>
+      </div>
+
+      <!-- Dados adicionais -->
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> O Que Funciona na Pratica
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li>Empresas que incluem "capacidade de inovacao" como criterio formal de promocao tem <strong>2,3x mais</strong> projetos inovadores chegando ao mercado (Deloitte Insights, 2023)</li>
+          <li>Times com budget autonomo para experimentos (mesmo que pequeno) lancam <strong>4x mais</strong> iniciativas do que times que dependem de aprovacao centralizada (MIT Sloan, 2022)</li>
+          <li>O programa 20% do Google gerou produtos responsaveis por <strong>50% da receita atual</strong> da empresa — Gmail, Google Maps, Google News e AdSense nasceram nesse tempo "desperdicado"</li>
+        </ul>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 6: Diagnosticar e remover barreiras -->
+    <section id="topico-6" data-inema-topic="modulo-1-6#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">🗺️ Diagnosticar e Remover Barreiras: o Mapa de Friccao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-6-t6-p1">
+        Antes de tentar remover barreiras, voce precisa saber exatamente onde elas estao e com que intensidade operam. O <strong class="text-emerald-400">Mapa de Friccao</strong> e uma ferramenta pratica para isso: um exercicio colaborativo que mapeia, ao longo da jornada de uma ideia — do surgimento ao lancamento — todos os pontos onde o processo desacelera, para ou morre. Diferente de um diagnostico de cultura generico, o Mapa de Friccao e especifico, visual e acionavel.
+      </p>
+
+      <!-- Conceito: Como fazer o Mapa de Friccao -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔧</span> Como Construir um Mapa de Friccao em 4 Passos
+        </h3>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center">1</span>
+            <div>
+              <strong class="text-white">Mapeie a Jornada da Ideia</strong>
+              <p class="text-neutral-400 text-sm mt-1">Liste todas as etapas que uma ideia percorre desde que surge ate ser lancada: concepcao → proposta → aprovacao → recursos → desenvolvimento → teste → lancamento. Use um canvas fisico ou digital.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center">2</span>
+            <div>
+              <strong class="text-white">Identifique os Pontos de Friccao</strong>
+              <p class="text-neutral-400 text-sm mt-1">Para cada etapa, pergunte: "Qual e o maior obstaculo aqui?" Classifique: medo (emocional), processo (estrutural), recurso (financeiro/tempo), politica (hierarquico) ou silo (colaboracao).</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center">3</span>
+            <div>
+              <strong class="text-white">Pontue Impacto e Remocabilidade</strong>
+              <p class="text-neutral-400 text-sm mt-1">Para cada friccao: impacto (1-5: quanto essa barreira atrasa a inovacao?) e remocabilidade (1-5: quao facil seria remover com as alavancas que voce tem?). Priorize as de alto impacto e alta remocabilidade.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center">4</span>
+            <div>
+              <strong class="text-white">Defina Experimentos de Remocao</strong>
+              <p class="text-neutral-400 text-sm mt-1">Para cada barreira prioritaria, defina uma intervencao pequena e testavel: um piloto de aprovacao simplificada, um sprint cross-funcional, um budget de experimentos autonomo por 90 dias. Meca o impacto antes de escalar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela de Friccoes Comuns -->
+      <h3 class="text-lg font-semibold text-emerald-400 mb-4">Friccoes Mais Comuns e Suas Intervencoes</h3>
+      <div class="space-y-3 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-red-400 font-bold">🦠</span>
+              <span class="font-semibold text-white">Medo de propor ideias</span>
+            </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-red-500/20 text-red-400 w-fit">Emocional</span>
+          </div>
+          <p class="text-neutral-400 text-sm mb-2"><strong class="text-neutral-300">Sintoma:</strong> Reunioes silenciosas; ideias surgem so de seniores; formularios de sugestao vazios.</p>
+          <p class="text-neutral-400 text-sm"><strong class="text-emerald-400">Intervencao:</strong> Sessoes de "pior ideia possivel" para descongelar o grupo; anonimato no primeiro ciclo de sugestoes; lideranca compartilhando falhas proprias publicamente.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-yellow-400 font-bold">📋</span>
+              <span class="font-semibold text-white">Aprovacao lenta e multilevel</span>
+            </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-400 w-fit">Estrutural</span>
+          </div>
+          <p class="text-neutral-400 text-sm mb-2"><strong class="text-neutral-300">Sintoma:</strong> Tempo medio de aprovacao acima de 4 semanas; mais de 3 assinaturas necessarias.</p>
+          <p class="text-neutral-400 text-sm"><strong class="text-emerald-400">Intervencao:</strong> Piloto de "sandbox" — define um envelope de budget e escopo onde o time pode agir sem aprovacao previa por 90 dias. Mede taxa de experimentos x resultados.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-blue-400 font-bold">🏚️</span>
+              <span class="font-semibold text-white">Silos bloqueando projetos cross-area</span>
+            </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-blue-500/20 text-blue-400 w-fit">Colaboracao</span>
+          </div>
+          <p class="text-neutral-400 text-sm mb-2"><strong class="text-neutral-300">Sintoma:</strong> Projetos que dependem de mais de uma area morrem na coordenacao; reunioes de alinhamento longas e improdutivas.</p>
+          <p class="text-neutral-400 text-sm"><strong class="text-emerald-400">Intervencao:</strong> Designar um "collaboration sponsor" de lideranca para cada iniciativa cross-funcional; criar canal dedicado por projeto (nao por departamento); usar RACI simplificado.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-purple-400 font-bold">⏱️</span>
+              <span class="font-semibold text-white">Ausencia de tempo protegido</span>
+            </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-purple-500/20 text-purple-400 w-fit">Recurso</span>
+          </div>
+          <p class="text-neutral-400 text-sm mb-2"><strong class="text-neutral-300">Sintoma:</strong> Todas as iniciativas de inovacao sao ad-hoc, acontecem fora do horario de trabalho ou morrem por falta de continuidade.</p>
+          <p class="text-neutral-400 text-sm"><strong class="text-emerald-400">Intervencao:</strong> Bloquear 4h/semana por pessoa como "innovation time" — nao-cancelavel nem substituivel por demandas de core. Inicia como piloto em uma equipe, mede engajamento e entregaveis.</p>
+        </div>
+      </div>
+
+      <!-- Dica Final -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">🎯</span> O Principio da Menor Friccao Possivel
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-6-t6-p2">Jeff Bezos diz que a cultura de inovacao da Amazon e construida sobre uma premissa simples: tornar o custo de tentar uma nova ideia o mais baixo possivel. Nao e sobre financiar grandes apostas — e sobre remover todos os obstaculos desnecessarios entre a ideia e o primeiro teste real. Cada ponto de friccao removido multiplica o numero de experimentos possiveis. E mais experimentos significam mais aprendizado e, eventualmente, mais inovacao.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- RESUMO DO MODULO -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Anticorpos culturais operam em silencio</strong>
+              <span class="text-neutral-400"> — Medo do erro e "sempre fizemos assim" nao chegam como obstaculos declarados; chegam disfarcados de prudencia, experiencia e sensatez</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Burocracia mata pelo desgaste</strong>
+              <span class="text-neutral-400"> — Processos de aprovacao lentos nao bloqueiam ideias diretamente: eles esgotam a energia e o momentum do inovador ate que ele desista sozinho</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Silos destroem a materia-prima da inovacao</strong>
+              <span class="text-neutral-400"> — Inovacao nasce do atrito entre perspectivas diferentes. Sem colaboracao cross-area, as ideias ficam presas nas fronteiras de cada departamento</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Curto-prazismo e o anticorpo racional</strong>
+              <span class="text-neutral-400"> — O mais dificil de combater porque seu argumento e valido. A solucao e proteger budget e tempo para inovacao de forma nao-negociavel, mesmo sob pressao</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Incentivos valem mais que discursos</strong>
+              <span class="text-neutral-400"> — Se inovar nao aparece nos OKRs, nas avaliacoes e nas promocoes, a mensagem real e que inovacao nao e prioridade. O que a empresa paga e o que ela realmente quer</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Mapa de Friccao torna as barreiras visiveis</strong>
+              <span class="text-neutral-400"> — Nao ha como remover o que voce nao consegue ver. O mapa converte obstaculos difusos em pontos especificos com impacto, remocabilidade e intervencao definida</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-emerald-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">1.7 - Metricas de Inovacao</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-1-7.html" class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors">
+            1.7 - Metricas de Inovacao &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

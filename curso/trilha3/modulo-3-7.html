@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>ROI de Inovacao | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha purple) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a>
+      <span>/</span>
+      <span class="text-purple-400">Modulo 3.7</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MODULO 3.7</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#128176; ROI de Inovacao</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Como provar o valor da inovacao sem matar a aposta de longo prazo. Tipos de retorno, real options, innovation accounting de Ries, e como apresentar ao board sem destruir a cultura de experimentacao.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">55</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Avancado</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Financas</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="3-7" data-inema-track="3">
+
+    <!-- TOPICO 1: Por que medir ROI de inovacao e os perigos -->
+    <section id="topico-1" data-inema-topic="modulo-3-7#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#128269; Por que Medir ROI de Inovacao — e os Perigos</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-7-t1-p1">
+        Medir ROI de inovacao e ao mesmo tempo <strong class="text-purple-400">imprescindivel e perigoso</strong>. Imprescindivel porque sem numeros o programa perde credibilidade, orcamento e sponsor em cada ciclo de corte. Perigoso porque aplicar as metricas erradas no momento errado pode matar apostas que valeriam bilhoes. A armadilha classica: exigir o mesmo padrao de ROI de um experimento H3 de 30 dias que se exigiria de uma linha de negocio matura com 10 anos de historico.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center">
+          <span class="mr-2">&#128202;</span> O Paradoxo da Medicao
+        </h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1 font-bold">&#8226;</span>
+            <span><strong>76% dos CFOs</strong> relatam dificuldade em justificar investimentos em inovacao sem retorno de curto prazo (Deloitte CFO Survey, 2024)</span>
+          </li>
+          <li class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1 font-bold">&#8226;</span>
+            <span><strong>84% das inovacoes radicais</strong> que geraram mais de US$ 1 bi teriam sido cortadas se avaliadas com metricas financeiras tradicionais nos primeiros 2 anos (HBR, "The Innovator's Dilemma at Work")</span>
+          </li>
+          <li class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1 font-bold">&#8226;</span>
+            <span><strong>Amazon Web Services</strong>: gerou prejuizo por 7 anos antes de se tornar o negocio mais rentavel da Amazon — com margem operacional de 30% vs. e-commerce de 3%</span>
+          </li>
+          <li class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1 font-bold">&#8226;</span>
+            <span>Empresas que exigem ROI positivo em menos de 18 meses para todos os projetos inovam <strong>2,8x menos</strong> que concorrentes com visao de portfolio (BCG Innovation Report, 2023)</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4">&#127919; A Pergunta Certa</h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m3-7-t1-p2">O erro nao e medir ROI de inovacao. O erro e usar <strong>UMA unica metrica</strong> para avaliar <strong>TRES tipos fundamentalmente diferentes</strong> de aposta. Cada horizonte de inovacao exige uma linguagem de valor distinta:</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-dark-700/50 rounded-lg p-4 border border-purple-500/20">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">H1 — Nucleo</h4>
+            <p class="text-xs text-neutral-300">ROI financeiro classico e adequado. Payback, VPL, TIR. O negocio e maduro, o fluxo e previsivel.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4 border border-purple-500/20">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">H2 — Adjacente</h4>
+            <p class="text-xs text-neutral-300">Mix de metricas financeiras + aprendizado. Custo de aquisicao, retencao, unit economics emergentes.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4 border border-purple-500/20">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">H3 — Transformacional</h4>
+            <p class="text-xs text-neutral-300">Innovation accounting: o ROI e o aprendizado validado. Financeiro so aparece anos depois.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Tipos de retorno -->
+    <section id="topico-2" data-inema-topic="modulo-3-7#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#127873; Tipos de Retorno: Financeiro, Estrategico, Aprendizado e Opcao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-7-t2-p1">
+        A linguagem financeira tradicional reconhece apenas o retorno monetario direto. Mas inovacao gera <strong class="text-purple-400">quatro categorias de valor</strong> — e ignorar as tres ultimas e como avaliar um iceberg pelo que aparece acima da agua. Cada categoria tem metricas proprias e janela temporal diferente.
+      </p>
+
+      <!-- SVG: 4 tipos de retorno em diagrama de camadas -->
+      <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 900 320" class="w-full h-auto" role="img" aria-label="Diagrama dos 4 tipos de retorno de inovacao: Financeiro (base, visivel), Estrategico, Aprendizado e Opcao (topo, invisivel a curto prazo), dispostos em camadas de profundidade crescente">
+          <defs>
+            <linearGradient id="m3-7-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#a855f7"/>
+            </linearGradient>
+            <linearGradient id="m3-7-grad2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#38bdf8" stop-opacity="0.7"/><stop offset="1" stop-color="#0ea5e9" stop-opacity="0.4"/>
+            </linearGradient>
+            <filter id="m3-7-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m3-7-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+              <circle cx="1.2" cy="1.2" r="1.2" fill="#a855f7" opacity="0.10"/>
+            </pattern>
+          </defs>
+          <rect x="0" y="0" width="900" height="320" fill="url(#m3-7-grid)"/>
+
+          <!-- Linha d'agua: visivel vs invisivel -->
+          <line x1="0" y1="165" x2="900" y2="165" stroke="#38bdf8" stroke-width="1" stroke-dasharray="14 6" opacity="0.35"/>
+          <text x="820" y="158" fill="#38bdf8" font-family="Inter,sans-serif" font-size="10" opacity="0.7">visivel</text>
+          <text x="812" y="178" fill="#38bdf8" font-family="Inter,sans-serif" font-size="10" opacity="0.7">invisivel</text>
+
+          <!-- Retorno Financeiro -->
+          <g class="wf-a">
+            <rect x="60" y="30" width="180" height="110" rx="12" fill="#1a1230" stroke="url(#m3-7-grad)" stroke-width="2"/>
+            <text x="150" y="65" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="700" font-size="14">Financeiro</text>
+            <text x="150" y="85" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10">Receita, margem,</text>
+            <text x="150" y="100" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10">payback, VPL</text>
+            <text x="150" y="122" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="10" opacity="0.8">Curto prazo &#8594; imediato</text>
+          </g>
+
+          <!-- Retorno Estrategico -->
+          <g class="wf-a">
+            <rect x="280" y="30" width="180" height="110" rx="12" fill="#1a1230" stroke="#a855f7" stroke-width="1.5" opacity="0.9"/>
+            <text x="370" y="65" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="700" font-size="14">Estrategico</text>
+            <text x="370" y="85" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10">Posicao, vantagem,</text>
+            <text x="370" y="100" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10">share, barreiras</text>
+            <text x="370" y="122" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="10" opacity="0.8">Medio prazo &#8594; 1-3 anos</text>
+          </g>
+
+          <!-- Retorno de Aprendizado (abaixo da linha) -->
+          <g filter="url(#m3-7-glow)" class="wf-a">
+            <rect x="490" y="180" width="180" height="110" rx="12" fill="#0f1a2a" stroke="#38bdf8" stroke-width="1.5"/>
+          </g>
+          <text x="580" y="220" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="700" font-size="14">Aprendizado</text>
+          <text x="580" y="240" text-anchor="middle" fill="#bae6fd" font-family="Inter,sans-serif" font-size="10">Conhecimento validado,</text>
+          <text x="580" y="255" text-anchor="middle" fill="#bae6fd" font-family="Inter,sans-serif" font-size="10">capacidade, cultura</text>
+          <text x="580" y="275" text-anchor="middle" fill="#a855f7" font-family="Inter,sans-serif" font-size="10" opacity="0.8">Acumula &#8594; 2-5 anos</text>
+
+          <!-- Retorno de Opcao (abaixo da linha) -->
+          <g filter="url(#m3-7-glow)" class="wf-a">
+            <rect x="700" y="180" width="160" height="110" rx="12" fill="#0f1a2a" stroke="url(#m3-7-grad2)" stroke-width="1.5"/>
+          </g>
+          <text x="780" y="220" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="700" font-size="14">Opcao</text>
+          <text x="780" y="240" text-anchor="middle" fill="#bae6fd" font-family="Inter,sans-serif" font-size="10">Direito de escalar</text>
+          <text x="780" y="255" text-anchor="middle" fill="#bae6fd" font-family="Inter,sans-serif" font-size="10">sem obrigacao</text>
+          <text x="780" y="275" text-anchor="middle" fill="#a855f7" font-family="Inter,sans-serif" font-size="10" opacity="0.8">Longo prazo &#8594; 3-10 anos</text>
+
+          <!-- Setas de conexao -->
+          <path d="M240,85 L280,85" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.5" marker-end="url(#arr)"/>
+          <path d="M460,85 L490,210" stroke="#38bdf8" stroke-width="1" stroke-dasharray="5 3" opacity="0.4"/>
+          <path d="M670,235 L700,235" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.5"/>
+
+          <text x="450" y="315" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="11" opacity="0.5">Retorno total = soma das 4 camadas ao longo do tempo</text>
+        </svg>
+      </div>
+
+      <div class="space-y-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2 flex items-center"><span class="mr-2">&#128181;</span> Retorno Financeiro</h4>
+          <p class="text-sm text-neutral-300 mb-2">O mais facil de medir, o mais facil de manipular. Receita incremental de novos produtos, reducao de custo via automacao, margem de novos servicos. Bom indicador para H1, enganoso para H2 e inutil para H3 nos primeiros anos.</p>
+          <p class="text-xs text-neutral-400"><strong class="text-neutral-300">Metricas:</strong> VPL, TIR, payback, receita de novos produtos como % do total (meta McKinsey: 25% em 3 anos)</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2 flex items-center"><span class="mr-2">&#9878;&#65039;</span> Retorno Estrategico</h4>
+          <p class="text-sm text-neutral-300 mb-2">Valor de posicionamento competitivo. Conquistar um segmento antes do concorrente, construir uma barreira de dados, adquirir capacidade critica. Nubank investiu anos em tecnologia proprietaria sem ROI imediato — o retorno estrategico foi uma vantagem de custo estrutural que permitiu crescer 10x.</p>
+          <p class="text-xs text-neutral-400"><strong class="text-neutral-300">Metricas:</strong> market share, NPS relativo ao mercado, tempo para copiar pelo concorrente, ativos intangiveis (patentes, dados, marca)</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2 flex items-center"><span class="mr-2">&#129504;</span> Retorno de Aprendizado</h4>
+          <p class="text-sm text-neutral-300 mb-2">O ativo mais subvalorizado. Cada experimento que falha mas gera insight reduce o custo dos proximos experimentos. Organizacoes que sistematizam o aprendizado chegam ao produto certo 40-60% mais rapido na segunda tentativa (MIT Sloan Management Review). Toyota chama de "conhecimento acumulado" — o principal ativo do Sistema Toyota de Producao.</p>
+          <p class="text-xs text-neutral-400"><strong class="text-neutral-300">Metricas:</strong> numero de hipoteses testadas e documentadas, velocidade de iteracao, reuso de aprendizados em novos projetos</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2 flex items-center"><span class="mr-2">&#127917;</span> Retorno de Opcao</h4>
+          <p class="text-sm text-neutral-300 mb-2">A teoria das opcoes reais aplicada. Um experimento H3 de R$ 500 mil nao custa R$ 500 mil: compra o <em>direito</em> de escalar um negocio de R$ 500 mi se a hipotese for validada. O fracasso custa R$ 500 mil. O sucesso abre uma opcao valorada em ordens de grandeza maiores. Google X (moonshot factory) opera exatamente assim.</p>
+          <p class="text-xs text-neutral-400"><strong class="text-neutral-300">Metricas:</strong> valor esperado da opcao (probabilidade x tamanho do mercado), custo do experimento como % do mercado potencial</p>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Real Options e visao de portfolio -->
+    <section id="topico-3" data-inema-topic="modulo-3-7#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#128200; Real Options e Visao de Portfolio</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-7-t3-p1">
+        A teoria das <strong class="text-purple-400">opcoes reais</strong> (Real Options Analysis — ROA), desenvolvida por Stewart Myers no MIT em 1977 e popularizada por Aswath Damodaran, transpoe a logica das opcoes financeiras para decisoes estrategicas. A premissa: em ambientes de alta incerteza, o valor de uma decisao nao esta no fluxo de caixa esperado — esta na <strong class="text-purple-400">flexibilidade de agir no futuro com informacao que nao existe hoje</strong>.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5">&#128202; Os 3 Tipos de Opcao em Inovacao</h3>
+        <div class="space-y-5">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">G</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Opcao de Crescimento (Growth Option)</h4>
+              <p class="text-sm text-neutral-300">Investimento pequeno hoje que abre a possibilidade de um investimento grande amanha. Ex.: Embraer investiu R$ 80 mi em P&amp;D de biocombustivel de aviacao durante 4 anos — sem ROI imediato. Em 2027, quando regulamentacoes entrarem em vigor, a empresa ja tem a capacidade instalada. Concorrentes pagam 5x mais para construir do zero sob pressao regulatoria.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">D</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Opcao de Adiamento (Deferral Option)</h4>
+              <p class="text-sm text-neutral-300">Direito de esperar ate ter mais informacao antes de comprometer capital. Um piloto com 200 usuarios nao e "demora" — e comprar informacao barata antes de escalar caro. Magazine Luiza rodou pilotos regionais de marketplace por 18 meses antes de escalar nacionalmente, evitando um erro de logistica que custou R$ 2 bi a um concorrente.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">A</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Opcao de Abandono (Abandonment Option)</h4>
+              <p class="text-sm text-neutral-300">O direito de parar antes de perder mais. Ter criterios claros de kill e parte do valor — reduz o custo medio do portfolio ao evitar "projetos zombie" que consomem recursos sem entregar. BCG estima que 30% dos projetos de inovacao em grandes corporacoes sao zombies mantidos por politica interna, nao por merito.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3">&#128161; A Logica do Portfolio de Apostas</h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m3-7-t3-p2">Nenhum venture capitalist espera que CADA investimento retorne. O modelo e: 6 apostas fracassam, 2 retornam o capital, 1 retorna 3x e 1 retorna 30x. O retorno do portfolio supera qualquer aposta individual. Empresas inovadoras devem pensar igual ao gerir H3: o valor esperado do portfolio e positivo mesmo com maioria de fracassos, desde que o custo de cada experimento seja calibrado para o tamanho potencial do mercado.</p>
+        <p class="text-neutral-300"><strong class="text-primary">Formula pratica:</strong> Custo do experimento deve ser &lt; 1% do mercado enderecavel. Se o mercado vale R$ 1 bi, gastar ate R$ 10 mi para validar a hipotese e economicamente racional.</p>
+      </div>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3">&#9888;&#65039; Armadilha: Correlacionar Tamanho do Investimento com Importancia</h3>
+        <p class="text-neutral-300">Gestores treinados em projetos tradicionais associam automaticamente "pouco dinheiro = pouco importante". Em inovacao H3, o menor experimento pode abrir o maior mercado. Amazon investiu US$ 6 mi no Kindle MVP — produto que redefiniu o mercado de livros e gerou US$ 3 bi em receita. Proteja os experimentos pequenos de serem cortados por parecerem insignificantes em reunioes de orcamento.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Innovation Accounting -->
+    <section id="topico-4" data-inema-topic="modulo-3-7#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#128203; Innovation Accounting — Metricas de Aprendizado (Ries)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-7-t4-p1">
+        Eric Ries, no "The Lean Startup" (2011) e no livro de continuidade "The Startup Way" (2017), formalizou o conceito de <strong class="text-purple-400">innovation accounting</strong>: um sistema contabil paralelo projetado para medir progresso em condicoes de extrema incerteza, onde as metricas financeiras tradicionais sao inaplicaveis porque o produto, o mercado e o modelo de negocio ainda estao sendo descobertos.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/20 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4">&#128200; Os 3 Niveis do Innovation Accounting</h3>
+
+        <!-- Timeline dos 3 niveis -->
+        <div class="relative">
+          <div class="absolute left-5 top-0 bottom-0 w-0.5 bg-purple-500/30"></div>
+          <div class="space-y-6 pl-14 relative">
+
+            <div class="relative">
+              <div class="absolute -left-9 w-8 h-8 rounded-full bg-purple-500/30 border border-purple-500/50 flex items-center justify-center">
+                <span class="text-purple-400 text-xs font-bold">N1</span>
+              </div>
+              <h4 class="font-semibold text-white mb-1">Nivel 1: Linha de Base</h4>
+              <p class="text-sm text-neutral-300 mb-2">Estabelecer o ponto de partida real — nao o plano. Quanto e o engajamento inicial? Qual a taxa de conversao sem otimizacao? Qual o custo por experimento? Ries chama de "baseline metrics": o ponto honesto de onde a startup/projeto esta hoje.</p>
+              <div class="text-xs text-neutral-400 bg-dark-800/60 rounded p-2">Exemplo: produto com 1.000 usuarios tem taxa de retencao de 12%. Isso e o baseline. Todo progresso e medido contra este numero real, nao contra projecoes.</div>
+            </div>
+
+            <div class="relative">
+              <div class="absolute -left-9 w-8 h-8 rounded-full bg-purple-500/30 border border-purple-500/50 flex items-center justify-center">
+                <span class="text-purple-400 text-xs font-bold">N2</span>
+              </div>
+              <h4 class="font-semibold text-white mb-1">Nivel 2: Metricas de Motor de Crescimento</h4>
+              <p class="text-sm text-neutral-300 mb-2">Identificar qual das tres alavancas e o motor de crescimento do negocio: <strong class="text-purple-400">viral</strong> (coeficiente viral &gt; 1.0 = cada usuario traz mais de um), <strong class="text-purple-400">pago</strong> (LTV/CAC &gt; 3x em 12 meses), <strong class="text-purple-400">stickie</strong> (retencao &gt; 40% no mes 3). Medir somente o motor relevante elimina "metricas de vaidade".</p>
+              <div class="text-xs text-neutral-400 bg-dark-800/60 rounded p-2">Natura Digital: motor stickie — foco total em retencao das consultoras na plataforma digital. Quando retencao no mes 3 passou de 18% para 41%, escalaram o investimento. Antes disso, nao.</div>
+            </div>
+
+            <div class="relative">
+              <div class="absolute -left-9 w-8 h-8 rounded-full bg-purple-500/30 border border-purple-500/50 flex items-center justify-center">
+                <span class="text-purple-400 text-xs font-bold">N3</span>
+              </div>
+              <h4 class="font-semibold text-white mb-1">Nivel 3: Metricas de Pivot ou Perseverar</h4>
+              <p class="text-sm text-neutral-300 mb-2">A decisao mais cara em inovacao: quando parar de otimizar o que nao funciona e mudar de direcao. Innovation accounting define thresholds: se a metrica-chave nao melhora em X% apos Y ciclos de iteracao, o time apresenta evidencias ao board para a decisao de pivot.</p>
+              <div class="text-xs text-neutral-400 bg-dark-800/60 rounded p-2">Regra pratica de Ries: 3 sprints de 2 semanas sem melhora significativa na metrica principal = triggger mandatorio de revisao de hipotese.</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-5">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Metricas Acionaveis</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Taxa de ativacao (% que chega ao "aha moment")</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Retencao cohorte (mes 1, 3, 6)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Willingness to pay (disposicao real de pagar)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>NPS transacional (nao anual)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Custo por aprendizado validado</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Metricas de Vaidade</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Numero total de usuarios registrados</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Downloads/instalacoes (sem ativacao)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Pageviews sem engajamento</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Numero de ideias submetidas (sem triagem)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Receita de um cliente unico (sem recorrencia)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Como comunicar valor para o board -->
+    <section id="topico-5" data-inema-topic="modulo-3-7#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#128100; Como Comunicar Valor para o Board e Diretoria</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-7-t5-p1">
+        O board fala a lingua de risco e retorno. O time de inovacao fala a lingua de aprendizado e experimento. Essa diferenca linguistica mata mais programas de inovacao do que qualquer fracasso tecnico. <strong class="text-purple-400">Traducao e a habilidade mais critica do lider de inovacao.</strong> Nao se trata de esconder incerteza — trata-se de enquadrar a incerteza em termos que o board reconhece como gestao responsavel de risco.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5">&#127919; O Dashboard do Board de Inovacao</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-dark-700/50 rounded-lg p-4 border border-purple-500/20">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">1. Portfolio por Horizonte</h4>
+            <p class="text-xs text-neutral-300">Quantos projetos em H1/H2/H3, com qual orcamento alocado. Mostra balanceamento estrategico — linguagem que CFOs e conselheiros entendem.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4 border border-purple-500/20">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">2. Pipeline de Valor Futuro</h4>
+            <p class="text-xs text-neutral-300">Projecao de receita de novos produtos em 3/5 anos, com intervalos de confianca. Nao falso-precisao: "acreditamos que este portfolio pode gerar R$ 200-500 mi em 5 anos".</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4 border border-purple-500/20">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">3. Metricas de Velocidade</h4>
+            <p class="text-xs text-neutral-300">Quantos experimentos rodamos, quantas hipoteses validadas/invalidadas, tempo medio de ciclo. Mostra que o programa esta funcionando como maquina de aprendizado.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4 border border-purple-500/20">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">4. Comparativo de Mercado</h4>
+            <p class="text-xs text-neutral-300">Investimento em inovacao como % da receita vs. benchmark do setor. Se o setor investe 4% e a empresa investe 1%, o board entende o risco de subinvestimento.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3">&#128161; O Framework dos 3 Niveis de Narrativa</h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m3-7-t5-p2">Rita McGrath (Columbia Business School) recomenda tres niveis de narrativa para comunicar inovacao ao board, dependendo do horizonte:</p>
+        <div class="space-y-3">
+          <div class="flex items-start space-x-3">
+            <span class="text-primary font-bold mt-0.5">1.</span>
+            <div>
+              <strong class="text-white">H1 — Linguagem de Eficiencia:</strong>
+              <span class="text-neutral-300"> "Este projeto reduz custo operacional em 18% e tem payback de 14 meses com 95% de confianca." O board aprova em 3 minutos.</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-primary font-bold mt-0.5">2.</span>
+            <div>
+              <strong class="text-white">H2 — Linguagem de Oportunidade:</strong>
+              <span class="text-neutral-300"> "Estamos capturando um mercado adjacente de R$ 800 mi. Ja temos evidencia de retencao de 38%. Precisamos de 12 meses e R$ 3 mi para chegar ao breakeven." Apresenta risco quantificado + upside.</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-primary font-bold mt-0.5">3.</span>
+            <div>
+              <strong class="text-white">H3 — Linguagem de Opcao:</strong>
+              <span class="text-neutral-300"> "Estamos comprando uma opcao de R$ 1 mi para acessar um mercado de R$ 2 bi. Se a hipotese falhar, perdemos R$ 1 mi. Se validar, temos vantagem de 3 anos sobre o setor. Esta e uma decisao de seguro estrategico."</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4">&#127918; Erros de Comunicacao com o Board</h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-3">
+            <span class="text-red-400 mt-0.5 font-bold">&#10007;</span>
+            <span><strong class="text-red-300">Oversell:</strong> prometer ROI que nao existe. Quando nao se concretiza, o board corta tudo — incluindo os projetos que funcionariam.</span>
+          </li>
+          <li class="flex items-start space-x-3">
+            <span class="text-red-400 mt-0.5 font-bold">&#10007;</span>
+            <span><strong class="text-red-300">Jargao sem traducao:</strong> usar "pivot", "MVP", "product-market fit" sem contexto. O board interpreta como imprecisao, nao como metodologia.</span>
+          </li>
+          <li class="flex items-start space-x-3">
+            <span class="text-red-400 mt-0.5 font-bold">&#10007;</span>
+            <span><strong class="text-red-300">Relatar so fracassos sem aprendizado:</strong> "o piloto nao funcionou" sem "aqui esta o que aprendemos e como muda nossa proxima aposta" parece incompetencia, nao experimentacao sistematica.</span>
+          </li>
+          <li class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-0.5 font-bold">&#10003;</span>
+            <span><strong class="text-emerald-300">Estrutura correta:</strong> Custo do portfolio inteiro &gt; Hipoteses testadas &gt; O que validamos &gt; O que invalidamos &gt; Como isso muda a direcao &gt; Proximo ciclo de investimento.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Erros classicos de ROI -->
+    <section id="topico-6" data-inema-topic="modulo-3-7#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#9888;&#65039; Erros Classicos: Exigir ROI Cedo Demais e So Olhar Payback Curto</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-7-t6-p1">
+        A maioria das inovacoes que fracassam nao fracassam por falta de ideia ou de execucao — fracassam porque foram <strong class="text-purple-400">mortas antes de atingir o ponto de inflexao</strong>. Os dois erros mais destrutivos sao: exigir retorno financeiro antes que haja produto-mercado fit, e usar payback de curto prazo como criterio unico de alocacao de capital para inovacao exploratoria.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5">&#128200; A Curva J da Inovacao</h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m3-7-t6-p2">Todo projeto de inovacao H2/H3 segue uma curva em J: investimento crescente com retorno negativo no inicio, ponto de inflexao quando a hipotese e validada, e crescimento acelerado depois. Quem corta o projeto na fase negativa da curva — que e exatamente onde o aprendizado esta acontecendo — nunca chega ao lado positivo.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-red-900/20 rounded-lg p-4 border border-red-500/20">
+            <h4 class="text-sm font-semibold text-red-400 mb-2">Fase 1: Queima</h4>
+            <p class="text-xs text-neutral-300">0-18 meses. Investimento sem retorno visivel. Curva de aprendizado acumulando. E aqui que 70% dos programas cortam.</p>
+          </div>
+          <div class="bg-purple-900/20 rounded-lg p-4 border border-purple-500/20">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Fase 2: Inflexao</h4>
+            <p class="text-xs text-neutral-300">Hipotese validada, produto-mercado fit encontrado. Metricas de retencao e crescimento comecam a confirmar o modelo.</p>
+          </div>
+          <div class="bg-emerald-900/20 rounded-lg p-4 border border-emerald-500/20">
+            <h4 class="text-sm font-semibold text-emerald-400 mb-2">Fase 3: Escala</h4>
+            <p class="text-xs text-neutral-300">Crescimento exponencial. ROI financeiro torna-se visivel. E quando os late movers querem entrar — mas o early mover ja tem vantagem estrutural.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Os 5 Erros Mais Caros</h4>
+          <ul class="space-y-3 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span><strong>Payback &lt; 24 meses para H3:</strong> equivale a dizer que quer colher antes de plantar. Nenhuma inovacao disruptiva se paga em 2 anos.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span><strong>Mesma taxa de desconto para H1 e H3:</strong> ignorar o perfil de risco diferente de cada horizonte distorce o VPL e penaliza apostas de longo prazo.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span><strong>Pedir business case completo no Gate 0:</strong> em H3, o business case e ficcao. Quem pode prever o mercado de streaming em 2003?</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span><strong>Cortar H3 em crises financeiras:</strong> justo quando concorrentes estao vulneraveis e o custo de talent e baixo — e exatamente quando se deve investir.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span><strong>Tratar todos os R$ de inovacao como iguais:</strong> R$ 1 mi em H1 tem risco e retorno completamente diferentes de R$ 1 mi em H3.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; O Que Fazer em Vez Disso</h4>
+          <ul class="space-y-3 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span><strong>Definir metricas de sucesso por horizonte</strong> antes de comecar — nao no momento de avaliacao.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span><strong>Usar "kill criteria" claros</strong>: o projeto morre SE nao atingir X em Y meses. Remove politica da decisao.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span><strong>Separar orcamentos por horizonte</strong> com protecao contra cortes operacionais — o orcamento de H3 nao financia crise de H1.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span><strong>Revisar portfolio trimestralmente</strong>, nao anualmente — permite realocar para o que esta funcionando mais rapidamente.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span><strong>Celebrar experimentos que invalidaram hipoteses</strong> — aprendizado negativo vale tanto quanto positivo para reducao de risco do portfolio.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3">&#128161; O Custo de Oportunidade do Subinvestimento</h3>
+        <p class="text-neutral-300 mb-2">Kodak inventou a camera digital em 1975 — 10 anos antes de qualquer concorrente. Cortou o investimento porque ameacava o negocio de filme. Em 2012, foi a falencia. Nokia tinha o primeiro smartphone do mundo (Communicator, 1996). Cortou investimentos em software por nao "encaixar no ROI de hardware". Em 2013, vendeu a divisao de moveis para a Microsoft por fracao do valor.</p>
+        <p class="text-neutral-300"><strong class="text-primary">O custo real do subinvestimento em H3 nao e o que voce gastou — e o que o concorrente ganhou enquanto voce esperava o payback.</strong></p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">&#128203;</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Medir ROI de inovacao e obrigatorio — mas com a metrica certa para cada horizonte</strong>
+              <span class="text-neutral-400"> — H1 pede VPL, H3 pede aprendizado validado e valor de opcao</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">4 tipos de retorno: financeiro, estrategico, aprendizado e opcao</strong>
+              <span class="text-neutral-400"> — os tres ultimos sao invisiveis no curto prazo mas constituem a maior parte do valor total</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Real options: cada experimento compra um direito, nao uma certeza</strong>
+              <span class="text-neutral-400"> — o custo do experimento deve ser calibrado ao tamanho do mercado potencial</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Innovation accounting de Ries: 3 niveis para medir progresso em incerteza</strong>
+              <span class="text-neutral-400"> — baseline, motor de crescimento, e criterios de pivot ou perseverar</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">O maior erro: cortar H3 na fase negativa da curva J</strong>
+              <span class="text-neutral-400"> — Kodak e Nokia sao o preco do subinvestimento. O custo de oportunidade supera qualquer economia de curto prazo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-purple-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">3.8 - Escalando Inovacao — como levar um piloto bem-sucedido para toda a organizacao sem perder a essencia</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-3-8.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">
+            3.8 - Escalando Inovacao &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

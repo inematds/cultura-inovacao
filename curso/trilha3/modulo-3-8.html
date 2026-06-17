@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Escalando Inovacao | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha purple) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a>
+      <span>/</span>
+      <span class="text-purple-400">Modulo 3.8</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MODULO 3.8</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#128200; Escalando Inovacao</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Do piloto promissor ao impacto em toda a empresa. Como atravessar o vale da morte da inovacao, decidir quando escalar, montar os times certos e integrar ao core sem matar o que funcionou.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">55</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Avancado</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Estrategia</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="3-8" data-inema-track="3">
+
+    <!-- TOPICO 1: Vale da Morte -->
+    <section id="topico-1" data-inema-topic="modulo-3-8#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#128565; Do Piloto ao Scale e o "Vale da Morte" da Inovacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-8-t1-p1">
+        Todo mundo sabe fazer piloto. O problema e o que vem depois. Entre o piloto que funcionou e o produto que escala para toda a empresa existe um abismo que pesquisadores da Harvard Business Review chamam de <strong class="text-purple-400">"vale da morte da inovacao"</strong> — o ponto onde mais de 70% das inovacoes corporativas morrem, nao por falta de merito tecnico, mas por falta de preparo organizacional para recebe-las.
+      </p>
+
+      <!-- SVG: Vale da Morte -->
+      <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 900 340" class="w-full h-auto" role="img" aria-label="Diagrama do vale da morte da inovacao: curva que sobe no piloto, cai no vale entre piloto e escala, e sobe novamente apos atravessar com sucesso">
+          <defs>
+            <linearGradient id="m3-8-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#a855f7"/>
+            </linearGradient>
+            <linearGradient id="m3-8-grad2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#38bdf8" stop-opacity="0.6"/><stop offset="1" stop-color="#c084fc" stop-opacity="0.6"/>
+            </linearGradient>
+            <filter id="m3-8-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m3-8-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+              <circle cx="1.2" cy="1.2" r="1.2" fill="#a855f7" opacity="0.10"/>
+            </pattern>
+          </defs>
+          <rect x="0" y="0" width="900" height="340" fill="url(#m3-8-grid)"/>
+
+          <!-- Curva do piloto ao vale ao scale -->
+          <path d="M60,260 C120,240 180,160 240,130 C280,112 300,118 340,180 C380,242 420,268 460,260 C500,252 540,260 580,240 C650,200 720,120 840,70"
+                fill="none" stroke="url(#m3-8-grad2)" stroke-width="3" opacity="0.8"/>
+
+          <!-- Area do vale sombreada -->
+          <path d="M280,120 C310,108 330,110 360,168 C390,226 430,264 470,258 L470,310 L280,310 Z"
+                fill="#c084fc" opacity="0.06"/>
+
+          <!-- Label: Piloto -->
+          <rect x="70" y="80" width="100" height="36" rx="8" fill="#1a1230" stroke="#c084fc" stroke-width="1.5"/>
+          <text x="120" y="103" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="12" font-weight="600">Piloto &#10003;</text>
+
+          <!-- Label: Vale da Morte -->
+          <g filter="url(#m3-8-glow)">
+            <rect x="310" y="255" width="160" height="38" rx="8" fill="#1a0a0a" stroke="#f87171" stroke-width="1.8"/>
+          </g>
+          <text x="390" y="278" text-anchor="middle" fill="#f87171" font-family="Inter,sans-serif" font-size="12" font-weight="700">Vale da Morte</text>
+
+          <!-- Label: Escala -->
+          <rect x="710" y="55" width="140" height="36" rx="8" fill="#1a1230" stroke="url(#m3-8-grad)" stroke-width="2"/>
+          <text x="780" y="78" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="12" font-weight="600">Escala Plena &#10003;</text>
+
+          <!-- Seta para cima no scale com glow -->
+          <line x1="780" y1="95" x2="780" y2="130" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.5" class="wf-a"/>
+
+          <!-- Eixo X -->
+          <line x1="50" y1="295" x2="870" y2="295" stroke="#c084fc" stroke-width="1.2" opacity="0.25"/>
+          <text x="460" y="325" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="11" opacity="0.5">Maturidade da inovacao &#8594;</text>
+
+          <!-- Percentual 70% morrem -->
+          <text x="390" y="240" text-anchor="middle" fill="#f87171" font-family="Inter,sans-serif" font-size="11" opacity="0.85">70% morrem aqui</text>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2">Por que o piloto funciona</h4>
+          <p class="text-sm text-neutral-300">Time pequeno, motivado, sponsor dedicado, sem burocracia, liberdade para experimentar. O piloto e um ambiente artificial de sucesso.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-red-500/30 p-5">
+          <h4 class="font-semibold text-red-400 mb-2">Por que o vale mata</h4>
+          <p class="text-sm text-neutral-300">Perda do sponsor, corte de orcamento, resistencia do core, falta de processo para escalar, time que nao e replicavel, metricas erradas.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-2">O que diferencia quem cruza</h4>
+          <p class="text-sm text-neutral-300">Preparacao antecipada: institucionalizar antes de escalar, construir a ponte antes de chegar na beira, garantir recursos comprometidos.</p>
+        </div>
+      </div>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center">
+          <span class="mr-2">&#128202;</span> Dados que comprovam o vale
+        </h3>
+        <ul class="space-y-2 text-neutral-300 text-sm">
+          <li><strong class="text-blue-400">71%</strong> das empresas da Fortune 500 reportam dificuldade em escalar inovacoes alem de pilotos (McKinsey Global Innovation Survey, 2023)</li>
+          <li><strong class="text-blue-400">4 em 5</strong> projetos de transformacao digital ficam presos em piloto por mais de 18 meses (BCG Digital Transformation Report)</li>
+          <li><strong class="text-blue-400">R$ 2,3 bi</strong> e o custo medio estimado de pilotos "eternos" em grandes bancos brasileiros ao ano (FGV EAESP, 2022)</li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Criterios para Decidir Escalar -->
+    <section id="topico-2" data-inema-topic="modulo-3-8#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#9989; Criterios para Decidir Escalar</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-8-t2-p1">
+        Escalar cedo demais desperdicou bilhoes. Escalar tarde demais deixou o mercado para concorrentes. A decisao de quando escalar e uma das mais criticas — e tambem uma das mais mal feitas — em inovacao corporativa. A maioria das empresas escala por pressao politica ("precisamos de resultado") e nao por evidencia tecnica. O resultado e previsivel: fracasso caro.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5">Framework de Prontidao para Escala — 4 dimensoes</h3>
+        <div class="space-y-5">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">D1</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Prontidao de Mercado</h4>
+              <p class="text-sm text-neutral-300 mb-2">O problema que voce resolve e real, recorrente e tem disposicao a pagar comprovada. Nao e entusiasmo de piloto — e comportamento repetido.</p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">NPS &gt; 40 no piloto</span>
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">Retencao &gt; 60% apos 90 dias</span>
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">Clientes recomendam espontaneamente</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">D2</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Prontidao Economica</h4>
+              <p class="text-sm text-neutral-300 mb-2">Os unit economics fecham — ou existe caminho claro para fechar em escala. LTV/CAC &gt; 3x. Custo marginal decrescente com volume.</p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">Margem positiva em escala</span>
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">Custo de aquisicao controlavel</span>
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">Modelo replicavel sem customizacao excessiva</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">D3</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Prontidao Operacional</h4>
+              <p class="text-sm text-neutral-300 mb-2">A operacao aguenta o volume. Processos documentados, sistemas testados sob carga, time treinado e nao dependente de uma so pessoa.</p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">Runbook completo</span>
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">SLA definido e cumprido</span>
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">Onboarding de novos membros &lt; 2 semanas</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">D4</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Prontidao Organizacional</h4>
+              <p class="text-sm text-neutral-300 mb-2">A empresa esta preparada para receber. Sponsor ativo, budget aprovado, areas que serao afetadas estao alinhadas, nao apenas informadas.</p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">Champion em cada area receptora</span>
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">Budget comprometido (nao apenas aprovado)</span>
+                <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded">KPIs de sucesso acordados</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Sinais verdes para escalar</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Usuarios do piloto reclamam quando sistema fica indisponivel</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Outras areas pedem acesso espontaneamente</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Custos caem com aumento de volume</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Time consegue explicar o processo sem o criador</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Metricas de negocio (receita, custo, satisfacao) claramente melhores</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Sinais vermelhos — nao escale ainda</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Resultado depende de um heroi especifico no time</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Custo unitario aumenta com mais usuarios</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Aprovacoes "em principio" mas sem budget real</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Processo documentado so na cabeca do lider</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Pressao para escalar vem de narrativa, nao de dados</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Recursos, Estrutura e Times -->
+    <section id="topico-3" data-inema-topic="modulo-3-8#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#127959; Recursos, Estrutura e Times para Escala</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-8-t3-p1">
+        O time que criou o piloto raramente e o time que deve escalar. Nao e defeito — e biologia organizacional. Founders precisam de ambiguidade; operators precisam de previsibilidade. Confundir os dois papeis e um dos erros mais comuns e mais caros da inovacao corporativa. Jeff Bezos foi um dos poucos que entendeu isso: criou uma estrutura separada para o AWS e colocou um operator, Andy Jassy, para escala-la.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4">Os 3 Perfis Necessarios na Escala</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-purple-900/20 rounded-lg p-4 border border-purple-500/20">
+            <div class="text-2xl mb-2">&#128161;</div>
+            <h4 class="font-semibold text-purple-400 mb-1">Inovador (Founder)</h4>
+            <p class="text-xs text-neutral-300 mb-2">Criou, experimentou, iterou. Alta tolerancia a ambiguidade. Essencial para o proximo piloto.</p>
+            <p class="text-xs text-neutral-500">Deve: ir para o proximo projeto H3</p>
+          </div>
+          <div class="bg-purple-900/20 rounded-lg p-4 border border-purple-500/20">
+            <div class="text-2xl mb-2">&#128736;</div>
+            <h4 class="font-semibold text-purple-400 mb-1">Escalador (Builder)</h4>
+            <p class="text-xs text-neutral-300 mb-2">Transforma o que funcionou em processo reproduzivel. Monta times, define processos, garante SLA.</p>
+            <p class="text-xs text-neutral-500">Deve: liderar a fase de scale</p>
+          </div>
+          <div class="bg-purple-900/20 rounded-lg p-4 border border-purple-500/20">
+            <div class="text-2xl mb-2">&#128202;</div>
+            <h4 class="font-semibold text-purple-400 mb-1">Operador (Runner)</h4>
+            <p class="text-xs text-neutral-300 mb-2">Otimiza o que foi escalado. Foco em eficiencia, metricas, margem. Confortavel com previsibilidade.</p>
+            <p class="text-xs text-neutral-500">Deve: assumir apos maturidade</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline de montagem de time -->
+      <h3 class="text-lg font-semibold mb-4">Timeline: Montando o Time de Escala</h3>
+      <div class="space-y-4 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold">1</div>
+            <div class="w-0.5 h-10 bg-purple-500/20 mt-1"></div>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600 mb-2">
+            <h4 class="font-semibold text-purple-400 mb-1">Mes 1-2: Defina o Escalador</h4>
+            <p class="text-sm text-neutral-300">Antes de alocar qualquer recurso, escolha quem vai liderar a escala. Perfil de builder, nao de founder. Erro classico: deixar o criador liderar o scale e ele ficar sufocado pela operacao.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold">2</div>
+            <div class="w-0.5 h-10 bg-purple-500/20 mt-1"></div>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600 mb-2">
+            <h4 class="font-semibold text-purple-400 mb-1">Mes 2-4: Monte o Nucleo Multidisciplinar</h4>
+            <p class="text-sm text-neutral-300">O time de scale precisa de: produto/tech, operacoes, juridico/compliance, financas, marketing/comunicacao. Parcial e aceito, mas todos precisam ter dedicacao formal — nao "quando der".</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold">3</div>
+            <div class="w-0.5 h-10 bg-purple-500/20 mt-1"></div>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600 mb-2">
+            <h4 class="font-semibold text-purple-400 mb-1">Mes 4-8: Expanda com Champions nas Areas</h4>
+            <p class="text-sm text-neutral-300">Cada area que adotara a inovacao precisa de um champion interno — alguem que entende e defende. Nao e evangelista: e responsavel por resultados locais. Modelo Nubank: squads de produto com embaixadores em parceiros.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold">4</div>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600 mb-2">
+            <h4 class="font-semibold text-purple-400 mb-1">Mes 8+: Transfira para Operacao</h4>
+            <p class="text-sm text-neutral-300">Quando o produto e maduro, o time de inovacao entrega para um time de produto permanente. O time de inovacao vai para o proximo desafio. Esse ciclo e o que distingue empresas que inovam continuamente.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3">&#128161; Regra de Jeff Bezos para Escala</h3>
+        <p class="text-neutral-300">"Se o time precisa de mais de duas pizzas para se alimentar, e grande demais." Na escala inicial, mantenha o time entre 6-10 pessoas. Times maiores criam coordenacao, politica e lentidao que destroem o momentum. Escale o time so apos o processo estar documentado e testado — escalar pessoas antes do processo e escalar caos.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Integrar ao Core sem Matar a Inovacao -->
+    <section id="topico-4" data-inema-topic="modulo-3-8#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#129309; Integrar ao Core sem Matar a Inovacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-8-t4-p1">
+        A integracao ao core e o momento mais perigoso. Quando uma inovacao entra no sistema existente da empresa, ela enfrenta anticorpos organizacionais — processos, metricas, culturas e incentivos desenhados para otimizar o negocio atual, nao para nutrir o novo. Clayton Christensen chamou isso de "Dilema do Inovador": as mesmas forcas que tornam a empresa boa no presente a tornam incapaz de abracar o futuro.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Estrategias de Integracao que Funcionam</h4>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span><strong>Spin-in gradual:</strong> a inovacao mantem autonomia parcial durante 12-18 meses, integrando processos um a um — financas primeiro, depois RH, depois compliance.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span><strong>Metricas separadas:</strong> manter P&L distinto por pelo menos 2 anos para nao contaminar com metricas de otimizacao do core.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span><strong>Sponsor executivo permanente:</strong> nao abandone o sponsorship na integracao. E quando mais precisa de protecao politica.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 mt-0.5">&#10003;</span>
+              <span><strong>Acordo de nivel de servico interno:</strong> defina o que o core vai oferecer (infra, juridico, compliance) e o que a inovacao vai manter de autonomia.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Anticorpos Organizacionais — Reconheca</h4>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span><strong>"Nao e como fazemos aqui":</strong> resistencia cultural disfarcada de padronizacao. Sintoma de que ninguem explicou por que o novo processo existe.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span><strong>Metricas de curto prazo:</strong> aplicar ROI trimestral a inovacoes que precisam de 2-3 anos para maturar. Mata antes de nascer.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span><strong>Processo de aprovacao do core:</strong> exigir 14 assinaturas para uma mudanca que no piloto era feita em 1 dia. Sufoca velocidade.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400 mt-0.5">&#10007;</span>
+              <span><strong>Mudanca de gestao:</strong> novo VP assume a area, nao entende o historico e mata o projeto por nao ter "inventado aqui".</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4">Caso: Magazine Luiza — Integracao do Magalu Marketplace</h3>
+        <p class="text-neutral-300 text-sm mb-3" data-inema-block="m3-8-t4-case">Em 2012, o Magalu Marketplace nasceu como piloto interno separado do core de e-commerce. Frederico Trajano (entao VP Digital) garantiu que o marketplace operasse com metricas proprias (GMV, sellers ativos, NPS de seller) por 3 anos antes de ser plenamente integrado. A integracao foi feita por camadas: logistica primeiro (para aproveitar CD existentes), depois tecnologia, por ultimo metricas de resultado. Resultado: de R$ 400 mi em GMV em 2015 para mais de R$ 60 bi em 2022, sem "matar" a cultura de seller-centric que o piloto havia construido.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Gestao de Mudanca na Escala (Kotter) -->
+    <section id="topico-5" data-inema-topic="modulo-3-8#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#128257; Gestao de Mudanca na Escala (Kotter)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-8-t5-p1">
+        John Kotter, professor da Harvard Business School, estudou mais de 100 processos de transformacao em grandes corporacoes e publicou em 1996 o modelo de 8 etapas que virou referencia mundial. Seu insight central: <strong class="text-purple-400">a maioria das transformacoes falha nao por falta de estrategia ou tecnologia, mas por falta de gestao da dimensao humana da mudanca</strong>. Escalar inovacao sem um plano de mudanca e como construir uma autoestrada sem sinalizar as entradas e saidas.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-5">As 8 Etapas de Kotter Aplicadas a Escala de Inovacao</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-purple-400 text-xs font-bold">1</span>
+              <h4 class="text-sm font-semibold text-purple-300">Criar Urgencia</h4>
+            </div>
+            <p class="text-xs text-neutral-400">Mostre a ameaca de nao escalar. Use dados: quanto custa cada mes de atraso? Qual concorrente esta chegando?</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-purple-400 text-xs font-bold">2</span>
+              <h4 class="text-sm font-semibold text-purple-300">Formar Coaliza o Poderosa</h4>
+            </div>
+            <p class="text-xs text-neutral-400">Recrute influenciadores de cada area afetada. Nao so os formais — os informais (quem todo mundo ouve no corredor) sao mais importantes.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-purple-400 text-xs font-bold">3</span>
+              <h4 class="text-sm font-semibold text-purple-300">Criar Visao Clara</h4>
+            </div>
+            <p class="text-xs text-neutral-400">Nao e slogan. E uma imagem concreta do futuro: "Em 18 meses, 100% dos gerentes regionais usam o painel de decisao em tempo real."</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-purple-400 text-xs font-bold">4</span>
+              <h4 class="text-sm font-semibold text-purple-300">Comunicar a Visao</h4>
+            </div>
+            <p class="text-xs text-neutral-400">Repita 7x em 7 formatos. Email nao basta. Apresentacao em all-hands + video curto + FAQ + sessao de perguntas + demo ao vivo.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-purple-400 text-xs font-bold">5</span>
+              <h4 class="text-sm font-semibold text-purple-300">Remover Obstaculos</h4>
+            </div>
+            <p class="text-xs text-neutral-400">Mapeie o que bloqueia a adocao: sistema legado, processo de aprovacao, incentivo errado, gestora que nao acredita. Resolva cada um ativamente.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-purple-400 text-xs font-bold">6</span>
+              <h4 class="text-sm font-semibold text-purple-300">Gerar Vitoria de Curto Prazo</h4>
+            </div>
+            <p class="text-xs text-neutral-400">Defina marcos de 30-60 dias para cada onda de escala. Celebre publicamente. Isso mantem energia e desacredita resistentes.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-purple-400 text-xs font-bold">7</span>
+              <h4 class="text-sm font-semibold text-purple-300">Consolidar e Avacar</h4>
+            </div>
+            <p class="text-xs text-neutral-400">Cada vitoria abre caminho para a proxima onda. Nao declare vencedor cedo demais — a resistencia organizacional ressurge se nao for ancorada em processos.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-purple-400 text-xs font-bold">8</span>
+              <h4 class="text-sm font-semibold text-purple-300">Ancorar na Cultura</h4>
+            </div>
+            <p class="text-xs text-neutral-400">A mudanca so e permanente quando entra na cultura: nos rituais, nos processos de promocao, nas historias que a empresa conta sobre si mesma.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3">&#128161; O Erro Mais Comum com Kotter</h3>
+        <p class="text-neutral-300 text-sm">Empresas pulam as etapas iniciais (1-4) e vao direto para a implementacao (etapas 5-8). O resultado: resistencia silenciosa, adocao superficial e regressao apos a primeira troca de lideranca. As etapas 1-4 criam o solo fertil. Sem elas, qualquer semente morre.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Erros — escalar cedo ou tarde demais -->
+    <section id="topico-6" data-inema-topic="modulo-3-8#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#128683; Erros: Escalar Cedo Demais ou Tarde Demais</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-8-t6-p1">
+        Existe um paradoxo na escala de inovacao: os dois erros opostos — escalar cedo demais e escalar tarde demais — produzem o mesmo resultado final: fracasso. Porem, por razoes completamente diferentes e com sintomas distintos. Entender os dois erros e como evita-los e o que separa liderancas que escalam com sucesso das que ficam presas no eterno ciclo de "pilotos sem destino".
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4 flex items-center"><span class="mr-2">&#9200;</span>Escalar Cedo Demais</h4>
+          <p class="text-xs text-neutral-400 mb-3 italic">"O piloto funcionou, vamos expandir para todo o Brasil agora!"</p>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li><strong class="text-red-400">Sintoma:</strong> Pressao politica ou euforia apos resultado positivo do piloto sem validar replicabilidade.</li>
+            <li><strong class="text-red-400">Consequencia:</strong> Operacao quebra com volume. Custo por usuario explode. Time exausto. Qualidade despenca. Usuarios insatisfeitos viram detratores.</li>
+            <li><strong class="text-red-400">Caso real:</strong> Juicero (Silicon Valley, 2016) escalou producao de 400 mil maquinas antes de validar se clientes realmente queriam o produto. Perdeu USD 120 mi.</li>
+            <li><strong class="text-red-400">Prevencao:</strong> Exigir aprovacao nas 4 dimensoes de prontidao (Topico 2) antes de qualquer decisao de escala.</li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4 flex items-center"><span class="mr-2">&#128336;</span>Escalar Tarde Demais</h4>
+          <p class="text-xs text-neutral-400 mb-3 italic">"Ainda nao e o momento certo, precisamos de mais um rodada de testes..."</p>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li><strong class="text-red-400">Sintoma:</strong> Perfeccionismo, medo de expor ao escrutinio corporativo, lideranca que nunca esta "pronta o suficiente".</li>
+            <li><strong class="text-red-400">Consequencia:</strong> Concorrente (interno ou externo) chega primeiro. Janela de mercado fecha. Time desmotiva por falta de impacto. Budget e cortado.</li>
+            <li><strong class="text-red-400">Caso real:</strong> Kodak inventou a camera digital em 1975, mas adiou comercializacao por 20 anos para proteger o filme. Perdeu um mercado de USD 20 bi.</li>
+            <li><strong class="text-red-400">Prevencao:</strong> Definir data-limite para a decisao de scale. Se em X meses nao ha evidencias suficientes, matar o projeto — nao postergar indefinidamente.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4">Como Encontrar o Momento Certo: A Regra dos 3 Sinaes Simultaneos</h3>
+        <p class="text-neutral-300 text-sm mb-4" data-inema-block="m3-8-t6-regra">Segundo pesquisa do MIT Sloan Management Review (2022) com 200 inovacoes corporativas bem-sucedidas, o timing ideal de escala ocorre quando TRES sinais aparecem simultaneamente — e nao antes:</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-purple-900/20 rounded-lg p-4 border border-purple-500/20 text-center">
+            <div class="text-2xl mb-2">&#128200;</div>
+            <h4 class="font-semibold text-purple-400 text-sm mb-1">Sinal de Mercado</h4>
+            <p class="text-xs text-neutral-300">Demanda organica: pessoas de fora do piloto pedem acesso espontaneamente</p>
+          </div>
+          <div class="bg-purple-900/20 rounded-lg p-4 border border-purple-500/20 text-center">
+            <div class="text-2xl mb-2">&#128178;</div>
+            <h4 class="font-semibold text-purple-400 text-sm mb-1">Sinal Economico</h4>
+            <p class="text-xs text-neutral-300">Custo marginal decresce: cada novo usuario custa menos que o anterior</p>
+          </div>
+          <div class="bg-purple-900/20 rounded-lg p-4 border border-purple-500/20 text-center">
+            <div class="text-2xl mb-2">&#128736;</div>
+            <h4 class="font-semibold text-purple-400 text-sm mb-1">Sinal Operacional</h4>
+            <p class="text-xs text-neutral-300">Processo replicavel: alguem que nao esteve no piloto consegue operar sem o fundador</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">&#9888;</span> Armadilha: O "Piloto Eterno"
+        </h3>
+        <p class="text-neutral-300 text-sm">Existe um terceiro erro que combina os dois: o piloto que nunca termina. Sempre tem mais uma validacao, mais um ajuste, mais um stakeholder para convencer. Em organizacoes avessas a risco, o piloto eterno e um mecanismo de defesa — permite mostrar "estamos inovando" sem o risco de escalar e falhar. A cura e simples: defina no Gate 0 a data em que o piloto termina, seja com decisao de escalar ou de encerrar. Pilotos sem data de fim sao cemiterios de boas intencoes.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">&#128203;</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">O vale da morte e real e mata 70% das inovacoes</strong>
+              <span class="text-neutral-400"> — a transicao de piloto para escala precisa de preparacao antecipada, nao improviso</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Escale so quando 4 dimensoes estiverem prontas</strong>
+              <span class="text-neutral-400"> — mercado, economia, operacao e organizacao. Faltar uma e crise certa</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Times de escala sao diferentes dos times de piloto</strong>
+              <span class="text-neutral-400"> — founders exploram, builders escalam, operators otimizam. Confundir os tres destroe resultados</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Integracao ao core exige protecao ativa</strong>
+              <span class="text-neutral-400"> — anticorpos organizacionais sao inevitaveis; a diferenca e ter estrategia para neutraliza-los</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Kotter + timing certo = escala sustentavel</strong>
+              <span class="text-neutral-400"> — gestao de mudanca nao e opcional; e a diferenca entre adocao real e uso superficial</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-purple-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">3.9 - Governanca de Inovacao</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-3-9.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">
+            3.9 - Governanca de Inovacao &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

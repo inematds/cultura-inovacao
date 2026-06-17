@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Trilha 1 - Fundamentos | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC: bloqueante, antes de tudo -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides - OBRIGATORIO */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha emerald) */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5, 150, 105, 0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5, 150, 105, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas e linhas divisorias mais suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG pulse animation */
+    @keyframes t1-pulse { 0%,100% { opacity:.5 } 50% { opacity:1 } }
+    @keyframes t1-flow { 0% { stroke-dashoffset: 24; } 100% { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: no-preference) {
+      .t1-a { animation: t1-pulse 3s ease-in-out infinite; }
+      .t1-a:nth-child(2) { animation-delay: .4s; }
+      .t1-a:nth-child(3) { animation-delay: .8s; }
+      .t1-a:nth-child(4) { animation-delay: 1.2s; }
+      .t1-a:nth-child(5) { animation-delay: 1.6s; }
+      .t1-a:nth-child(6) { animation-delay: 2.0s; }
+      .t1-a:nth-child(7) { animation-delay: 2.4s; }
+      .t1-flow { animation: t1-flow 2s linear infinite; }
+    }
+
+    /* Meter de progresso */
+    .t1-meter-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(16,185,129,0.15);
+      overflow: hidden;
+    }
+    .t1-meter-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #10b981, #34d399);
+      border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Inicio</a>
+      <span>/</span>
+      <span class="text-emerald-400">Trilha 1</span>
+    </div>
+  </nav>
+
+  <!-- HERO DA TRILHA -->
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600" data-inema-track="1">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+
+        <!-- Texto do hero -->
+        <div>
+          <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4 uppercase tracking-wider">Trilha 1</span>
+          <h1 class="text-3xl sm:text-4xl font-bold mb-4 text-neutral-100">🌱 Fundamentos da Cultura de Inovacao</h1>
+          <p class="text-neutral-300 text-lg mb-6">Entenda o que e, como funciona e por que a cultura vem antes de qualquer metodologia. O alicerce de tudo.</p>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-dark-800 rounded-xl p-4 border border-dark-600 text-center">
+              <div class="text-2xl font-bold text-emerald-400">7</div>
+              <div class="text-xs text-neutral-500 mt-1">Modulos</div>
+            </div>
+            <div class="bg-dark-800 rounded-xl p-4 border border-dark-600 text-center">
+              <div class="text-2xl font-bold text-emerald-400">42</div>
+              <div class="text-xs text-neutral-500 mt-1">Topicos</div>
+            </div>
+            <div class="bg-dark-800 rounded-xl p-4 border border-dark-600 text-center">
+              <div class="text-2xl font-bold text-emerald-400">~4h</div>
+              <div class="text-xs text-neutral-500 mt-1">Duracao</div>
+            </div>
+          </div>
+
+          <!-- Meter de progresso da trilha -->
+          <div class="bg-dark-800 rounded-xl p-4 border border-dark-600">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm text-neutral-400">Seu progresso</span>
+              <span class="text-sm text-emerald-400 font-semibold inema-meter-pct">0%</span>
+            </div>
+            <div class="t1-meter-bar mb-2">
+              <div class="t1-meter-fill" data-inema-meter="trilha:1" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da trilha 1"></div>
+            </div>
+            <div class="text-xs text-neutral-500 inema-meter-count">0 de 42 topicos concluidos</div>
+          </div>
+        </div>
+
+        <!-- SVG Hero futurista (emerald + ciano) -->
+        <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-4">
+          <svg role="img" aria-label="Diagrama dos 7 modulos da trilha Fundamentos formando um sistema de inovacao" viewBox="0 0 480 320" class="w-full h-auto" font-family="Inter,sans-serif">
+            <defs>
+              <filter id="t1-glow">
+                <feGaussianBlur stdDeviation="1.8" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <radialGradient id="t1-bg-grad" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stop-color="#064e3b" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="#111827" stop-opacity="0"/>
+              </radialGradient>
+              <!-- Grid pontilhado -->
+              <pattern id="t1-dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+                <circle cx="1" cy="1" r="0.8" fill="#10b981" fill-opacity="0.12"/>
+              </pattern>
+            </defs>
+
+            <!-- Fundo -->
+            <rect width="480" height="320" fill="url(#t1-dots)"/>
+            <ellipse cx="240" cy="160" rx="180" ry="120" fill="url(#t1-bg-grad)"/>
+
+            <!-- No central: Cultura -->
+            <g filter="url(#t1-glow)">
+              <rect x="170" y="120" width="140" height="56" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="2"/>
+              <text x="240" y="143" text-anchor="middle" fill="#34d399" font-size="11" font-weight="600">CULTURA DE</text>
+              <text x="240" y="160" text-anchor="middle" fill="#34d399" font-size="11" font-weight="600">INOVACAO</text>
+              <text x="240" y="172" text-anchor="middle" fill="#6ee7b7" font-size="9">sistema vivo</text>
+            </g>
+
+            <!-- Nos satelites — 7 modulos em arco -->
+            <!-- M1.1 — topo esq -->
+            <g class="t1-a">
+              <line x1="220" y1="120" x2="140" y2="72" stroke="#10b981" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+              <rect x="84" y="46" width="112" height="42" rx="8" fill="#1f2937" stroke="#10b981" stroke-width="1.5"/>
+              <text x="140" y="64" text-anchor="middle" fill="#6ee7b7" font-size="9" font-weight="600">1.1 O que e</text>
+              <text x="140" y="76" text-anchor="middle" fill="#9ca3af" font-size="8">Cultura de Inovacao</text>
+            </g>
+
+            <!-- M1.2 — topo dir -->
+            <g class="t1-a">
+              <line x1="260" y1="120" x2="340" y2="72" stroke="#10b981" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+              <rect x="284" y="46" width="112" height="42" rx="8" fill="#1f2937" stroke="#10b981" stroke-width="1.5"/>
+              <text x="340" y="64" text-anchor="middle" fill="#6ee7b7" font-size="9" font-weight="600">1.2 Pilares</text>
+              <text x="340" y="76" text-anchor="middle" fill="#9ca3af" font-size="8">da Cultura</text>
+            </g>
+
+            <!-- M1.3 — esq -->
+            <g class="t1-a">
+              <line x1="170" y1="148" x2="96" y2="148" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+              <rect x="18" y="126" width="112" height="42" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="1.5"/>
+              <text x="74" y="144" text-anchor="middle" fill="#7dd3fc" font-size="9" font-weight="600">1.3 Modelos</text>
+              <text x="74" y="156" text-anchor="middle" fill="#9ca3af" font-size="8">de Referencia</text>
+            </g>
+
+            <!-- M1.4 — dir -->
+            <g class="t1-a">
+              <line x1="310" y1="148" x2="384" y2="148" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+              <rect x="350" y="126" width="112" height="42" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="1.5"/>
+              <text x="406" y="144" text-anchor="middle" fill="#7dd3fc" font-size="9" font-weight="600">1.4 Mindset</text>
+              <text x="406" y="156" text-anchor="middle" fill="#9ca3af" font-size="8">de Crescimento</text>
+            </g>
+
+            <!-- M1.5 — baixo esq -->
+            <g class="t1-a">
+              <line x1="220" y1="176" x2="148" y2="224" stroke="#10b981" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+              <rect x="84" y="210" width="112" height="42" rx="8" fill="#1f2937" stroke="#10b981" stroke-width="1.5"/>
+              <text x="140" y="228" text-anchor="middle" fill="#6ee7b7" font-size="9" font-weight="600">1.5 Lideranca</text>
+              <text x="140" y="240" text-anchor="middle" fill="#9ca3af" font-size="8">Papel do lider</text>
+            </g>
+
+            <!-- M1.6 — baixo centro -->
+            <g class="t1-a">
+              <line x1="240" y1="176" x2="240" y2="230" stroke="#10b981" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+              <rect x="178" y="232" width="112" height="42" rx="8" fill="#1f2937" stroke="#10b981" stroke-width="1.5"/>
+              <text x="234" y="250" text-anchor="middle" fill="#6ee7b7" font-size="9" font-weight="600">1.6 Barreiras</text>
+              <text x="234" y="262" text-anchor="middle" fill="#9ca3af" font-size="8">Anticorpos culturais</text>
+            </g>
+
+            <!-- M1.7 — baixo dir -->
+            <g class="t1-a">
+              <line x1="260" y1="176" x2="332" y2="224" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+              <rect x="284" y="210" width="112" height="42" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="1.5"/>
+              <text x="340" y="228" text-anchor="middle" fill="#7dd3fc" font-size="9" font-weight="600">1.7 Metricas</text>
+              <text x="340" y="240" text-anchor="middle" fill="#9ca3af" font-size="8">de Inovacao</text>
+            </g>
+
+            <!-- Label inferior -->
+            <text x="240" y="308" text-anchor="middle" fill="#4b5563" font-size="8">7 modulos · 42 topicos · ~4h</text>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- MAPA DA TRILHA -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Mapa da trilha</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <a href="#modulo-1-1" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-emerald-400 font-bold text-sm">1.1</span>
+            <span class="text-neutral-500 text-xs">~40 min</span>
+          </div>
+          <h3 class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors mb-1">💡 O que e Cultura</h3>
+          <p class="text-xs text-neutral-500">Sistema vs. lampada acesa</p>
+        </a>
+
+        <a href="#modulo-1-2" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-emerald-400 font-bold text-sm">1.2</span>
+            <span class="text-neutral-500 text-xs">~35 min</span>
+          </div>
+          <h3 class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors mb-1">🏛️ Pilares da Cultura</h3>
+          <p class="text-xs text-neutral-500">Sem base, nada se sustenta</p>
+        </a>
+
+        <a href="#modulo-1-3" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-emerald-400 font-bold text-sm">1.3</span>
+            <span class="text-neutral-500 text-xs">~35 min</span>
+          </div>
+          <h3 class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors mb-1">📐 Modelos de Referencia</h3>
+          <p class="text-xs text-neutral-500">Google, 3M, Toyota: o mapa</p>
+        </a>
+
+        <a href="#modulo-1-4" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-emerald-400 font-bold text-sm">1.4</span>
+            <span class="text-neutral-500 text-xs">~35 min</span>
+          </div>
+          <h3 class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors mb-1">🌱 Mindset de Crescimento</h3>
+          <p class="text-xs text-neutral-500">Mentalidade antes de metodo</p>
+        </a>
+
+        <a href="#modulo-1-5" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-emerald-400 font-bold text-sm">1.5</span>
+            <span class="text-neutral-500 text-xs">~35 min</span>
+          </div>
+          <h3 class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors mb-1">🧭 Papel da Lideranca</h3>
+          <p class="text-xs text-neutral-500">Jardineiro, nao heroi</p>
+        </a>
+
+        <a href="#modulo-1-6" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-emerald-400 font-bold text-sm">1.6</span>
+            <span class="text-neutral-500 text-xs">~35 min</span>
+          </div>
+          <h3 class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors mb-1">🧱 Barreiras Comuns</h3>
+          <p class="text-xs text-neutral-500">Anticorpos que matam a ideia</p>
+        </a>
+
+        <a href="#modulo-1-7" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all sm:col-span-2 lg:col-span-1">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-emerald-400 font-bold text-sm">1.7</span>
+            <span class="text-neutral-500 text-xs">~40 min</span>
+          </div>
+          <h3 class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors mb-1">📊 Metricas de Inovacao</h3>
+          <p class="text-xs text-neutral-500">Medir sem virar teatro</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- CONTEUDO DETALHADO -->
+    <h2 class="text-2xl font-bold mb-6">Conteudo detalhado</h2>
+
+    <!-- ===================== MODULO 1.1 ===================== -->
+    <div id="modulo-1-1" class="bg-dark-800 rounded-2xl border border-dark-600 mb-8 overflow-hidden scroll-mt-20" data-inema-module="1-1">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <span class="text-emerald-400 font-bold text-sm">Modulo 1.1</span>
+          <span class="text-neutral-500 text-sm">~40 min</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">💡 O que e Cultura de Inovacao</h2>
+        <p class="text-neutral-400">A diferenca entre ter uma ideia e ter um sistema que gera ideias.</p>
+      </div>
+      <div class="p-6">
+        <p class="text-sm text-neutral-500 mb-4 font-semibold uppercase tracking-wider">Topicos do modulo</p>
+        <div class="space-y-3 divide-y divide-dark-600">
+
+          <div class="topic-item pt-3 first:pt-0">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m1-exp1">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🔍 O que e cultura organizacional</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Antes de inovar, entender o terreno</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m1-exp1">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Cultura e o conjunto de crencas, comportamentos e normas nao escritas que definem como as pessoas agem numa organizacao.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Sem entender a cultura vigente, qualquer iniciativa de inovacao esbarra em resistencias invisiveis e morre sem diagnose.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Iceberg cultural, normas explicitas vs. implicitas, camadas de artefatos (Schein), cultura declarada vs. vivida.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m1-exp2">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">💡 Inovacao como sistema, nao evento</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Da lampada acesa ao processo repetivel</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m1-exp2">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Inovacao sistematica e a capacidade institucional de gerar, selecionar e executar novas ideias com regularidade e intencionalidade.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Empresas que dependem de genios isolados nao escalam. Quem constroi o sistema colhe consistentemente.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Pipeline de ideias, funil de inovacao, cadencia de ciclos, portfolio balanceado (incremental vs. disruptivo).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m1-exp3">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🏢 Tipos de inovacao</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Incremental, disruptiva ou de modelo</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m1-exp3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Ha tres grandes categorias: incremental (melhorar o existente), radical (novo produto/servico) e de modelo de negocio (nova forma de criar/capturar valor).</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Cada tipo exige musculo cultural diferente. Confundir os tres leva a estrategia errada e frustacao.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Horizonte 1-2-3 (McKinsey), inovacao de sustentacao vs. disruptiva (Christensen), Ten Types of Innovation (Doblin).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m1-exp4">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🌍 Contexto brasileiro de inovacao</span>
+                <p class="text-xs text-neutral-500 mt-0.5">O ecossistema que moldou nosso ponto de partida</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m1-exp4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">O Brasil tem particularidades de cultura organizacional — hierarquia, jeitinho, aversao ao risco — que impactam diretamente a adocao de praticas inovadoras.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Copiar frameworks estrangeiros sem adaptacao cultural e receita para fracasso. Entender o contexto local e diferencial competitivo.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Indice de Power Distance (Hofstede), cultura de incerteza, benchmarks locais (Nubank, Embraer, Magazine Luiza).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m1-exp5">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🔗 Cultura e estrategia</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Drucker tinha razao: cultura come estrategia</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m1-exp5">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">A relacao entre os valores culturais e a execucao estrategica: quando ha alinhamento, a estrategia flui; quando ha conflito, a cultura vence.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Lideres que ignoram o alinhamento cultura-estrategia gastam energia reremando contra a mare e raramente chegam ao destino.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Competing Values Framework (Quinn & Rohrbaugh), cultura como alavanca estrategica, coerencia entre discurso e pratica.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m1-exp6">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🚀 Como comecar a mudar a cultura</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Primeiros passos sem reformar tudo</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m1-exp6">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Mudanca cultural comeca por comportamentos observaveis e simbolos — nao por declaracoes. Pequenas vitorias comprovam que e possivel e criam momento.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Esperar pelo "momento certo" ou pelo plano perfeito e a desculpa favorita de quem nunca muda nada. O inicio imperfeito bate o inicio nunca.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Quick wins, coalition building, change agents, safe-to-fail experiments (Cynefin), early adopters internos.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="mt-6 flex justify-start">
+          <a href="modulo-1-1.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold rounded-xl border border-emerald-500/30 transition-colors text-sm">
+            Ver Completo →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODULO 1.2 ===================== -->
+    <div id="modulo-1-2" class="bg-dark-800 rounded-2xl border border-dark-600 mb-8 overflow-hidden scroll-mt-20" data-inema-module="1-2">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <span class="text-emerald-400 font-bold text-sm">Modulo 1.2</span>
+          <span class="text-neutral-500 text-sm">~35 min</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">🏛️ Pilares da Cultura de Inovacao</h2>
+        <p class="text-neutral-400">Os alicerces sem os quais nada se sustenta.</p>
+      </div>
+      <div class="p-6">
+        <p class="text-sm text-neutral-500 mb-4 font-semibold uppercase tracking-wider">Topicos do modulo</p>
+        <div class="space-y-3 divide-y divide-dark-600">
+
+          <div class="topic-item pt-3 first:pt-0">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m2-exp1">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🧪 Psicologia da seguranca</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Falhar sem medo de consequencia</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m2-exp1">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Seguranca psicologica e a crenca compartilhada de que e seguro assumir riscos interpessoais — questionar, discordar, propor ideias loucas sem medo de ridiculo.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">O Projeto Aristoteles do Google mostrou que seguranca psicologica e o principal preditor de desempenho em equipes — acima de experiencia ou QI.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Amy Edmondson, Projeto Aristoteles, clima de aprendizagem, vozes silenciadas, custo da autocensura organizacional.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m2-exp2">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🔄 Tolerancia ao erro calculado</span>
+                <p class="text-xs text-neutral-500 mt-0.5">A diferenca entre erro inteligente e negligencia</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m2-exp2">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Tolerancia ao erro nao e aceitar qualquer falha — e criar condicoes para erros rapidos, baratos e aprendidos. Erro sem aprendizado e apenas custo.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Organizacoes que punem qualquer erro ensinam as pessoas a nao tentar nada novo. O resultado e a mediocridade segura como padrao operacional.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Fail fast, fail cheap, fail forward, post-mortem sem culpa, experimentation budget, safe-to-fail vs. fail-safe.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m2-exp3">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🤝 Colaboracao e diversidade</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Perspectivas diferentes, resultados melhores</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m2-exp3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Colaboracao estruturada entre perfis distintos (cognitivos, demograficos, funcionais) amplifica a criatividade coletiva muito alem da soma das partes.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Times homogeneos tem pontos cegos. Diversidade cognitiva e o antidoto contra o pensamento de grupo que mata solucoes criativas.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Diversidade cognitiva, T-shaped e Pi-shaped professionals, squads multifuncionais, groupthink (Janis), collision spaces.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m2-exp4">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🎯 Foco no cliente e curiosidade</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Problema real primeiro, solucao depois</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m2-exp4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Culturas inovadoras sao obcecadas com o problema do cliente, nao com a elegancia da propria solucao. Curiosidade genuina e o combustivel que mantem essa obcessao viva.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">A maioria das inovacoes que falham foram respostas certas para a pergunta errada. Curiosidade ativa previne o problema da solucao em busca de problema.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Customer obsession (Amazon), design-led culture, etnografia corporativa, curiosity loops, problema de nivel 1 vs. nivel 2.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m2-exp5">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">⚡ Autonomia e velocidade de decisao</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Times que decidem, times que inovam</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m2-exp5">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Autonomia nao e ausencia de alinhamento — e delegacao clara de escopo de decisao para o nivel mais proximo da informacao relevante.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Burocracia lenta mata mais inovacoes que falta de budget. Cada camada de aprovacao e um ponto de perda de energia e de contexto.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Type 1 vs. Type 2 decisions (Bezos), subsidiarity principle, guardrails vs. microgestao, missao commanders intent.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m2-exp6">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">📣 Reconhecimento e incentivos alinhados</span>
+                <p class="text-xs text-neutral-500 mt-0.5">O que voce celebra molda quem voce se torna</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m2-exp6">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Os sistemas de reconhecimento e recompensa codificam implicitamente o que a organizacao valoriza de verdade — e os colaboradores decodificam isso mais rapido que qualquer discurso.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Incentivar execucao e punir experimentacao e uma contradicao que destroi qualquer iniciativa de inovacao antes mesmo de comecar.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Incentivos extrinseco vs. intrinseco (Deci & Ryan), celebration of attempts, innovation awards, recognition rituals.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="mt-6 flex justify-start">
+          <a href="modulo-1-2.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold rounded-xl border border-emerald-500/30 transition-colors text-sm">
+            Ver Completo →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODULO 1.3 ===================== -->
+    <div id="modulo-1-3" class="bg-dark-800 rounded-2xl border border-dark-600 mb-8 overflow-hidden scroll-mt-20" data-inema-module="1-3">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <span class="text-emerald-400 font-bold text-sm">Modulo 1.3</span>
+          <span class="text-neutral-500 text-sm">~35 min</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">📐 Modelos de Referencia</h2>
+        <p class="text-neutral-400">Como Google, Amazon, 3M e Toyota estruturam a sua.</p>
+      </div>
+      <div class="p-6">
+        <p class="text-sm text-neutral-500 mb-4 font-semibold uppercase tracking-wider">Topicos do modulo</p>
+        <div class="space-y-3 divide-y divide-dark-600">
+
+          <div class="topic-item pt-3 first:pt-0">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m3-exp1">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🔍 Google e a cultura de dados e experimentos</span>
+                <p class="text-xs text-neutral-500 mt-0.5">20% do tempo, burocracia zero</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m3-exp1">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">O Google institucionalizou a inovacao com regras simples: 20% do tempo livre, times pequenos e autonomos, decisoes guiadas por dados, tolerancia a projetos ambiciosos.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">O modelo Google mostra que inovacao pode ser politica deliberada, nao acidente — e que suas praticas podem ser adaptadas para qualquer empresa.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">20% time, Moonshot thinking, X (Google X), OKRs (John Doerr), culture of experimentation, A/B testing em escala.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m3-exp2">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🚀 Amazon e a obsessao pelo cliente</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Day one forever</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m3-exp2">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">A Amazon codificou a cultura em 16 Leadership Principles que guiam desde contratacao ate decisoes estrategicas. Customer Obsession e o primeiro e mais sagrado.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">A Amazon demonstrou que e possivel manter cultura de startup com dezenas de milhares de colaboradores — desde que os principios culturais sejam operacionalizados.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Leadership Principles, Day One mentality, Working Backwards (PR/FAQ), two-pizza teams, Bar Raiser no recrutamento.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m3-exp3">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🎨 3M e a inovacao distribuida</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Post-it nao foi planejado</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m3-exp3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">A 3M e pioneira na inovacao distribuida: desde os anos 1940 permite que pesquisadores usem 15% do tempo em projetos proprios — o que gerou mais de 100 mil patentes e o Post-it.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">O modelo 3M prova que inovacao nao precisa vir do topo — pode emergir de qualquer nivel quando a cultura cria espaco para isso.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">15% rule, bootlegging, serendipidade estruturada, cross-pollination entre divisoes, technical ladder para reter inovadores.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m3-exp4">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🏭 Toyota e a melhoria continua</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Kaizen: cada um melhora algo todo dia</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m3-exp4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">O Toyota Production System democratizou a inovacao incremental: qualquer operario pode (e deve) parar a linha para propor melhorias. Kaizen e o DNA cultural que viabiliza isso.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Toyota prova que inovacao incremental consistente supera aposta em grandes saltos — e cria uma organizacao que aprende continuamente.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Kaizen, Gemba, Andon cord, Hansei, TPS (Toyota Production System), Poka-yoke, aprendizado como dever operacional.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m3-exp5">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🌟 Netflix e a cultura de liberdade com responsabilidade</span>
+                <p class="text-xs text-neutral-500 mt-0.5">O deck que mudou o RH mundial</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m3-exp5">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">A Netflix criou um modelo de cultura radicalmente diferente: maxima autonomia com maxima responsabilidade, sem burocracias de aprovacao, adultos tratados como adultos.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">O Netflix Culture Deck (Sheryl Sandberg chamou de mais importante documento do Vale do Silicio) redefiniu o que e possivel em termos de cultura corporativa e autonomia.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Freedom and Responsibility, Keeper Test, contexto sobre controle, alta densidade de talento, cultura como vantagem competitiva.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m3-exp6">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🇧🇷 Casos brasileiros de referencia</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Nubank, Embraer, Natura: o que podemos aprender</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m3-exp6">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Empresas brasileiras tambem construiram culturas de inovacao relevantes — e em contextos muito mais desafiadores que os dos casos americanos mais citados.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Casos locais tem muito mais valor pratico para o profissional brasileiro — mesmos desafios, mesmo contexto regulatorio, mesma cultura-base.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Nubank (experiencia vs. produto), Embraer (P&D como vantagem), Natura (inovacao de modelo), Magazine Luiza (digital inside-out).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="mt-6 flex justify-start">
+          <a href="modulo-1-3.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold rounded-xl border border-emerald-500/30 transition-colors text-sm">
+            Ver Completo →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODULO 1.4 ===================== -->
+    <div id="modulo-1-4" class="bg-dark-800 rounded-2xl border border-dark-600 mb-8 overflow-hidden scroll-mt-20" data-inema-module="1-4">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <span class="text-emerald-400 font-bold text-sm">Modulo 1.4</span>
+          <span class="text-neutral-500 text-sm">~35 min</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">🌱 Mindset de Crescimento</h2>
+        <p class="text-neutral-400">Por que a mentalidade vem antes da metodologia (Dweck).</p>
+      </div>
+      <div class="p-6">
+        <p class="text-sm text-neutral-500 mb-4 font-semibold uppercase tracking-wider">Topicos do modulo</p>
+        <div class="space-y-3 divide-y divide-dark-600">
+
+          <div class="topic-item pt-3 first:pt-0">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m4-exp1">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🧠 Fixed vs. Growth Mindset (Dweck)</span>
+                <p class="text-xs text-neutral-500 mt-0.5">A crenca que muda tudo</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m4-exp1">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Carol Dweck demonstrou que a crenca sobre a natureza da inteligencia — fixa ou crescente — prediz comportamento, resiliencia e desempenho de forma consistente.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Times com fixed mindset evitam desafios para nao falhar publicamente. Com growth mindset, cada desafio e oportunidade de aprender — o que e o nucleo de toda inovacao.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Teoria da inteligencia implicita, elogio do processo vs. do talento, "ainda nao" (not yet), neuroplasticidade como base cientifica.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m4-exp2">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🔄 Aprender a aprender em velocidade de startup</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Meta-aprendizagem como vantagem competitiva</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m4-exp2">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Meta-aprendizagem e a capacidade de refletir sobre como voce aprende e deliberadamente melhorar esse processo. Em mercados rapidos, quem aprende mais rapido vence.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">O conhecimento tecnico tem vida util cada vez menor. A capacidade de aprender — e desaprender — e o unico ativo profissional duravel no longo prazo.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Double-loop learning (Argyris), T-model of skills, learning sprints, deliberate practice, spaced repetition aplicada a conceitos.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m4-exp3">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🎯 Tolerancia a ambiguidade</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Agir sem todas as informacoes</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m4-exp3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Tolerancia a ambiguidade e a capacidade de tomar decisoes e agir mesmo quando as informacoes sao incompletas, contraditoria ou em constante mudanca.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text="neutral-300">Inovacao por definicao acontece em territorio desconhecido. Profissionais paralisados pela falta de certeza nao inovam — eles esperam por um permissao que nunca chega.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">VUCA, tolerancia a ambiguidade (Budner Scale), decisao reversivel vs. irreversivel, opcao de valor vs. paralisia analitica.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m4-exp4">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">💪 Resiliencia e persistencia no ciclo de inovacao</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Grit: talento nao e o fator</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m4-exp4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Angela Duckworth demonstrou que grit — a combinacao de paixao e persistencia de longo prazo — prediz sucesso melhor que talento ou QI em contextos desafiadores.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Inovacao real e um jogo longo. A maioria das grandes inovacoes exigiu anos de persistencia contra ceticismo, falhas e recursos limitados.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Grit Scale (Duckworth), deliberate practice, recuperacao pos-falha, north star como ancora de persistencia, reframing como ferramenta de resiliencia.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m4-exp5">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🌐 Pensamento sistemico</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Ver o todo, nao so as partes</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m4-exp5">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Pensamento sistemico e a capacidade de ver interconexoes, causalidades circulares e consequencias de segunda e terceira ordem em sistemas complexos.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Solucoes pontuais para problemas sistemicos invariavelmente criam novos problemas. Inovadores que entendem sistemas criam solucoes mais duradouras.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Loops de reforca e balanceamento (Senge), alavancas de mudanca sistemica, efeitos emergentes, mapa causal, The Fifth Discipline.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m4-exp6">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🚀 Como cultivar growth mindset na equipe</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Praticas diarias que mudam crencas</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m4-exp6">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Crescimento coletivo de mindset acontece por rituais consistentes: como o lider reage ao erro, como o feedback e dado, como as vitorias sao celebradas.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Voce pode contratar pessoas com growth mindset, mas a cultura corroi isso se o ambiente punir tentativas. O ritual diario define a crenca coletiva.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Linguagem de crescimento, failure reviews com aprendizado, elogio do processo, yet culture, learning reviews mensais.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="mt-6 flex justify-start">
+          <a href="modulo-1-4.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold rounded-xl border border-emerald-500/30 transition-colors text-sm">
+            Ver Completo →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODULO 1.5 ===================== -->
+    <div id="modulo-1-5" class="bg-dark-800 rounded-2xl border border-dark-600 mb-8 overflow-hidden scroll-mt-20" data-inema-module="1-5">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <span class="text-emerald-400 font-bold text-sm">Modulo 1.5</span>
+          <span class="text-neutral-500 text-sm">~35 min</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">🧭 Papel da Lideranca</h2>
+        <p class="text-neutral-400">O lider como jardineiro, nao como heroi.</p>
+      </div>
+      <div class="p-6">
+        <p class="text-sm text-neutral-500 mb-4 font-semibold uppercase tracking-wider">Topicos do modulo</p>
+        <div class="space-y-3 divide-y divide-dark-600">
+
+          <div class="topic-item pt-3 first:pt-0">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m5-exp1">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🌱 Lider como jardineiro</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Criar condicoes, nao dar ordens</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m5-exp1">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">O lider inovador nao e o mais criativo da sala — e quem cria o ambiente onde a criatividade dos outros prospera. Como um jardineiro, cultiva o terreno certo.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Lideranca heroi cria dependencia e gargalos. Lideranca jardineiro cria sistemas que funcionam mesmo quando o lider esta ausente.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Servant leadership (Greenleaf), enabling conditions, lider multiplicador vs. diminuidor (Wiseman), environment design.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m5-exp2">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🛡️ Proteger o espaco de experimentacao</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Blindar o time das pressoes do curto prazo</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m5-exp2">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Uma das funcoes mais criticas do lider inovador e absorver a pressao por resultados imediatos para que o time possa explorar possibilidades de longo prazo.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Sem protecao, times de inovacao sao os primeiros a serem sacrificados em crise. A lideranca que nao protege o espaco de inovacao nao acredita de verdade nele.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Buffer de inovacao, horizon protection, slack time estrategico, separacao de KPIs de exploracao vs. explotacao.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m5-exp3">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🗣️ Comunicar o porque da inovacao</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Proposito como combustivel interno</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m5-exp3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">O lider inovador conecta as iniciativas de inovacao a um proposito maior — nao apenas a resultados financeiros. O "porque" sustenta o engajamento quando os resultados demoram.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Inovacao por mandato ("inovem ou demito") nao funciona. Inovacao por proposito ("mudamos vidas com isso") cria engajamento intrinseco duradouro.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Golden Circle (Sinek), proposito como estrategia, narrative leadership, storytelling de inovacao, why antes do what/how.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m5-exp4">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">👂 Escuta ativa e curiosidade deliberada</span>
+                <p class="text-xs text-neutral-500 mt-0.5">O lider que pergunta mais do que responde</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m5-exp4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Lideres inovadores modelam a curiosidade que querem ver nos times — fazendo mais perguntas poderosas do que dando respostas, e escutando ativamente o que emerge.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Lideres que monopolizam as respostas apagam a curiosidade dos times. A pergunta poderosa abre espaco que nenhuma resposta consegue abrir.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Coaching questions, humble inquiry (Schein), perguntas abertas vs. fechadas, Socratic leadership, presenca plena nas conversas.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m5-exp5">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🔗 Conectar silos e promover fluxo de conhecimento</span>
+                <p class="text-xs text-neutral-500 mt-0.5">O lider como ponte, nao como porteiro</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m5-exp5">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Silos organizacionais sao um dos maiores assassinos da inovacao. O lider inovador age como conector — promovendo colisoes ferteis entre areas que nao se falam.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Algumas das maiores inovacoes nasceram de combinacoes inesperadas entre areas distintas. Silos impedem essas combinacoes de acontecer.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Broker de conhecimento (Burt), structural holes, knowledge connectors, cross-functional teams, rotacoes deliberadas entre areas.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m5-exp6">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">📊 Medir a saude da cultura de inovacao</span>
+                <p class="text-xs text-neutral-500 mt-0.5">O que o lider nao mede, nao gerencia</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m5-exp6">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Lideres inovadores monitoram indicadores de saude cultural — nao so outputs financeiros. Isso inclui pulso de seguranca psicologica, volume de ideias geradas e velocidade de experimentacao.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Cultura nao medida deteriora silenciosamente. Quando os sintomas aparecem no resultado financeiro, ja e tarde para intervencao facil.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Culture metrics, eNPS de inovacao, psychological safety score, innovation throughput, leading vs. lagging indicators culturais.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="mt-6 flex justify-start">
+          <a href="modulo-1-5.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold rounded-xl border border-emerald-500/30 transition-colors text-sm">
+            Ver Completo →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODULO 1.6 ===================== -->
+    <div id="modulo-1-6" class="bg-dark-800 rounded-2xl border border-dark-600 mb-8 overflow-hidden scroll-mt-20" data-inema-module="1-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <span class="text-emerald-400 font-bold text-sm">Modulo 1.6</span>
+          <span class="text-neutral-500 text-sm">~35 min</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">🧱 Barreiras Comuns</h2>
+        <p class="text-neutral-400">Os anticorpos culturais que matam a inovacao.</p>
+      </div>
+      <div class="p-6">
+        <p class="text-sm text-neutral-500 mb-4 font-semibold uppercase tracking-wider">Topicos do modulo</p>
+        <div class="space-y-3 divide-y divide-dark-600">
+
+          <div class="topic-item pt-3 first:pt-0">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m6-exp1">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🦠 Anticorpos organizacionais</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Por que o sistema rejeita o novo</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m6-exp1">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Anticorpos organizacionais sao mecanismos imunologicos da cultura que automaticamente rejeitam qualquer coisa percebida como ameaca ao status quo — mesmo quando a mudanca seria benefica.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Sem reconhecer os anticorpos, tentativas de inovacao viram projetos piloto eternos, isolados e eventualmente abandonados por "falta de resultado".</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Immunological rejection (Hamel), organizational inertia, status quo bias, comfort zone institucional, "isso aqui nao funciona assim".</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m6-exp2">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">😰 Medo do fracasso e cultura punitiva</span>
+                <p class="text-xs text-neutral-500 mt-0.5">A paralisia que nao se assume</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m6-exp2">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Em culturas punitivas, o custo percebido de tentar e falhar e maior que o custo de nao tentar. O resultado e uma organizacao que executa bem o que ja sabe e nunca descobre o que poderia aprender.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">O medo e invisivel nos relatorios mas visivel no comportamento: reunioes sem perguntas, projetos piloto indefinidos, decisoes escaladas desnecessariamente.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Failure culture index, erros de omissao vs. comissao (Kahneman), custo da inacao, cultura de accountability sem punicao, blameless post-mortem.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m6-exp3">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">📋 Burocracia e processos como fim em si mesmos</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Quando o mapa virou o territorio</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m6-exp3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Processos e procedimentos existem para servir a organizacao. Quando a organizacao passa a servir aos processos, a burocracia virou barreira — e um sinal preocupante de ossificacao cultural.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Inovacoes morrem afogadas em camadas de aprovacao criadas para um mundo mais estavel. A velocidade de experimentacao e inversamente proporcional a densidade burocracia.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Process debt, burocracia como sinal de desconfianca, innovation fast lanes, two-track system (regras para explorar vs. explotar), sunset clauses em processos.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m6-exp4">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🏝️ Silos e politica interna</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Guerras de territorio que ninguem admite</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m6-exp4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Silos nao sao apenas estrutura organizacional — sao mentalidade. Quando areas competem por budget, visibilidade e credito em vez de colaborar, a inovacao paga o preco.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">A politica interna e o inimigo silencioso de mais inovacoes corporativas do que qualquer fator externo. Reconhecer o problema e o primeiro passo para contorna-lo.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Silo mentality, territorial behavior, OKRs compartilhados como antidoto, incentivos de colaboracao cruzada, common enemy framing.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m6-exp5">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">💰 Foco excessivo no curto prazo</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Trimestralizacao que mata o horizonte 3</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m6-exp5">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">A tirania do trimestre faz lideres cancelarem investimentos em inovacao quando o resultado do mes e ruim — exatamente quando deveriam investir para o futuro.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Empresas que so gerenciam o H1 (presente) ficam presas no paradigma atual ate que um disruptor as obsolete. O H3 (futuro) precisa de protecao ativa.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Short-termism, horizonte 1-2-3 protegidos, innovation budget ring-fenced, paciencia de capital, caso Kodak como estudo de caso.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m6-exp6">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🛠️ Como diagnosticar e remover barreiras</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Mapeamento, priorizacao e cirurgia cultural</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m6-exp6">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Diagnosticar barreiras requer metodos para tornar o invisivel visivel — pesquisas de clima especificas, entrevistas profundas, analise de onde as ideias morrem no funil.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Voce nao pode remover uma barreira que nao pode nomear. O diagnostico preciso e o que diferencia intervencao cirurgica de reforma generalizada ineficaz.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Innovation barrier mapping, friction audit, idea mortality analysis, kill points no funil, intervencao minima viavel, cultura como sistema complexo.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="mt-6 flex justify-start">
+          <a href="modulo-1-6.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold rounded-xl border border-emerald-500/30 transition-colors text-sm">
+            Ver Completo →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODULO 1.7 ===================== -->
+    <div id="modulo-1-7" class="bg-dark-800 rounded-2xl border border-dark-600 mb-8 overflow-hidden scroll-mt-20" data-inema-module="1-7">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <span class="text-emerald-400 font-bold text-sm">Modulo 1.7</span>
+          <span class="text-neutral-500 text-sm">~40 min</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">📊 Metricas de Inovacao</h2>
+        <p class="text-neutral-400">Medir o que importa sem virar teatro de numeros.</p>
+      </div>
+      <div class="p-6">
+        <p class="text-sm text-neutral-500 mb-4 font-semibold uppercase tracking-wider">Topicos do modulo</p>
+        <div class="space-y-3 divide-y divide-dark-600">
+
+          <div class="topic-item pt-3 first:pt-0">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m7-exp1">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">📏 Por que medir inovacao e dificil</span>
+                <p class="text-xs text-neutral-500 mt-0.5">O paradoxo do intangivel que cria valor tangivel</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m7-exp1">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Inovacao e inerentemente incerta e nao-linear. Metricas de resultado (revenue, market share) chegam tarde; metricas de atividade (ideias geradas) podem ser gamificadas.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Medir errado e pior que nao medir. Incentivos baseados em metricas ruins criam comportamento otimizado para a metrica, nao para a inovacao real.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Goodhart's Law ("quando uma medida vira meta, ela para de ser boa medida"), gaming metrics, vanity metrics, proxy problem.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m7-exp2">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🌡️ Metricas de input, throughput e output</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Medir o ciclo completo, nao so o fim</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m7-exp2">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Um sistema saudavel de metricas de inovacao mede as tres fases: inputs (investimento, time, diversidade de ideias), throughput (velocidade do funil, taxa de aprovacao) e outputs (produtos lancados, receita de novos produtos).</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">So medir output e como gerenciar um jardim olhando so para os frutos — sem ver o solo, a agua, ou as pragas. O sistema inteiro precisa de monitoramento.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Innovation pipeline metrics, stage-gate KPIs, idea-to-launch velocity, hit rate, R&D ROI, revenue from new products (Doblin).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m7-exp3">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🎯 OKRs como ferramenta de inovacao</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Objetivos que puxam, metricas que orientam</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m7-exp3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">OKRs (Objectives and Key Results) quando usados corretamente criam tensao criativa entre ambicao e execucao — exatamente o que inovacao exige. O objetivo inspira; os KRs orientam sem microgerir.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">OKRs mal implementados viram mais uma burocracia. OKRs bem implementados criam alinhamento sem engessamento — um requisito para inovacao com velocidade.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Roofshot vs. moonshot OKRs, committed vs. aspirational, key results baseados em impacto (nao atividade), ciclos de review, grading 0.7 como otimo.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m7-exp4">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🔬 Metricas de aprendizado e velocidade</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Velocidade de ciclo como vantagem competitiva</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m7-exp4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Em inovacao, a empresa que aprende mais rapido vence. Metricas de aprendizado capturam quanto a organizacao melhora por ciclo de experimentacao — nao so o que produziu.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Empresas que medem velocidade de aprendizado constroem vantagem composta. Cada iteracao e mais rapida e mais precisa que a anterior.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Learning rate, experiment velocity, validated learning (Ries), build-measure-learn cycle time, insights per sprint, hypothesis hit rate.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m7-exp5">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">📈 Como montar um dashboard de inovacao</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Visibilidade sem complexidade excessiva</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m7-exp5">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">Um dashboard de inovacao eficaz tem 5 a 8 metricas maximas, balanceadas entre input/throughput/output, com indicadores leading para acao preventiva e lagging para aprendizado retrospectivo.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Dashboard de 40 metricas nao informa — paralisa. O paradoxo da escolha se aplica a indicadores: menos, mais focados, mais acaonaveis.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">North star metric, complementary metrics, leading vs. lagging indicators, signal-to-noise ratio, sparklines como formato de visualizacao.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topic-item pt-3">
+            <button onclick="toggleTopic(this)" class="w-full flex items-center justify-start gap-3 text-left group" aria-expanded="false" aria-controls="t1m7-exp6">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+              <div>
+                <span class="font-semibold text-neutral-100 group-hover:text-emerald-400 transition-colors">🔄 Revisao e evolucao do sistema de metricas</span>
+                <p class="text-xs text-neutral-500 mt-0.5">Metricas que evoluem com a maturidade</p>
+              </div>
+            </button>
+            <div class="topic-explanation mt-4 pl-9" id="t1m7-exp6">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">O que e</p>
+                  <p class="text-sm text-neutral-300">O sistema de metricas certo para uma organizacao iniciando a jornada de inovacao e diferente do ideal para uma madura. As metricas precisam evoluir com a maturidade cultural.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Por que aprender</p>
+                  <p class="text-sm text-neutral-300">Copiar o sistema de metricas do Google ou Amazon sem adaptacao e receita para frustacao. O estagio de maturidade define o que faz sentido medir agora.</p>
+                </div>
+                <div class="bg-dark-700 rounded-xl p-4 border border-dark-600">
+                  <p class="text-xs font-semibold text-emerald-400 mb-2">Conceitos-chave</p>
+                  <p class="text-sm text-neutral-300">Innovation maturity model, metrics lifecycle, revisao anual do sistema de indicadores, sunset de metricas obsoletas, co-design com o time.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="mt-6 flex justify-start">
+          <a href="modulo-1-7.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold rounded-xl border border-emerald-500/30 transition-colors text-sm">
+            Ver Completo →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAVEGACAO -->
+    <div class="flex justify-between items-center mt-10 pt-8 border-t border-dark-600">
+      <a href="../../index.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-dark-700 hover:bg-dark-600 text-neutral-300 font-semibold rounded-xl border border-dark-600 transition-colors text-sm">
+        ← Pagina inicial
+      </a>
+      <a href="../trilha2/index.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 font-semibold rounded-xl border border-blue-500/30 transition-colors text-sm">
+        Trilha 2: Tecnicas →
+      </a>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 mt-16 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-neutral-500 text-sm">
+        Cultura de Inovacao · Trilha 1 — Fundamentos ·
+        <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      const isOpen = explanation.classList.toggle('active');
+      button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

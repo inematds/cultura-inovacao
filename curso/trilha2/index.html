@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Trilha 2 - Tecnicas e Ferramentas | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'blue' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'blue');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.blue;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+    html:not(.dark) .from-blue-900\/30 { --tw-gradient-from: rgba(30, 58, 138, 0.08); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <span class="text-blue-400">Trilha 2</span>
+    </div>
+  </nav>
+
+  <!-- HERO HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600" data-inema-track="2">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">TRILHA 2</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#128295; Tecnicas e Ferramentas</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Do Design Thinking aos Rituais de Inovacao: o arsenal pratico para quem nao quer apenas falar sobre inovacao — quer executa-la. Cada modulo e um instrumento, voce monta o kit que a sua organizacao precisa.</p>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">10</div>
+          <div class="text-xs text-neutral-400">Modulos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">60</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">~5h</div>
+          <div class="text-xs text-neutral-400">Duracao</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+      </div>
+
+      <!-- Meter barra de progresso -->
+      <div class="mt-8 max-w-2xl">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm text-neutral-400">Progresso da trilha</span>
+          <div data-inema-meter="trilha:2" class="inema-meter" role="progressbar"
+               aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da trilha 2">
+            <span class="text-sm text-blue-400 font-semibold inema-meter-pct">0%</span>
+          </div>
+        </div>
+        <div class="w-full bg-dark-700 rounded-full h-2">
+          <div class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width:0%" id="trilha2-progress-bar"></div>
+        </div>
+        <p class="text-xs text-neutral-500 mt-1"><span class="inema-meter-count">0 de 60</span> topicos concluidos</p>
+      </div>
+
+      <!-- SVG Hero futurista -->
+      <div class="mt-10 rounded-2xl border border-blue-500/30 bg-dark-900/40 p-4 max-w-3xl overflow-hidden">
+        <svg viewBox="0 0 700 260" class="w-full h-auto" role="img" aria-label="Diagrama futurista representando o fluxo de tecnicas e ferramentas de inovacao da Trilha 2" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+          <defs>
+            <!-- Gradiente blue primario -->
+            <linearGradient id="t2-grad-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.7"/>
+            </linearGradient>
+            <!-- Gradiente ciano secundario -->
+            <linearGradient id="t2-grad-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#0284c7" stop-opacity="0.7"/>
+            </linearGradient>
+            <!-- Gradiente de fundo -->
+            <linearGradient id="t2-grad-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e3a5f" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#0f172a" stop-opacity="0.8"/>
+            </linearGradient>
+            <!-- Glow azul -->
+            <filter id="t2-glow-blue" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="1.8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <!-- Glow ciano -->
+            <filter id="t2-glow-cyan" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="1.8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <!-- Grid pattern -->
+            <pattern id="t2-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+              <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#3b82f6" stroke-width="0.3" stroke-opacity="0.18"/>
+            </pattern>
+          </defs>
+
+          <!-- Fundo -->
+          <rect width="700" height="260" fill="url(#t2-grad-bg)" rx="12"/>
+          <rect width="700" height="260" fill="url(#t2-grid)" rx="12"/>
+
+          <!-- Linha central de fluxo -->
+          <line x1="60" y1="130" x2="640" y2="130" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.35" stroke-dasharray="6 4"/>
+
+          <!-- Seta final -->
+          <polygon points="640,124 656,130 640,136" fill="#38bdf8" opacity="0.7"/>
+
+          <!-- Nos do pipeline: 5 ferramentas principais em destaque -->
+          <!-- No 1: Design Thinking -->
+          <g filter="url(#t2-glow-blue)" class="wf-a">
+            <rect x="30" y="100" width="80" height="60" rx="10" fill="url(#t2-grad-blue)" stroke="#3b82f6" stroke-width="2"/>
+          </g>
+          <text x="70" y="124" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="600">Design</text>
+          <text x="70" y="139" text-anchor="middle" fill="#93c5fd" font-size="10">Thinking</text>
+          <text x="70" y="153" text-anchor="middle" fill="#bfdbfe" font-size="18">&#127912;</text>
+
+          <!-- Conector 1→2 -->
+          <line x1="110" y1="130" x2="145" y2="130" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.6"/>
+          <polygon points="143,126 151,130 143,134" fill="#38bdf8" opacity="0.6"/>
+
+          <!-- No 2: Lean + Sprint -->
+          <g filter="url(#t2-glow-cyan)" class="wf-a">
+            <rect x="152" y="100" width="80" height="60" rx="10" fill="url(#t2-grad-cyan)" stroke="#38bdf8" stroke-width="2"/>
+          </g>
+          <text x="192" y="124" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="600">Lean &amp;</text>
+          <text x="192" y="139" text-anchor="middle" fill="#e0f2fe" font-size="10">Sprint</text>
+          <text x="192" y="153" text-anchor="middle" fill="#bfdbfe" font-size="18">&#128640;</text>
+
+          <!-- Conector 2→3 -->
+          <line x1="232" y1="130" x2="267" y2="130" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.6"/>
+          <polygon points="265,126 273,130 265,134" fill="#3b82f6" opacity="0.6"/>
+
+          <!-- No 3: JTBD + SCAMPER -->
+          <g filter="url(#t2-glow-blue)" class="wf-a">
+            <rect x="274" y="100" width="80" height="60" rx="10" fill="url(#t2-grad-blue)" stroke="#3b82f6" stroke-width="2"/>
+          </g>
+          <text x="314" y="124" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="600">JTBD &amp;</text>
+          <text x="314" y="139" text-anchor="middle" fill="#93c5fd" font-size="10">SCAMPER</text>
+          <text x="314" y="153" text-anchor="middle" fill="#bfdbfe" font-size="18">&#127919;</text>
+
+          <!-- Conector 3→4 -->
+          <line x1="354" y1="130" x2="389" y2="130" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.6"/>
+          <polygon points="387,126 395,130 387,134" fill="#38bdf8" opacity="0.6"/>
+
+          <!-- No 4: OKRs + Criatividade -->
+          <g filter="url(#t2-glow-cyan)" class="wf-a">
+            <rect x="396" y="100" width="80" height="60" rx="10" fill="url(#t2-grad-cyan)" stroke="#38bdf8" stroke-width="2"/>
+          </g>
+          <text x="436" y="124" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="600">OKRs &amp;</text>
+          <text x="436" y="139" text-anchor="middle" fill="#e0f2fe" font-size="10">Criatividade</text>
+          <text x="436" y="153" text-anchor="middle" fill="#bfdbfe" font-size="18">&#129518;</text>
+
+          <!-- Conector 4→5 -->
+          <line x1="476" y1="130" x2="511" y2="130" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.6"/>
+          <polygon points="509,126 517,130 509,134" fill="#3b82f6" opacity="0.6"/>
+
+          <!-- No 5: Rituais + Feedback -->
+          <g filter="url(#t2-glow-blue)" class="wf-a">
+            <rect x="518" y="100" width="80" height="60" rx="10" fill="url(#t2-grad-blue)" stroke="#3b82f6" stroke-width="2"/>
+          </g>
+          <text x="558" y="124" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="600">Rituais &amp;</text>
+          <text x="558" y="139" text-anchor="middle" fill="#93c5fd" font-size="10">Feedback</text>
+          <text x="558" y="153" text-anchor="middle" fill="#bfdbfe" font-size="18">&#128293;</text>
+
+          <!-- Label de saida: Output -->
+          <rect x="624" y="113" width="60" height="34" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.6"/>
+          <text x="654" y="127" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="600">Output</text>
+          <text x="654" y="140" text-anchor="middle" fill="#7dd3fc" font-size="9">Inovacao</text>
+
+          <!-- Label titulo topo -->
+          <text x="350" y="28" text-anchor="middle" fill="#93c5fd" font-size="13" font-weight="600" letter-spacing="1">PIPELINE DE TECNICAS</text>
+          <line x1="160" y1="34" x2="540" y2="34" stroke="#3b82f6" stroke-width="0.8" stroke-opacity="0.4"/>
+
+          <!-- Labels inferiores -->
+          <text x="70" y="182" text-anchor="middle" fill="#64748b" font-size="8">Empatia</text>
+          <text x="192" y="182" text-anchor="middle" fill="#64748b" font-size="8">Velocidade</text>
+          <text x="314" y="182" text-anchor="middle" fill="#64748b" font-size="8">Foco</text>
+          <text x="436" y="182" text-anchor="middle" fill="#64748b" font-size="8">Alinhamento</text>
+          <text x="558" y="182" text-anchor="middle" fill="#64748b" font-size="8">Sustentacao</text>
+
+          <!-- Decoracao: pontos de conexao no fundo -->
+          <circle cx="70" cy="230" r="3" fill="#3b82f6" opacity="0.3"/>
+          <circle cx="192" cy="230" r="3" fill="#38bdf8" opacity="0.3"/>
+          <circle cx="314" cy="230" r="3" fill="#3b82f6" opacity="0.3"/>
+          <circle cx="436" cy="230" r="3" fill="#38bdf8" opacity="0.3"/>
+          <circle cx="558" cy="230" r="3" fill="#3b82f6" opacity="0.3"/>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- MAPA DA TRILHA -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Mapa da trilha</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <a href="#modulo-2-1" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-blue-400 font-bold text-sm">2.1</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">&#127912; Design Thinking</h3>
+          <p class="text-xs text-neutral-400">Empatia antes de solucao</p>
+        </a>
+
+        <a href="#modulo-2-2" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-blue-400 font-bold text-sm">2.2</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">&#128640; Lean Startup</h3>
+          <p class="text-xs text-neutral-400">Construir menos, aprender mais</p>
+        </a>
+
+        <a href="#modulo-2-3" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-blue-400 font-bold text-sm">2.3</span>
+            <span class="text-xs text-neutral-500">~30 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">&#9889; Sprint Design</h3>
+          <p class="text-xs text-neutral-400">5 dias, 1 decisao validada</p>
+        </a>
+
+        <a href="#modulo-2-4" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-blue-400 font-bold text-sm">2.4</span>
+            <span class="text-xs text-neutral-500">~30 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">&#128256; SCAMPER e Brainstorming</h3>
+          <p class="text-xs text-neutral-400">Divergencia com metodo</p>
+        </a>
+
+        <a href="#modulo-2-5" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-blue-400 font-bold text-sm">2.5</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">&#127919; Jobs To Be Done</h3>
+          <p class="text-xs text-neutral-400">O usuario contrata, nao compra</p>
+        </a>
+
+        <a href="#modulo-2-6" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-blue-400 font-bold text-sm">2.6</span>
+            <span class="text-xs text-neutral-500">~30 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">&#129518; OKRs para Inovacao</h3>
+          <p class="text-xs text-neutral-400">Ambicao sem engessamento</p>
+        </a>
+
+        <a href="#modulo-2-7" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-blue-400 font-bold text-sm">2.7</span>
+            <span class="text-xs text-neutral-500">~30 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">&#128301; Criatividade Sistematica</h3>
+          <p class="text-xs text-neutral-400">TRIZ: inovar sob demanda</p>
+        </a>
+
+        <a href="#modulo-2-8" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-blue-400 font-bold text-sm">2.8</span>
+            <span class="text-xs text-neutral-500">~30 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">&#128296; Prototipagem Rapida</h3>
+          <p class="text-xs text-neutral-400">Fidelidade certa no momento certo</p>
+        </a>
+
+        <a href="#modulo-2-9" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-blue-400 font-bold text-sm">2.9</span>
+            <span class="text-xs text-neutral-500">~30 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">&#128257; Feedback Loops</h3>
+          <p class="text-xs text-neutral-400">Ciclo curto, aprendizado rapido</p>
+        </a>
+
+        <a href="#modulo-2-10" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-blue-400 font-bold text-sm">2.10</span>
+            <span class="text-xs text-neutral-500">~30 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">&#128293; Rituais de Inovacao</h3>
+          <p class="text-xs text-neutral-400">Habito bate inspiracao sempre</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- CONTEUDO DETALHADO -->
+    <h2 class="text-2xl font-bold mb-6">Conteudo detalhado</h2>
+
+    <!-- MODULO 2.1 -->
+    <div id="modulo-2-1" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-blue-400 font-bold">2.1</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#127912; Design Thinking</h3>
+        <p class="text-neutral-400 text-sm">Empatia, definicao, ideacao, prototipo e teste — o ciclo humano-centrado que Stanford e IDEO tornaram global.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-1-exp-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">&#129504;</span>
+            <div><span class="font-medium">As 5 fases do processo</span><span class="text-neutral-500 text-sm ml-2">- Empatia ate Teste</span></div>
+          </button>
+          <div id="t2-1-exp-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">O modelo de 5 fases da d.school: Empatia, Definicao, Ideacao, Prototipo e Teste. Nao linear — voce volta fases quantas vezes precisar.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Ter um framework compartilhado reduz conflito de linguagem entre equipes e acelera o alinhamento sobre o problema antes de discutir solucao.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">How Might We, mapa de empatia, ponto de vista (POV), prototipo de baixa fidelidade, criterios de sucesso do teste.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-1-exp-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">&#128065;</span>
+            <div><span class="font-medium">Pesquisa qualitativa e imersao</span><span class="text-neutral-500 text-sm ml-2">- Ouvir antes de projetar</span></div>
+          </button>
+          <div id="t2-1-exp-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Tecnicas de observacao, entrevista em profundidade e shadowing para capturar o que o usuario NAO consegue articular em questionarios.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">A maioria dos produtos falha por resolver o problema errado. Empatia real reduz drasticamente o desperdicio de desenvolvimento.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Entrevista "5 porques", shadowing, diary study, mapa de jornada do usuario, insight vs. observacao.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-1-exp-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">&#127775;</span>
+            <div><span class="font-medium">Ideacao e divergencia criativa</span><span class="text-neutral-500 text-sm ml-2">- Volume antes de qualidade</span></div>
+          </button>
+          <div id="t2-1-exp-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Fase de geracao maxima de ideias sem julgamento, usando tecnicas como Crazy 8s, brainwriting e analogias forcadas.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Times que pulam para solucao imediata geram ideias medias. O pensamento divergente-convergente produz solucoes que ninguem teria sozinho.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Pensamento divergente vs. convergente, Crazy 8s, votacao por pontos (dot voting), matriz de impacto x esforco.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-1-exp-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">&#128736;</span>
+            <div><span class="font-medium">Prototipagem de baixa fidelidade</span><span class="text-neutral-500 text-sm ml-2">- Barato para falhar rapido</span></div>
+          </button>
+          <div id="t2-1-exp-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Construir representacoes rapidas e baratas (papel, cartao, wireframe) para testar hipoteses especificas antes de investir em desenvolvimento real.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Prototipo de R$20 que revela problema critico poupa meses de desenvolvimento errado. Fidelidade alta demais cria apego que impede feedback honesto.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Fidelidade vs. foco, paper prototype, storyboard, wizard of oz, prototipo de papel vs. digital.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-1-exp-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">&#128101;</span>
+            <div><span class="font-medium">Times multidisciplinares e facilitacao</span><span class="text-neutral-500 text-sm ml-2">- Diversidade como ativo</span></div>
+          </button>
+          <div id="t2-1-exp-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Montar e facilitar times com perfis T-shaped (especialistas com visao ampla) de areas diferentes para atacar o problema de varios angulos.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Diversidade cognitiva aumenta a qualidade das solucoes. O facilitador cria o ambiente seguro onde o conflito de ideias e produtivo, nao pessoal.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Perfil T-shaped, facilitacao vs. gestao, regras do brainstorm IDEO, "one conversation at a time", defer judgment.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-1-exp-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">&#127970;</span>
+            <div><span class="font-medium">DT em ambiente corporativo</span><span class="text-neutral-500 text-sm ml-2">- Adaptar sem perder a essencia</span></div>
+          </button>
+          <div id="t2-1-exp-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Como adaptar o processo de DT para contextos com restricoes de hierarquia, orcamento e prazo sem transformar em "teatro de post-its".</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">O DT corporativo fracassa quando vira ritual sem comprometimento de iteracao. Saber navegar a politica interna e o que separa praticantes reais dos consultores de workshop.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">IBM Enterprise Design Thinking, Hills statement, sponsor user, ciclo de feedback pos-workshop, criterios de Go/No-Go.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-2-1.html" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- MODULO 2.2 -->
+    <div id="modulo-2-2" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-blue-400 font-bold">2.2</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#128640; Lean Startup</h3>
+        <p class="text-neutral-400 text-sm">Construir-medir-aprender com o minimo de desperdicio — o metodo de Eric Ries que redefiniu como startups e grandes empresas testam ideias.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-2-exp-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">&#128260;</span>
+            <div><span class="font-medium">O loop Construir-Medir-Aprender</span><span class="text-neutral-500 text-sm ml-2">- O ciclo fundamental</span></div>
+          </button>
+          <div id="t2-2-exp-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">O loop central do Lean Startup: construir um experimento minimo (MVP), medir dados reais, aprender e decidir pivotar ou perseverar.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Reduz o desperdicio de construir produto completo antes de validar a hipotese mais critica. Cada volta do loop acelera o aprendizado validado.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Aprendizado validado, hipotese de valor, hipotese de crescimento, tempo de ciclo, batch size minimo.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-2-exp-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">&#128203;</span>
+            <div><span class="font-medium">MVP: Produto Minimo Viavel</span><span class="text-neutral-500 text-sm ml-2">- O menor experimento valido</span></div>
+          </button>
+          <div id="t2-2-exp-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">A versao de um produto que permite coletar o maximo de aprendizado validado sobre os clientes com o minimo de esforco.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">MVP nao e um produto ruim: e um experimento. Entender isso muda a mentalidade de "launch" para "aprendizado", reduzindo riscos.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Concierge MVP, Wizard of Oz MVP, landing page test, smoke test, metricas de ativacao vs. vaidade.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-2-exp-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">&#128200;</span>
+            <div><span class="font-medium">Metricas de pirata (AARRR)</span><span class="text-neutral-500 text-sm ml-2">- Medir o que importa</span></div>
+          </button>
+          <div id="t2-2-exp-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Framework AARRR: Aquisicao, Ativacao, Retencao, Receita e Indicacao — as 5 etapas do funil que revelam onde o produto sangra.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Metricas de vaidade (pageviews, downloads) escondem problemas reais. AARRR forca a medir o comportamento real do usuario em cada etapa.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">North Star Metric, cohort analysis, churn rate, retention curve, NPS como proxy de indicacao.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-2-exp-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">&#127987;</span>
+            <div><span class="font-medium">Pivotar ou perseverar</span><span class="text-neutral-500 text-sm ml-2">- A decisao mais dificil</span></div>
+          </button>
+          <div id="t2-2-exp-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">O momento de decisao estruturada — com base em dados — de mudar uma hipotese fundamental (pivotar) ou continuar o caminho atual (perseverar).</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Sem criterio claro, o time persevera por inercial ou pivota por panico. Dados de aprendizado validado dao base para decisao racional.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Zoom-in pivot, zoom-out pivot, customer segment pivot, plataforma pivot, criterios de pivot predefinidos.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-2-exp-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">&#127970;</span>
+            <div><span class="font-medium">Lean em grandes empresas</span><span class="text-neutral-500 text-sm ml-2">- Escalar sem engessar</span></div>
+          </button>
+          <div id="t2-2-exp-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Adaptacao do Lean Startup para o contexto corporativo, onde restricoes de compliance, marca e processos exigem ajustes no ritmo de experimentacao.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">GE, Intuit e Toyota aplicam variantes do Lean Startup internamente. Saber adaptar permite usar o metodo sem quebrar governanca.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">FastWorks (GE), Design for Delight (Intuit), innovation accounting, stage-gate vs. iteracao continua.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-2-exp-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">&#9888;</span>
+            <div><span class="font-medium">Armadilhas comuns do Lean</span><span class="text-neutral-500 text-sm ml-2">- O que mata o metodo</span></div>
+          </button>
+          <div id="t2-2-exp-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Os erros mais comuns: MVP que nao valida hipotese real, pivotar em panico sem dados suficientes, metricas de vaidade disfarcadas de KPIs.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Lean mal aplicado gera ciclos rapidos de aprendizado errado. Reconhecer os antipadroes poupa meses de esforco mal direcionado.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">MVP minimalista demais (nao valida), mania de pivotar, hipotese vaga, cohort vs. total aggregado, analysis paralysis.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-2-2.html" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- MODULO 2.3 -->
+    <div id="modulo-2-3" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-blue-400 font-bold">2.3</span>
+          <span class="text-xs text-neutral-500">~30 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#9889; Sprint Design</h3>
+        <p class="text-neutral-400 text-sm">Da ideia ao teste validado em 5 dias — o metodo GV Sprint que Jake Knapp criou no Google Ventures.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-3-exp-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">&#128197;</span>
+            <div><span class="font-medium">Os 5 dias do Sprint</span><span class="text-neutral-500 text-sm ml-2">- Segunda a sexta com ritmo</span></div>
+          </button>
+          <div id="t2-3-exp-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Segunda: mapear e escolher foco. Terca: esbocar solucoes. Quarta: decidir e storyboard. Quinta: prototipar. Sexta: testar com 5 usuarios reais.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">5 dias parecem pouco mas o ritmo forcado elimina decisoes por consenso infinito. O prazo cria restricao criativa que acelera a qualidade.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Long-term goal, sprint question, Lightning Demos, crazy 8s no Sprint, storyboard de 8 frames, recrutamento de testers.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-3-exp-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">&#128202;</span>
+            <div><span class="font-medium">Mapa do problema e pergunta Sprint</span><span class="text-neutral-500 text-sm ml-2">- Foco antes de velocidade</span></div>
+          </button>
+          <div id="t2-3-exp-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Construir o mapa do problema (atores, fluxo, pontos criticos) e formular a "Sprint Question" — a hipotese mais critica que o sprint vai testar.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Sprint sem foco claro gera prototipo que nao responde nada. A Sprint Question e o norte que garante que o teste da sexta valide o que realmente importa.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Mapa do sprint, How Might We no contexto do Sprint, escolha do alvo no mapa, decider vs. facilitator.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-3-exp-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">&#127912;</span>
+            <div><span class="font-medium">Prototipo realista em 1 dia</span><span class="text-neutral-500 text-sm ml-2">- Fachada que engana (de bom jeito)</span></div>
+          </button>
+          <div id="t2-3-exp-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Construir um prototipo que parece real o suficiente para o usuario suspender descredito e reagir como se fosse o produto real — em apenas 1 dia.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">O prototipo do Sprint nao precisa funcionar — precisa provocar reacoes autenticas. Saber o limiar entre "realista suficiente" e "finalizado demais" e uma habilidade critica.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Goldilocks quality, Keynote/Figma como ferramenta de prototipo, divisionk de trabalho entre Maker/Writer/Asset, ensaio do prototipo.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-3-exp-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">&#128065;</span>
+            <div><span class="font-medium">Teste com 5 usuarios em 1 dia</span><span class="text-neutral-500 text-sm ml-2">- Cinco e o numero magico</span></div>
+          </button>
+          <div id="t2-3-exp-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Entrevistas estruturadas de 60 minutos com 5 usuarios representativos, enquanto o time assiste em sala separada e registra padroes em tempo real.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Nielsen Norman Group mostra que 5 usuarios revelam 85% dos problemas de usabilidade. Mais entrevistas tem retorno decrescente rapido.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Roteiro de entrevista, think-aloud protocol, nota em post-it por sala, sniff test de recrutamento, analise de padroes em 1h.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-3-exp-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">&#128295;</span>
+            <div><span class="font-medium">Sprint vs. Agile vs. Design Thinking</span><span class="text-neutral-500 text-sm ml-2">- Ferramentas complementares</span></div>
+          </button>
+          <div id="t2-3-exp-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Comparacao dos 3 frameworks: quando usar cada um, como se combinam e como evitar confusao entre os vocabularios e ritmos de cada metodologia.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Times que misturam os 3 sem criterio criam hibridismos disfuncionais. Saber o proposto de cada ferramenta e pre-requisito para usa-las bem juntas.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Sprint de descoberta vs. sprint de entrega, DT para problema, Sprint para validacao, Agile para desenvolvimento, duplo diamante.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-3-exp-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">&#127963;</span>
+            <div><span class="font-medium">Sprint remoto e hibrido</span><span class="text-neutral-500 text-sm ml-2">- Distancia nao e desculpa</span></div>
+          </button>
+          <div id="t2-3-exp-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Adaptacoes do Sprint para times distribuidos: ferramentas digitais, ajustes de ritmo, tecnicas de facilitacao remota e como manter a energia de 5 dias em formato assincrono-sincrono.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Pos-pandemia, a maioria dos times de produto e hibrido ou remoto. Adaptar o Sprint para esse contexto sem perder a efetividade e uma competencia direta.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">MURAL/Miro para voting, Loom para async Lightning Demos, Lookback.io para testes remotos, fatiga de video, ritmo 4+1 (4 dias intensos + sexta leve).</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-2-3.html" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- MODULO 2.4 -->
+    <div id="modulo-2-4" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-blue-400 font-bold">2.4</span>
+          <span class="text-xs text-neutral-500">~30 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#128256; SCAMPER e Brainstorming</h3>
+        <p class="text-neutral-400 text-sm">Tecnicas de geracao divergente de ideias — do brainstorm classico ao SCAMPER estruturado para forcas criativas sob pressao.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-4-exp-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">&#127775;</span>
+            <div><span class="font-medium">Brainstorming: regras que funcionam</span><span class="text-neutral-500 text-sm ml-2">- Por que a maioria faz errado</span></div>
+          </button>
+          <div id="t2-4-exp-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">As 7 regras do brainstorm IDEO: adiar julgamento, encorajar ideias selvagens, construir sobre ideias alheias, manter foco no topico, uma conversa por vez, ser visual e buscar volume.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Brainstorm sem regras produz ideias medias dominadas pelos mais extrovertidos. As regras criam o campo seguro para ideias incomuns emergirem.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Production blocking, social loafing, brainwriting como alternativa, quantity over quality, HMW como warm-up.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-4-exp-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">&#128295;</span>
+            <div><span class="font-medium">SCAMPER: criatividade com checklist</span><span class="text-neutral-500 text-sm ml-2">- 7 verbos que geram 100 ideias</span></div>
+          </button>
+          <div id="t2-4-exp-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">SCAMPER: Substituir, Combinar, Adaptar, Modificar/Magnificar, Propor novos usos, Eliminar, Rearranjar/Reverter. Cada verbo e um angulo forcado sobre o produto/servico existente.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Quando o time esta travado em melhorias incrementais, SCAMPER forcca sair da zona de conforto mental com prompts estruturados que quebram o padrao.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Checklist de Osborn, funcional fixedness, analogia forcada, inversao de pressupostos, exemplos de cada letra SCAMPER com produtos reais.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-4-exp-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">&#128336;</span>
+            <div><span class="font-medium">Tecnicas de warm-up criativo</span><span class="text-neutral-500 text-sm ml-2">- Aquecer antes de criar</span></div>
+          </button>
+          <div id="t2-4-exp-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Exercicios de 5-10 minutos para colocar o time em modo criativo: 30 circulos, Worst Possible Idea, Yes And!, e outros jogos de improvisacao adaptados para negocios.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Pular direto para brainstorm de produto em reuniao corporativa traz o mindset de julgamento. Warm-up calibra o estado mental para divergencia em minutos.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">30 circulos (IDEO), Worst Possible Idea (reversal), Yes-And (improv), estado de fluxo, inibicao social vs. seguranca psicologica.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-4-exp-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">&#127919;</span>
+            <div><span class="font-medium">Selecionar ideias sem matar criatividade</span><span class="text-neutral-500 text-sm ml-2">- Convergir com inteligencia</span></div>
+          </button>
+          <div id="t2-4-exp-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Tecnicas de convergencia: dot voting, matriz impacto x viabilidade, 2x2 de esforco x novidade, e como apresentar criterios de selecao SEM matar o clima criativo.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Selecao mal facilitada traz de volta o HiPPO (Highest Paid Person's Opinion) e mata as ideias que nao tem "padrinho" na sala.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">HiPPO effect, dot voting, matriz 2x2, "how weird is it" como criterio de novidade, portfolio de ideias vs. aposta unica.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-4-exp-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">&#127908;</span>
+            <div><span class="font-medium">Facilitacao de sessoes criativas</span><span class="text-neutral-500 text-sm ml-2">- O facilitador como arquiteto</span></div>
+          </button>
+          <div id="t2-4-exp-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Competencias do facilitador de sessoes de ideacao: design do espaco, gestao do tempo, lidar com bloqueios, energizar grupos cansados e neutralizar dominadores.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">O mesmo exercicio com facilitadores diferentes produz resultados drasticamente distintos. Facilitacao e uma habilidade aprendivel que multiplica o valor de qualquer tecnica.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Facilitador vs. participante, design do ambiente fisico/digital, timeboxing, "parking lot" para desvios, tecnica de silencio produtivo.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-4-exp-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">&#9878;</span>
+            <div><span class="font-medium">Analogias e pensamento lateral</span><span class="text-neutral-500 text-sm ml-2">- Roubar de outros setores</span></div>
+          </button>
+          <div id="t2-4-exp-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Usar analogias de setores distantes (natureza, esportes, exercito, artes) para transferir solucoes para o problema em questao — o metodo Synectics de Gordon.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Analogias forcam o cerebro a sair do frame usual do problema. Biomimicry, por exemplo, gerou solucoes de engenharia copiando bilhoes de anos de otimizacao da natureza.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Synectics, analogia direta vs. pessoal, biomimicry, pensamento lateral de De Bono, 6 chapeus do pensamento aplicados a ideacao.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-2-4.html" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- MODULO 2.5 -->
+    <div id="modulo-2-5" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-blue-400 font-bold">2.5</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#127919; Jobs To Be Done</h3>
+        <p class="text-neutral-400 text-sm">As pessoas nao compram produtos — elas contratam solucoes para um job. O framework de Clayton Christensen que reescreveu como pensar sobre competicao.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-5-exp-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">&#128220;</span>
+            <div><span class="font-medium">O que e um "job"</span><span class="text-neutral-500 text-sm ml-2">- Funcional, social e emocional</span></div>
+          </button>
+          <div id="t2-5-exp-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Jobs sao funcionais (fazer algo), sociais (como outros nos percebem) e emocionais (como nos sentimos). Os 3 dimensoes estao presentes em qualquer decisao de compra.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Focar so no job funcional ignora 2/3 da motivacao real. O milkshake de Christensen revelou que o job matinal era "manter a mao ocupada e evitar fome ate o almoco".</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Job statement canonico (quando [situacao], quero [motivacao], para [resultado]), dimensoes funcional/social/emocional, contexto de contratacao.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-5-exp-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">&#128269;</span>
+            <div><span class="font-medium">Pesquisa de JTBD: entrevistas de contratacao</span><span class="text-neutral-500 text-sm ml-2">- A compra como unidade de analise</span></div>
+          </button>
+          <div id="t2-5-exp-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Entrevistar clientes sobre o momento especifico de decisao de compra/contratacao para revelar o job real, nao o que eles declaram conscientemente.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Pesquisa tradicional pergunta "o que voce quer?" JTBD pergunta "me conta quando voce decidiu contratar/demitir o produto X". A narrativa revela o job verdadeiro.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Entrevista de switch (Intercom), forcas do progresso, pushing/pulling/anxieties/habits, linha do tempo da decisao.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-5-exp-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">&#128200;</span>
+            <div><span class="font-medium">Outcome-Driven Innovation (ODI)</span><span class="text-neutral-500 text-sm ml-2">- Medir o job em metricas</span></div>
+          </button>
+          <div id="t2-5-exp-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">O framework de Tony Ulwick que transforma jobs em "desired outcomes" mensuraveis — metricas que o usuario usa para avaliar o sucesso ao executar o job.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">ODI conecta JTBD com quantificacao: quais outcomes estao mais sub-atendidos (alto impacto, baixa satisfacao atual) indicam onde inovar tem mais retorno.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Opportunity score, desired outcome statement, importance x satisfaction matrix, job map de 8 etapas, overserved vs. underserved.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-5-exp-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">&#128101;</span>
+            <div><span class="font-medium">Segmentar por job, nao por demografico</span><span class="text-neutral-500 text-sm ml-2">- Personas vs. situacoes</span></div>
+          </button>
+          <div id="t2-5-exp-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Agrupar clientes por job similar em vez de por faixa etaria ou renda — pessoas com perfis demograficos opostos podem ter o mesmo job e responder ao mesmo produto.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Segmentacao demografica tradicional e imprecisa para prever comportamento de compra. Segmentacao por job aumenta a precisao de comunicacao e feature prioritization.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Job-based segmentation, "same job, different persona", context switching, concorrentes nao obvios (o milkshake vs. banana vs. nao comer nada).</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-5-exp-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">&#128308;</span>
+            <div><span class="font-medium">Concorrencia pelo job</span><span class="text-neutral-500 text-sm ml-2">- Seus rivais sao surpreendentes</span></div>
+          </button>
+          <div id="t2-5-exp-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Quando o foco e o job, a concorrencia se expande: Netflix compete com o sono, o Spotify com a conversa entre amigos, o Duolingo com o Instagram. O "nao fazer" e sempre um concorrente.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Empresas que so olham para competidores diretos sao disruptadas por alternativas que nao estavam no radar. JTBD revela o espaco competitivo real.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Jobs-based competition map, nonconsumption como mercado, solucao workaround, "fire the product" (demissao do produto), teoria da disrupcao de Christensen.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-5-exp-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">&#127970;</span>
+            <div><span class="font-medium">JTBD na estrategia de produto</span><span class="text-neutral-500 text-sm ml-2">- Do insight ao roadmap</span></div>
+          </button>
+          <div id="t2-5-exp-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Como usar insights de JTBD para priorizar features, definir posicionamento e construir roadmap orientado a jobs em vez de features pedidas por usuarios vociferantes.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Roadmap de features sem JTBD e lista de desejos. Com JTBD, cada feature tem justificativa clara: "qual job essa feature ajuda a executar melhor?"</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Jobs-based roadmap, opportunity solution tree (Teresa Torres), "outcome over output", jobs como unidade de medida de valor, abandono de features por job obsoleto.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-2-5.html" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- MODULO 2.6 -->
+    <div id="modulo-2-6" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-blue-400 font-bold">2.6</span>
+          <span class="text-xs text-neutral-500">~30 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#129518; OKRs para Inovacao</h3>
+        <p class="text-neutral-400 text-sm">Alinhar ambicao e foco sem engessar o time — como Google, Intel e Spotify usam Objectives and Key Results para escalar inovacao.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-6-exp-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">&#127919;</span>
+            <div><span class="font-medium">Anatomia de um bom OKR</span><span class="text-neutral-500 text-sm ml-2">- O e KR nao sao a mesma coisa</span></div>
+          </button>
+          <div id="t2-6-exp-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Objective = direcao qualitativa inspiradora. Key Results = entre 3 e 5 metricas quantitativas que provam que o objetivo foi atingido. Sem metricas, e missao; sem direcao, e KPI solto.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">A maioria dos OKRs mal escritos sao KPIs disfarcados ("aumentar vendas em 10%"). OKR de inovacao exige metas aspiracionais que pulem o status quo.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Moonshot OKRs (70% e sucesso), rooftop OKRs (operacional), leading vs. lagging indicators, OKR de input vs. output, regra do "como saberemos que chegamos la".</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-6-exp-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">&#127757;</span>
+            <div><span class="font-medium">OKRs de inovacao vs. operacao</span><span class="text-neutral-500 text-sm ml-2">- Duas velocidades na mesma empresa</span></div>
+          </button>
+          <div id="t2-6-exp-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">OKRs de inovacao (explorar) e de operacao (explotar) tem cadencias, tolerancias a falha e criterios de sucesso completamente diferentes — e precisam coexistir.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Aplicar o mesmo OKR de operacao em times de inovacao e receita de fracasso: a tolerancia ao risco e as metricas de progresso sao fundamentalmente diferentes.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Ambidestria organizacional via OKR, horizonte 1/2/3 de McKinsey como frame de OKR, cadencia trimestral vs. anual, OKR de aprendizado para inovacao.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-6-exp-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">&#128200;</span>
+            <div><span class="font-medium">Cascata vs. alinhamento bidirecional</span><span class="text-neutral-500 text-sm ml-2">- Hierarquia ou autonomia?</span></div>
+          </button>
+          <div id="t2-6-exp-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">OKRs nao devem ser "cascateados" de cima para baixo como metas tradicionais — o ideal e 50-60% definidos de baixo para cima com alinhamento aos objetivos da empresa.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">OKR cascateado vira burocracia disfarcada. O poder do sistema e no alinhamento autonomo: cada time contribui para o objetivo maior com liberdade de definir o "como".</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">OKR bidirecional (John Doerr), alinhamento vs. cascata, CFR (Conversations, Feedback, Recognition), OKRs como conversa, nao contrato.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-6-exp-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">&#128336;</span>
+            <div><span class="font-medium">Rituais do ciclo OKR</span><span class="text-neutral-500 text-sm ml-2">- O sistema e os rituais juntos</span></div>
+          </button>
+          <div id="t2-6-exp-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Os rituais que fazem o sistema funcionar: planning trimestral (escrever), check-in semanal (atualizar confidence), retrospectiva (aprender), grading final (pontuar sem punir).</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">OKR sem rituais de acompanhamento vira documento esquecido. Os rituais sao o que transforma o framework em habito de execucao e aprendizado continuo.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Confidence rating (0.0-1.0), grading 0.7 como sucesso, "set and forget" como antipadrao, OKR scoring sem consequencias salariais, celebracao de aprendizado.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-6-exp-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">&#9878;</span>
+            <div><span class="font-medium">OKRs e o problema da remuneracao</span><span class="text-neutral-500 text-sm ml-2">- Nao ligue ao bonus</span></div>
+          </button>
+          <div id="t2-6-exp-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Por que OKRs ligados a bonus destroem o sistema: times definem metas faceis (sandbagging), perdem a ambicao e o OKR vira jogo politico de protecao salarial.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Google, Intel e a maioria dos cases de sucesso separam explicitamente OKR de performance review. Entender o por que e essencial para defender o sistema na sua empresa.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Sandbagging, grade inflation, OKR vs. MBO (Management by Objectives), separacao OKR/performance, "superpowers de John Doerr": foco, alinhamento, rastreamento, esticamento.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-6-exp-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">&#128640;</span>
+            <div><span class="font-medium">Implementando OKRs do zero</span><span class="text-neutral-500 text-sm ml-2">- Piloto de 1 trimestre</span></div>
+          </button>
+          <div id="t2-6-exp-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Como estruturar o piloto de OKR em 1 trimestre: escolher 1-2 times, facilitar o processo de escrita, definir rituais minimos e colher aprendizados antes de escalar.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Implementar OKRs em toda a empresa de uma vez e o caminho mais rapido para rejeicao. O piloto controlado da confianca organizacional e permite ajustes sem risco.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">OKR champion, software de tracking (Lattice, Perdoo, Google Sheets), resistencias comuns ("mais uma metodologia"), quick win para gerar buy-in, escalada no segundo trimestre.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-2-6.html" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- MODULO 2.7 -->
+    <div id="modulo-2-7" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-blue-400 font-bold">2.7</span>
+          <span class="text-xs text-neutral-500">~30 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#128301; Criatividade Sistematica</h3>
+        <p class="text-neutral-400 text-sm">TRIZ e metodos para criatividade sob demanda — como engenheiros sovieticos descobriram que a inovacao tem padroes repetidos e catalogaveis.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-7-exp-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">&#127881;</span>
+            <div><span class="font-medium">TRIZ: origens e principios</span><span class="text-neutral-500 text-sm ml-2">- 400.000 patentes estudadas</span></div>
+          </button>
+          <div id="t2-7-exp-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Genrich Altshuller analisou 400.000 patentes sovieticas e descobriu que 95% dos problemas de invencao ja tinham sido resolvidos em outro campo — catalogando 40 principios inventivos recorrentes.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">TRIZ prova que criatividade tem estrutura. Em vez de esperar insight espontaneo, voce aplica principios catalogados para resolver contradicoes tecnicas e fisicas.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">40 principios inventivos, matriz de contradicao, Ideality (solucao ideal), Contradiction Matrix, niveis de inovacao (1 a 5).</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-7-exp-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">&#128295;</span>
+            <div><span class="font-medium">Contradicoes e como resolve-las</span><span class="text-neutral-500 text-sm ml-2">- O nucleo do metodo</span></div>
+          </button>
+          <div id="t2-7-exp-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">TRIZ identifica 2 tipos: contradicao tecnica (melhorar A piora B) e contradicao fisica (o mesmo elemento precisa ter propriedade X e nao-X ao mesmo tempo).</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">A maioria dos problemas tecnicos sao tradeoffs disfarcados. Nomear a contradicao precisamente direciona os principios inventivos certos e evita solucoes de compromisso mediocridade.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Contradicao tecnica (39x39 matriz), contradicao fisica (separacao espacial/temporal/condicional), IFR (Ideal Final Result), principio de segmentacao.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-7-exp-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">&#9889;</span>
+            <div><span class="font-medium">SIT: Pensamento Inventivo Sistematico</span><span class="text-neutral-500 text-sm ml-2">- TRIZ simplificado para negocios</span></div>
+          </button>
+          <div id="t2-7-exp-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">SIT (Systematic Inventive Thinking) de Jacob Goldenberg e Roni Horowitz destila TRIZ em 5 templates: Subtracao, Multiplicacao, Divisao, Unificacao de tarefas e Dependencia de atributos.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">SIT e aplicavel a inovacao de produto e servico sem background de engenharia. Harvard Business Review documentou que SIT produz mais ideias acionaveis que brainstorming livre.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">5 templates SIT, "closed world" assumption, function follows form (inverso de DT), exemplos de produto (iPod, caneta Bic, Swiffer).</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-7-exp-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">&#127760;</span>
+            <div><span class="font-medium">Criatividade distribuida: crowdsourcing de inovacao</span><span class="text-neutral-500 text-sm ml-2">- A multidao como laboratorio</span></div>
+          </button>
+          <div id="t2-7-exp-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Plataformas como InnoCentive, Kaggle e Topcoder provam que problemas tecnicos complexos sao resolvidos mais rapido e barato por comunidades externas do que por PD interno.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Eli Lilly, NASA e P&G demonstraram ROI massivo em crowdsourcing de inovacao. O desafio nao e a plataforma — e formular o problema de forma que externo consiga resolver.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">InnoCentive case studies, premio vs. contrato como motivacao, problem decomposition para crowd, propriedade intelectual no crowdsourcing, filtros de qualidade.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-7-exp-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">&#129504;</span>
+            <div><span class="font-medium">Criatividade individual vs. coletiva</span><span class="text-neutral-500 text-sm ml-2">- Quando voce precisa dos dois</span></div>
+          </button>
+          <div id="t2-7-exp-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">A pesquisa de Adam Grant e Charlan Nemeth mostra: criatividade individual produz mais novidade; coletiva produz mais refinamento. O design de sessoes deve refletir o objetivo.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Groupthink e real. Times que sempre ideiam juntos convergem para a media do grupo. Alternar ciclos individual-coletivo maximiza qualidade e quantidade de ideias.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Brainwriting 6-3-5, ciclo solo → grupo → solo, devil's advocate como papel estruturado, dissent produtivo, pesquisa de Charlan Nemeth sobre minoria criativa.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-7-exp-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">&#127965;</span>
+            <div><span class="font-medium">Ambiente que amplifica criatividade</span><span class="text-neutral-500 text-sm ml-2">- Espaco como ferramenta</span></div>
+          </button>
+          <div id="t2-7-exp-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Csikszentmihalyi, Amabile e pesquisas de neurociencia mostram que o espaco fisico e digital afeta o output criativo: cor, ruido, luz, altura de teto e "distracao acidental" influenciam resultados.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Criatividade nao emerge so do individuo — emerge da interacao individuo + contexto. Projetar o ambiente de inovacao e uma alavanca subutilizada com ROI mensuravel.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Innovation labs, "messy desk" effect, ruido ambiente a 70dB, luz natural, Pixar campus design, "happy accidents" como design proposital, espaco de transicao.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-2-7.html" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- MODULO 2.8 -->
+    <div id="modulo-2-8" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-blue-400 font-bold">2.8</span>
+          <span class="text-xs text-neutral-500">~30 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#128296; Prototipagem Rapida</h3>
+        <p class="text-neutral-400 text-sm">Fidelidade certa, no momento certo, pelo menor custo — o spectrum de prototipagem que vai do papel ao codigo em producao.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-8-exp-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">&#128196;</span>
+            <div><span class="font-medium">Spectrum de fidelidade</span><span class="text-neutral-500 text-sm ml-2">- Do papel ao codigo</span></div>
+          </button>
+          <div id="t2-8-exp-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">O continuum de prototipagem: papel (baixo custo, rapido), wireframe (estrutura), mockup (visual), prototipo interativo, proof of concept (tecnico), MVP (producao minimal).</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">A fidelidade correta varia com a pergunta. Alta fidelidade cedo mata o feedback; baixa fidelidade tarde nao valida o que precisa ser validado. O mapeamento correto economiza semanas.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Paper prototype, wireframe lo-fi/hi-fi, Figma prototype, Storybook, spike tecnico, production MVP, "prototipo como pergunta".</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-8-exp-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">&#127926;</span>
+            <div><span class="font-medium">Prototipo fisico e digital</span><span class="text-neutral-500 text-sm ml-2">- Hardware, software e servico</span></div>
+          </button>
+          <div id="t2-8-exp-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Tecnicas especificas para hardware (cardboard, foam, impressao 3D, Arduino), software (Figma, Framer, no-code), servicos (role-play, service blueprint com atores, Wizard of Oz).</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Cada dominio tem suas ferramentas proprias. Inovadores que transitam entre hardware, software e servico multiplicam suas opcoes de prototipagem e aceleram a validacao.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Cardboard prototype, Arduino prototype, no-code (Bubble, Webflow), service blueprint em rascunho, role-play para servicos, "smell test" de prototipo.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-8-exp-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">&#128065;</span>
+            <div><span class="font-medium">Testar o prototipo certo com a pergunta certa</span><span class="text-neutral-500 text-sm ml-2">- Hipotese antes de construir</span></div>
+          </button>
+          <div id="t2-8-exp-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Antes de prototipat, formular a hipotese que o prototipo vai testar. "Usuarios vao pagar X por Y" e a hipotese; o prototipo e o experimento que a confirma ou refuta.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Sem hipotese clara, o teste produz dados amiguos. A pergunta define a fidelidade necessaria: testar apelo visual exige visual; testar fluxo exige interatividade.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Hipotese risky assumption first, test card (Strategyzer), learning card, pass/fail criterios pre-definidos, invalidacao vs. validacao parcial.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-8-exp-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">&#128202;</span>
+            <div><span class="font-medium">Iteracao rapida e documentacao minima</span><span class="text-neutral-500 text-sm ml-2">- Versionar sem burocracia</span></div>
+          </button>
+          <div id="t2-8-exp-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Documentar o suficiente para nao perder o aprendizado sem criar burocracia que desacelera a iteracao: uma foto do prototipo + 3 bullets de learning + decisao = registro adequado.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Times que documentam demais iteracao devagar. Times que documentam de menos repetem erros. O minimo viavel de documentacao e o ponto de equilibrio que precisa ser encontrado.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Learning card, "just enough documentation", versao no nome do arquivo vs. Git, assumption graveyard, decisao log de 1 paragrafo.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-8-exp-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">&#128293;</span>
+            <div><span class="font-medium">Fail fast: cultura do prototipo descartavel</span><span class="text-neutral-500 text-sm ml-2">- Apego zero ao trabalho</span></div>
+          </button>
+          <div id="t2-8-exp-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">A capacidade organizacional de descartar um prototipo que nao validou sem drama — tratando o descarte como informacao valiosa, nao como fracasso.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">O apego ao trabalho investido (sunk cost fallacy) e o maior inimigo da iteracao rapida. Times com cultura de descarte chegam a produto certo muito mais rapido.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Sunk cost fallacy, "kill your darlings", prototipo como hipotese (nao produto), celebracao de invalidacao, "what did we learn" como closing ritual.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-8-exp-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">&#127970;</span>
+            <div><span class="font-medium">Prototipagem em hardware vs. software corporativo</span><span class="text-neutral-500 text-sm ml-2">- Restricoes mudam o jogo</span></div>
+          </button>
+          <div id="t2-8-exp-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Restricoes corporativas (compliance, integracao de sistemas legados, aprovacao de TI) mudam o que e possivel prototipat e com que velocidade — e como navegar isso sem travar.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Ignorar as restricoes corporativas leva a prototipos que nunca chegam a producao. Entender o "sandbox seguro" para prototipagem dentro de grandes empresas e a diferenca entre teoria e pratica.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Innovation sandbox, shadow IT vs. IT aprovado, compliance-first prototype, "pedir perdon vs. pedir permissao", proxy de usuario interno como primeiro cliente.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-2-8.html" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- MODULO 2.9 -->
+    <div id="modulo-2-9" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-blue-400 font-bold">2.9</span>
+          <span class="text-xs text-neutral-500">~30 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#128257; Feedback Loops</h3>
+        <p class="text-neutral-400 text-sm">Encurtar o ciclo entre fazer e aprender — como sistemas de feedback rapido mudam a velocidade de inovacao de organizacoes.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-9-exp-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">&#128260;</span>
+            <div><span class="font-medium">Loops de feedback: anatomia</span><span class="text-neutral-500 text-sm ml-2">- Reforco vs. balanceamento</span></div>
+          </button>
+          <div id="t2-9-exp-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Loops de reforco (R) amplificam mudancas — viralidade, crescimento exponencial. Loops de balanceamento (B) estabilizam sistemas — churn controlado, budget constraints.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Entender o tipo de loop que governa seu produto ou processo e fundamental para saber onde intervir e prever efeitos nao intencionais de mudancas.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Loop de reforco (R), loop de balanceamento (B), System Dynamics (Forrester), atraso no loop (delay), ponto de alavanca de Donella Meadows.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-9-exp-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">&#128200;</span>
+            <div><span class="font-medium">Metricas em tempo real vs. lagging</span><span class="text-neutral-500 text-sm ml-2">- Ver o presente, nao o passado</span></div>
+          </button>
+          <div id="t2-9-exp-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Leading indicators predizem o futuro (velocidade de onboarding, depth of engagement); lagging indicators confirmam o passado (receita, NPS trimestral). Organizacoes inovadoras medem os dois.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Tomar decisoes so com lagging indicators e como dirigir pelo espelho retrovisor. Leading indicators permitem corriger o curso antes que o problema apareca nos resultados.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Leading vs. lagging, predictive vs. retrospective metrics, "health metrics" vs. KPIs de negocio, time-to-value como leading indicator de retencao.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-9-exp-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">&#128101;</span>
+            <div><span class="font-medium">Feedback de usuarios: sistemas continuos</span><span class="text-neutral-500 text-sm ml-2">- Ouvir sem parar de construir</span></div>
+          </button>
+          <div id="t2-9-exp-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Sistemas que coletam feedback de usuario continuamente (in-app surveys, intercept interviews, session replay, support ticket mining) em vez de rodadas trimestrais de pesquisa.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Pesquisa de satisfacao trimestral e lenta demais para produtos digitais. Feedback continuo permite detectar problemas em horas, nao semanas, reduzindo churn antes de virar crise.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Micro-survey (Hotjar, Sprig), session replay (FullStory), ticket mining, continuous discovery (Teresa Torres), weekly user interview como ritual.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-9-exp-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">&#128203;</span>
+            <div><span class="font-medium">Feedback interno: retrospectivas e post-mortems</span><span class="text-neutral-500 text-sm ml-2">- Aprender com o time</span></div>
+          </button>
+          <div id="t2-9-exp-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Rituais estruturados de feedback interno: retrospectiva agil (o que foi bem / melhorar / experimentar), blameless post-mortem, pre-mortem (imaginar o fracasso antecipadamente).</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Times sem rituais de feedback interno repetem os mesmos erros. Retrospectivas eficazes aumentam a velocidade de melhoria continua do proprio processo de inovacao.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Blameless post-mortem (Google SRE), pre-mortem (Gary Klein), retrospectiva 4Ls (liked/learned/lacked/longed for), action items com dono e prazo, "team radar".</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-9-exp-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">&#9889;</span>
+            <div><span class="font-medium">Reducao do tempo de ciclo</span><span class="text-neutral-500 text-sm ml-2">- Velocidade como vantagem competitiva</span></div>
+          </button>
+          <div id="t2-9-exp-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">O tempo entre uma hipotese e o dado que a confirma ou refuta. Amazon reduz isso com "two-pizza teams". Spotify com squads. Netflix com feature flags e deploy continuo.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Uma empresa que faz 1 experimento por mes perde para quem faz 100. A velocidade de aprendizado e a unica vantagem competitiva sustentavel no longo prazo (Bezos, Hastings).</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Cycle time, DORA metrics, deployment frequency, feature flags, A/B testing como infra de aprendizado, "day-1 mentality" (Amazon).</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-9-exp-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">&#127760;</span>
+            <div><span class="font-medium">Feedback loops na organizacao: sistemas de aprendizado</span><span class="text-neutral-500 text-sm ml-2">- Da equipe para a empresa</span></div>
+          </button>
+          <div id="t2-9-exp-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Como transformar o aprendizado de uma equipe em conhecimento organizacional: wikis de decisao, "lunch and learns", repositories de experimentos e sistemas de difusao interna.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Aprendizado que nao se propaga pela organizacao e desperdicio. A organizacao que aprende (Peter Senge) tem vantagem composta: cada experimento bem documentado acelera os proximos.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Learning organization (Senge), after-action review (exercito americano), experiment repository, knowledge half-life, "build the knowledge, not the product".</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-2-9.html" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- MODULO 2.10 -->
+    <div id="modulo-2-10" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-blue-400 font-bold">2.10</span>
+          <span class="text-xs text-neutral-500">~30 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#128293; Rituais de Inovacao</h3>
+        <p class="text-neutral-400 text-sm">Os ritmos que mantem a inovacao viva no dia a dia — porque sem rituais, as tecnicas aprendidas morrem na segunda semana de volta ao escritorio.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-10-exp-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">&#128336;</span>
+            <div><span class="font-medium">Por que rituais vencem tecnicas</span><span class="text-neutral-500 text-sm ml-2">- Habito bate inspiracao</span></div>
+          </button>
+          <div id="t2-10-exp-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Rituais sao comportamentos repetidos com intencao e significado. Na inovacao, eles institutionalizam praticas que de outra forma dependeriam de esforco cognitivo consciente.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">A neurociencia mostra que habito (nao motivacao) e o que sustenta comportamento a longo prazo. Sem rituais, tecnicas de inovacao viram eventos pontuais sem impacto cultural.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Loop do habito (Charles Duhigg), cue-routine-reward, habito keystonia, identidade vs. resultado (James Clear), ritual como sinal de pertencimento cultural.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-10-exp-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">&#128203;</span>
+            <div><span class="font-medium">Rituais diarios e semanais</span><span class="text-neutral-500 text-sm ml-2">- Nano-habitos de inovacao</span></div>
+          </button>
+          <div id="t2-10-exp-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Exemplos de rituais de curta cadencia: daily standup de inovacao (o que observei hoje no mercado?), weekly news digest de tendencias, "experiment of the week" compartilhado.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Rituais diarios/semanais sao os mais poderosos porque a repeticao alta cria o habito mais rapido. Micro-rituais de 5 minutos por dia constroem mentalidade mais que workshops trimestrais.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Morning pages (Julia Cameron), "one thing" diario, weekly digest de sinais fracos, peer learning de 15 minutos, "what surprised you this week?" como opening ritual.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-10-exp-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">&#127968;</span>
+            <div><span class="font-medium">Rituais mensais e trimestrais</span><span class="text-neutral-500 text-sm ml-2">- Ciclos de revisao e aposta</span></div>
+          </button>
+          <div id="t2-10-exp-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Rituais de maior cadencia: shark tank interno mensal (times pitcham experimentos para verba), hackathon trimestral, "innovation showcase" para celebrar aprendizados (nao so sucessos).</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Rituais mensais/trimestrais criam marcos de prestacao de contas e visibilidade para iniciativas de inovacao. Sem marcos, projetos morrem silenciosamente sem que ninguem perceba.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Shark tank interno, hackathon corporativo, innovation showcase, "failure resume" como ritual de aprendizado, portfolio review trimestral de experimentos.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-10-exp-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">&#127881;</span>
+            <div><span class="font-medium">Celebrar fracassos: reencuadrando o erro</span><span class="text-neutral-500 text-sm ml-2">- Trophy rooms de aprendizado</span></div>
+          </button>
+          <div id="t2-10-exp-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Rituais que institucionalizam o aprendizado com o fracasso: "Failure Resume" (CV de erros), "FuckUp Nights" corporativas, galeria de experimentos fracassados com licao documentada.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Cultura que pune o erro publico cria aversao ao risco. Rituais de celebracao do fracasso informado sinalizam que errar rapido e barato e uma competencia valorizada, nao uma fraqueza.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">FuckUp Nights (movimento global), failure resume (Tim Harford), "heroic failure" award (Tata Group), blameless culture, licao extraida como entregavel do fracasso.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-10-exp-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">&#128101;</span>
+            <div><span class="font-medium">Rituais de co-criacao com clientes</span><span class="text-neutral-500 text-sm ml-2">- O cliente dentro da empresa</span></div>
+          </button>
+          <div id="t2-10-exp-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Rituais que trazem o cliente para dentro do processo de inovacao: "customer for a day", painel de clientes residentes, customer advisory board mensal, usability lab aberto.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Empresas que interagem com clientes reais mais de uma vez por mes tomam decisoes de produto com 2-3x mais precisao (Bain &amp; Company, 2022). O contato e o antidoto para o "torre de marfim".</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Customer for a day, customer advisory board (CAB), continuous discovery (Teresa Torres), "follow me home" (IDEO), co-criacao vs. pesquisa tradicional.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t2-10-exp-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">&#128293;</span>
+            <div><span class="font-medium">Sustentando rituais a longo prazo</span><span class="text-neutral-500 text-sm ml-2">- O inimigo e a rotina</span></div>
+          </button>
+          <div id="t2-10-exp-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-blue-400 font-semibold">O que e:</span><p class="text-neutral-300 text-sm">Como evitar que rituais de inovacao virem burocracia: rotacao de facilitadores, evolucao do formato a cada 6 meses, metricas de vitalidade do ritual e criterios de descontinuacao.</p></div>
+              <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Rituais que nao evoluem viram obrigacoes sem proposito. A diferenca entre uma cultura viva de inovacao e um programa morto e a capacidade de renovar o proprio ritual periodicamente.</p></div>
+              <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Ritual lifecycle (lancamento, maturidade, renovacao, descontinuacao), "ritual health check", rotacao de stewards, energia como metrica de vitalidade, sunset criteria.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-2-10.html" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- NAVEGACAO -->
+    <div class="flex justify-between items-center mt-10 pt-8 border-t border-dark-600">
+      <a href="../trilha1/index.html" class="flex items-center space-x-2 px-5 py-3 bg-dark-700 hover:bg-dark-600 rounded-lg transition-colors text-sm">
+        <span>&#8592;</span>
+        <span>Trilha 1: Fundamentos</span>
+      </a>
+      <a href="../trilha3/index.html" class="flex items-center space-x-2 px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors text-sm">
+        <span>Trilha 3: Avancado</span>
+        <span>&#8594;</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 mt-16 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao &mdash; Trilha 2: Tecnicas e Ferramentas &bull;
+         <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+
+      moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+        if (exp !== explanation) {
+          exp.classList.remove('active');
+          const btn = exp.closest('.topic-item').querySelector('button[aria-expanded]');
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      const isActive = explanation.classList.toggle('active');
+      button.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+    }
+
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+      html.classList.add('dark');
+    }
+    themeToggle.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

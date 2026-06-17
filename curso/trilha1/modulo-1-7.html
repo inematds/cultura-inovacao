@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Metricas de Inovacao | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC: bloqueante, antes de tudo -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides - OBRIGATORIO */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha emerald) */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5, 150, 105, 0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5, 150, 105, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas e linhas divisorias mais suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG pulse animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-emerald-400">Trilha 1</a>
+      <span>/</span>
+      <span class="text-emerald-400">Modulo 1.7</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">
+        MODULO 1.7
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">📊 Metricas de Inovacao</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Medir inovacao e necessario — mas medir errado transforma o processo em teatro de numeros. Aprenda a distinguir metricas que revelam da metricas que enganam.</p>
+
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">45</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEUDO -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="1-7" data-inema-track="1">
+
+    <h2 class="text-2xl font-bold mb-6">Conteudo detalhado</h2>
+
+    <!-- TOPICO 1: Por que medir inovacao e os perigos de medir errado -->
+    <section id="topico-1" data-inema-topic="modulo-1-7#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🎯 Por que Medir Inovacao — e os Perigos de Medir Errado</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-7-t1-p1">
+        "O que nao e medido nao e gerenciado" e uma das frases mais mal aplicadas em inovacao. Quando aplicada sem criterio, ela leva organizacoes a medir o que e facil de medir — e a otimizar o indicador em vez do resultado real. A inovacao vira teatro: muitos Post-Its, poucos produtos. Muitos projetos aprovados, pouca receita nova.
+      </p>
+
+      <!-- Conceito Principal -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">💎</span> A Paradoxo da Medicao
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-7-t1-p2">
+          Inovacao precisa ser medida para ser gerenciada — mas a medicao errada a destroi antes que ela produza valor. A <strong class="text-emerald-400">Lei de Goodhart</strong> diz: "Quando uma medida se torna um alvo, ela deixa de ser uma boa medida." No contexto de inovacao, isso significa que equipes comecarao a maximizar o indicador — nao o resultado.
+        </p>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Meta: 10 ideias por mes</strong> → equipe gera 10 ideias ruins so pra bater a meta</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Meta: 5 experimentos rodados</strong> → equipes rodam experimentos triviais sem hipotese real</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span><strong>Meta: ROI de 300% em inovacao</strong> → so projetos de baixo risco (e baixa inovacao) sao aprovados</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Dados de Pesquisa -->
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> O Problema na Pratica
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong>94%</strong> dos executivos estao insatisfeitos com o desempenho em inovacao da empresa (McKinsey, 2023) — mas a maioria continua medindo numero de projetos e orcamento investido</li>
+          <li><strong>72%</strong> das empresas nao conseguem conectar iniciativas de inovacao a resultados de negocio mensuravelmente (Deloitte Insights, 2022)</li>
+          <li>Organizacoes que medem <strong>resultados de inovacao</strong> (nao so atividades) tem 2,4x mais chance de entregar crescimento acima da media do setor (BCG, 2024)</li>
+        </ul>
+      </div>
+
+      <!-- Grid medir certo vs medir errado -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Medir para Aprender</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Metricas ligadas a hipoteses de valor, nao a atividades</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Metricas que mudam comportamentos quando mudam</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Portfolio de metricas (input + output + outcome)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Tolerancia a metricas negativas (aprendizado)</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Medir para Mostrar</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Contar o numero de ideias geradas como proxy de inovacao</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Medir orcamento investido em vez de valor gerado</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Dashboard bonito para o board sem uso operacional</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Metricas que nunca mostram resultado ruim</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Dica Pratica -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Teste das Metricas
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-7-t1-p3">Para cada metrica que voce usa, pergunte: "Se esse numero cair pela metade, o que faremos diferente?" Se a resposta for "nada" — a metrica e decorativa. Se alguem na empresa ja otimizou o numero sem melhorar o resultado — a metrica virou teatro.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 2: Metricas de Input vs Output vs Outcome -->
+    <section id="topico-2" data-inema-topic="modulo-1-7#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">⚖️ Metricas de Input vs. Output vs. Outcome</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-7-t2-p1">
+        O erro mais comum em medicao de inovacao e confundir os tres niveis: o que colocamos no processo (input), o que o processo produz (output) e o que o output gera de valor real (outcome). Organizacoes que medem so inputs acreditam que estao inovando porque investiram. As que medem so outputs acreditam que estao inovando porque produziram. Apenas quem mede outcomes sabe se realmente inovou.
+      </p>
+
+      <!-- SVG: Diagrama Input > Output > Outcome -->
+      <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 800 320" class="w-full h-auto" role="img" aria-label="Diagrama de tres niveis de metricas de inovacao: Input (recursos e esforco), Output (entregas do processo) e Outcome (valor real gerado no negocio e cliente)">
+          <defs>
+            <linearGradient id="m1-7-grad-em" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/>
+            </linearGradient>
+            <linearGradient id="m1-7-grad-cy" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#0ea5e9"/>
+            </linearGradient>
+            <linearGradient id="m1-7-grad-wh" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#e5e7eb"/><stop offset="1" stop-color="#9ca3af"/>
+            </linearGradient>
+            <filter id="m1-7-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m1-7-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <circle cx="1.3" cy="1.3" r="1.3" fill="#10b981" opacity="0.10"/>
+            </pattern>
+            <marker id="m1-7-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#34d399" opacity="0.7"/>
+            </marker>
+          </defs>
+
+          <!-- Background -->
+          <rect x="0" y="0" width="800" height="320" fill="url(#m1-7-grid)"/>
+
+          <!-- INPUT box -->
+          <rect x="30" y="80" width="200" height="160" rx="14" fill="#0e2018" stroke="#34d399" stroke-width="2" opacity="0.9"/>
+          <text x="130" y="115" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="600" font-size="16">INPUT</text>
+          <text x="130" y="137" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="11">Orcamento P&amp;D</text>
+          <text x="130" y="154" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="11">Horas dedicadas</text>
+          <text x="130" y="171" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="11">Numero de projetos</text>
+          <text x="130" y="188" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="11">Headcount em inovacao</text>
+          <text x="130" y="210" text-anchor="middle" fill="#6ee7b7" font-family="Inter,sans-serif" font-size="10" font-style="italic">Necessario, nao suficiente</text>
+
+          <!-- Seta INPUT → OUTPUT -->
+          <line x1="232" y1="160" x2="288" y2="160" stroke="#34d399" stroke-width="1.8" opacity="0.5" marker-end="url(#m1-7-arrow)"/>
+
+          <!-- OUTPUT box (ciano - destaque) -->
+          <g filter="url(#m1-7-glow)">
+            <rect x="296" y="60" width="210" height="200" rx="14" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+          </g>
+          <text x="401" y="98" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="16">OUTPUT</text>
+          <text x="401" y="120" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Prototipos gerados</text>
+          <text x="401" y="137" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Experimentos rodados</text>
+          <text x="401" y="154" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Patentes depositadas</text>
+          <text x="401" y="171" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Features lancadas</text>
+          <text x="401" y="188" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">Taxa de aprovacao de ideias</text>
+          <text x="401" y="215" text-anchor="middle" fill="#7dd3fc" font-family="Inter,sans-serif" font-size="10" font-style="italic">Confundido com resultado real</text>
+
+          <!-- Seta OUTPUT → OUTCOME -->
+          <line x1="508" y1="160" x2="562" y2="160" stroke="#34d399" stroke-width="1.8" opacity="0.5" marker-end="url(#m1-7-arrow)"/>
+
+          <!-- OUTCOME box -->
+          <rect x="570" y="80" width="200" height="160" rx="14" fill="#1a1a0e" stroke="#a7f3d0" stroke-width="2" opacity="0.9"/>
+          <text x="670" y="115" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-weight="600" font-size="16">OUTCOME</text>
+          <text x="670" y="137" text-anchor="middle" fill="#d1fae5" font-family="Inter,sans-serif" font-size="11">Receita de novos produtos</text>
+          <text x="670" y="154" text-anchor="middle" fill="#d1fae5" font-family="Inter,sans-serif" font-size="11">Reducao de custo operacional</text>
+          <text x="670" y="171" text-anchor="middle" fill="#d1fae5" font-family="Inter,sans-serif" font-size="11">NPS / satisfacao do cliente</span></text>
+          <text x="670" y="188" text-anchor="middle" fill="#d1fae5" font-family="Inter,sans-serif" font-size="11">Market share ganho</text>
+          <text x="670" y="210" text-anchor="middle" fill="#6ee7b7" font-family="Inter,sans-serif" font-size="10" font-style="italic">O que realmente importa</text>
+
+          <!-- Label inferior -->
+          <text x="400" y="300" text-anchor="middle" fill="#6b7280" font-family="Inter,sans-serif" font-size="11">Erro comum: medir so input e output, ignorar se gerou valor real (outcome)</text>
+        </svg>
+      </div>
+
+      <!-- Detalhamento dos 3 niveis -->
+      <div class="space-y-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-emerald-400 mb-2">🔧 Metricas de Input — o combustivel</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-7-t2-p2">Medem recursos alocados: orcamento de P&D como % da receita, headcount dedicado a inovacao, numero de parcerias com startups e universidades, horas de treinamento em metodologias de inovacao. Sao necessarias para garantir que ha investimento, mas nada garantem sobre resultado. Uma empresa pode gastar milhoes em P&D sem inovar; outra pode inovar com recursos minimos.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-emerald-400 mb-2">📦 Metricas de Output — o que o processo entregou</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-7-t2-p3">Medem o que saiu do processo de inovacao: numero de experimentos rodados, MVPs lancados, patentes depositadas, features entregues, taxa de conversao de ideias em projetos. Sao mais proximas do resultado, mas ainda podem enganar. Um produto lancado que ninguem usa e output sem outcome. Cem experimentos sem hipotese clara sao atividade sem aprendizado.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-emerald-400 mb-2">🎯 Metricas de Outcome — o valor gerado</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-7-t2-p4">Medem o impacto real no negocio e no cliente: receita originada por produtos lancados nos ultimos 3 anos (revenue from new products), reducao de custo por processo inovado, variacao de NPS atribuivel a melhorias, Market share ganho em novos segmentos. Sao as mais dificieis de medir (exigem atribuicao causal) mas as unicas que validam se a inovacao realmente aconteceu.</p>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 3: Funil de Inovacao e Taxas de Conversao -->
+    <section id="topico-3" data-inema-topic="modulo-1-7#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🔽 Funil de Inovacao e Taxas de Conversao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-7-t3-p1">
+        O funil de inovacao mapeia como ideias se transformam em produtos — e quantas morrem em cada etapa. Nao e pessimismo: e realismo. Uma taxa de conversao de 1% na ultima etapa pode ser saudavel se as etapas anteriores filtraram bem. O problema e quando nao se conhece as taxas — ou quando nenhuma ideia chega ao fim.
+      </p>
+
+      <!-- Dados de Pesquisa -->
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> Benchmarks de Funil
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li>A regra empirica de Clayton Christensen: para cada <strong>3.000 ideias brutas</strong>, chegam ~<strong>125</strong> a avaliacao formal, ~<strong>9</strong> a desenvolvimento, ~<strong>4</strong> a testes com cliente e apenas <strong>1.7</strong> lanca com sucesso comercial</li>
+          <li>Empresas que medem sistematicamente o funil lancam produtos com <strong>30% mais frequencia</strong> e abandonam iniciativas fracas <strong>40% mais cedo</strong> (Stage-Gate International, 2023)</li>
+          <li>O gargalo mais comum e a transicao de <strong>ideia → prototipo</strong>: burocracia de aprovacao mata mais inovacoes do que falta de ideias</li>
+        </ul>
+      </div>
+
+      <!-- Etapas do Funil -->
+      <div class="space-y-3 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4">Etapas do Funil e o que Medir em Cada Uma</h3>
+        <div class="grid grid-cols-1 gap-3">
+          <div class="flex items-center space-x-4 bg-dark-800 rounded-xl border border-dark-600 p-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm">01</div>
+            <div class="flex-1">
+              <div class="flex justify-between items-center mb-1">
+                <h4 class="font-semibold text-white text-sm">Geracao de Ideias</h4>
+                <span class="text-xs text-neutral-500">Taxa: 100% → ~4%</span>
+              </div>
+              <p class="text-neutral-400 text-xs">Medir: volume de ideias submetidas, diversidade de origem (departamentos, hierarquia), ideias por colaborador/mes</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4 bg-dark-800 rounded-xl border border-dark-600 p-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm">02</div>
+            <div class="flex-1">
+              <div class="flex justify-between items-center mb-1">
+                <h4 class="font-semibold text-white text-sm">Triagem e Selecao</h4>
+                <span class="text-xs text-neutral-500">Taxa: ~4% → ~0.3%</span>
+              </div>
+              <p class="text-neutral-400 text-xs">Medir: tempo medio de avaliacao, criterios de selecao documentados, % rejeitadas com feedback, % de ideias de fora do core business</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4 bg-dark-800 rounded-xl border border-dark-600 p-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm">03</div>
+            <div class="flex-1">
+              <div class="flex justify-between items-center mb-1">
+                <h4 class="font-semibold text-white text-sm">Prototipagem e Experimento</h4>
+                <span class="text-xs text-neutral-500">Taxa: ~0.3% → ~0.13%</span>
+              </div>
+              <p class="text-neutral-400 text-xs">Medir: tempo do ciclo ideia→prototipo, custo medio de experimento, % de hipoteses validadas vs. refutadas, velocidade de iteracao</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4 bg-dark-800 rounded-xl border border-dark-600 p-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm">04</div>
+            <div class="flex-1">
+              <div class="flex justify-between items-center mb-1">
+                <h4 class="font-semibold text-white text-sm">Desenvolvimento e Lancamento</h4>
+                <span class="text-xs text-neutral-500">Taxa: ~0.13% → ~0.06%</span>
+              </div>
+              <p class="text-neutral-400 text-xs">Medir: time-to-market, taxa de sucesso pos-lancamento, NPS do produto novo, receita de novos produtos em 12/24 meses</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dica -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">🛠️</span> Diagnostico do Gargalo
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-7-t3-p2">Mapeie onde as ideias morrem. Se a maioria cai na triagem, o problema e criterio de selecao ou falta de sponsorship. Se cai na prototipagem, o problema e recursos ou cultura de experimentacao. Se chega ao lancamento mas nao gera receita, o problema e validacao de mercado insuficiente. O funil e um diagnostico, nao so um funil.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 4: Metricas de Cultura -->
+    <section id="topico-4" data-inema-topic="modulo-1-7#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">🧭 Metricas de Cultura: Seguranca Psicologica, % de Ideias Implementadas e ESAT</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-7-t4-p1">
+        As metricas mais criticas de inovacao nao estao no dashboard financeiro — estao na cultura. Sem cultura propicia, nenhuma metodologia funciona. Mas cultura nao e abstrata: ela pode e deve ser medida. Tres dimensoes sao especialmente reveladoras: a seguranca psicologica da equipe, a taxa real de implementacao de ideias e a satisfacao do empregado com o ambiente de inovacao (ESAT).
+      </p>
+
+      <!-- Conceito Principal - Seguranca Psicologica -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🛡️</span> Como Medir Seguranca Psicologica
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-7-t4-p2">
+          Amy Edmondson (Harvard) desenvolveu a escala padrao de seguranca psicologica — 7 perguntas respondidas em escala Likert por cada membro da equipe. O score medio da equipe e o indicador. Exemplos de perguntas:
+        </p>
+        <ul class="space-y-2 text-neutral-300 text-sm">
+          <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-1">&#8226;</span><span>"Se eu cometer um erro nesta equipe, ele nao sera usado contra mim"</span></li>
+          <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-1">&#8226;</span><span>"Os membros desta equipe sao capazes de trazer problemas e questoes dificeis"</span></li>
+          <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-1">&#8226;</span><span>"Nesta equipe, e seguro arriscar"</span></li>
+          <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-1">&#8226;</span><span>"Minhas habilidades sao valorizadas e utilizadas nesta equipe"</span></li>
+        </ul>
+        <p class="text-neutral-400 text-sm mt-4">Score &lt; 3.5 em escala de 5: zona de perigo — equipe nao vai experimentar. Score &gt; 4.2: zona saudavel para inovacao.</p>
+      </div>
+
+      <!-- Grid metricas de cultura -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🧠</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Seguranca Psicologica</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-7-t4-p3">Medida por survey de Edmondson. Aplicar por equipe (nao agregado — a media da empresa mascara equipes toxicas). Rastrear trimestralmente. Correlacionar com taxa de experimentos da equipe: a correlacao costuma ser forte e revela onde a cultura bloqueia a inovacao.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">💡</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">% de Ideias Implementadas</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-7-t4-p4">Das ideias submetidas ao programa de inovacao, quantas % chegam a implementacao (nao so aprovacao). Uma taxa de 0.5%–2% e saudavel em empresas grandes. Taxa zero significa que o programa de ideias e teatro. Taxa de 30%+ pode indicar que a triagem e frouxa demais — projetos ruins sendo implementados.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">📣</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">ESAT (Employee Satisfaction)</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-7-t4-p5">Versao do NPS para empregados, focada em inovacao: "Em uma escala de 0 a 10, o quanto voce sente que sua empresa apoia e viabiliza inovacao?" Decompor por nivel hierarquico — frontline frequentemente ve a realidade diferente do C-level. Gap grande = problema de implementacao cultural, nao de discurso.</p>
+        </div>
+      </div>
+
+      <!-- Alerta -->
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> Armadilha: Metricas de Cultura Agregadas
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-7-t4-p6">Medir seguranca psicologica ou ESAT como media da empresa inteira esconde o problema. Uma empresa onde 20% das equipes sao altamente inovadoras e 80% sao disfuncionais pode ter score medio "aceitavel". Sempre desagregue por equipe, departamento e nivel hierarquico. A variancia conta tanto quanto a media.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 5: Innovation Accounting e Metricas Acionaveis -->
+    <section id="topico-5" data-inema-topic="modulo-1-7#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">📈 Innovation Accounting (Lean) e Metricas Acionaveis</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-7-t5-p1">
+        Eric Ries, em "The Lean Startup", introduziu o conceito de <strong class="text-emerald-400">innovation accounting</strong>: um sistema de medicao especifico para o contexto de alta incerteza de startups e projetos inovadores, onde as metricas financeiras tradicionais nao se aplicam porque nao ha historico, nao ha receita consolidada e o modelo de negocio ainda esta sendo descoberto.
+      </p>
+
+      <!-- Conceito Principal -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">⚙️</span> Os Tres Passos do Innovation Accounting
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-7-t5-p2">O innovation accounting funciona em tres fases progressivas, cada uma com metricas proprias que refletem o momento do aprendizado:</p>
+        <div class="space-y-3">
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center">1</span>
+            <div>
+              <strong class="text-white">Baseline:</strong>
+              <span class="text-neutral-300 text-sm"> estabelecer o estado atual do produto/servico com metricas reais de comportamento do cliente (nao projecoes). Ex: taxa de retencao semana 1 = 15%, conversion rate atual = 0.8%</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center">2</span>
+            <div>
+              <strong class="text-white">Tuning:</strong>
+              <span class="text-neutral-300 text-sm"> rodar experimentos para mover as metricas baseline em direcao ao ideal. Cada experimento tem uma hipotese + metrica de sucesso definida antes. Ex: "A nova onboarding aumentara retencao semana 1 de 15% para 25%"</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center">3</span>
+            <div>
+              <strong class="text-white">Pivot ou Persevere:</strong>
+              <span class="text-neutral-300 text-sm"> se apos ciclos de tuning as metricas nao se movem, os dados indicam que e hora de pivotar (mudar hipotese central) em vez de continuar otimizando o que nao funciona</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metricas Acionaveis vs Reportativas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Metricas Acionaveis</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Ligadas a uma acao especifica que pode ser tomada</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Mudar significa algo diferente sera feito</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Ex: taxa de ativacao em D1 (sugere mudar onboarding)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Ex: % de usuarios que completam passo critico (revela fricao)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Ex: NPS segmentado por cohort de usuarios</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Metricas so Reportativas</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Boas para relatorio, nao para decisao</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Mudar nao indica o que deve mudar no produto</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Ex: numero total de usuarios registrados</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Ex: pageviews agregados no mes</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Ex: "engajamento geral" sem definicao precisa</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Dica Pratica -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">🛠️</span> Teste da Acionabilidade
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-7-t5-p3">Para cada metrica, complete: "Se [metrica] cair de X para Y, nos vamos [acao especifica]." Se nao conseguir completar a frase com uma acao real e concreta — a metrica e reportativa, nao acionavel. Uma boa metrica acionavel e aquela que, quando muda, toda a equipe sabe o que fazer a seguir.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 6: Vanity Metrics e Teatro de Numeros -->
+    <section id="topico-6" data-inema-topic="modulo-1-7#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">🎭 Vanity Metrics e Teatro de Numeros — o que Evitar</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-7-t6-p1">
+        Vanity metrics — o termo foi popularizado por Eric Ries — sao metricas que fazem voce parecer bem para o board sem revelar nada sobre saude real do negocio ou progresso real da inovacao. Sao numeros que sempre sobem, nunca indicam problema e nunca levam a decisoes. Teatro de numeros e quando toda a organizacao sabe que as metricas sao vazias, mas continua reportando-as porque e o que o C-level quer ver.
+      </p>
+
+      <!-- Conceito Principal -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔍</span> Anatomia de uma Vanity Metric
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-7-t6-p2">
+          Uma vanity metric tem tres caracteristicas identificaveis: (1) ela <strong class="text-emerald-400">sempre cresce</strong> ou raramente cai, independente do que a empresa faz bem ou mal; (2) ela <strong class="text-emerald-400">nao tem denominador</strong> — e um numero absoluto sem contexto (1.000 downloads vs. 1.000 downloads / 10.000 visitantes = 10% de conversao — este segundo ja e acionavel); (3) ela <strong class="text-emerald-400">nao diferencia cohorts</strong> — agrega todos os usuarios como se fossem iguais.
+        </p>
+        <ul class="space-y-2 text-neutral-300 text-sm">
+          <li class="flex items-start space-x-2"><span class="text-red-400 mt-1">&#8226;</span><span><strong>"Temos 100.000 usuarios registrados"</strong> — sem saber quantos usam ativamente a plataforma</span></li>
+          <li class="flex items-start space-x-2"><span class="text-red-400 mt-1">&#8226;</span><span><strong>"Geramos 500 ideias no hackathon"</strong> — sem saber quantas foram testadas ou implementadas</span></li>
+          <li class="flex items-start space-x-2"><span class="text-red-400 mt-1">&#8226;</span><span><strong>"Investimos R$ 5M em inovacao"</strong> — sem correlacionar com receita ou aprendizado gerado</span></li>
+          <li class="flex items-start space-x-2"><span class="text-red-400 mt-1">&#8226;</span><span><strong>"Treinamos 2.000 funcionarios em design thinking"</strong> — sem medir mudanca de comportamento</span></li>
+        </ul>
+      </div>
+
+      <!-- Timeline: Como o Teatro se Instala -->
+      <div class="space-y-4 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-2">Como o Teatro de Numeros se Instala</h3>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold text-sm">1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600">
+            <h4 class="font-semibold text-white text-sm mb-1">Pressao por resultados visiveis</h4>
+            <p class="text-neutral-400 text-sm">Lideranca quer ver "inovacao acontecendo". Area de inovacao seleciona metricas que crescem facilmente para mostrar progresso.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold text-sm">2</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600">
+            <h4 class="font-semibold text-white text-sm mb-1">As metricas viram metas</h4>
+            <p class="text-neutral-400 text-sm">O que era indicador se torna objetivo. Equipes passam a otimizar o numero em vez do resultado. Goodhart's Law em acao.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold text-sm">3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600">
+            <h4 class="font-semibold text-white text-sm mb-1">Ceticismo silencioso</h4>
+            <p class="text-neutral-400 text-sm">Todos sabem que os numeros sao vazios, mas ninguem fala. A cultura de seguranca psicologica deteriora. Inovadores reais saem — ou param de se expor.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold text-sm">4</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600">
+            <h4 class="font-semibold text-white text-sm mb-1">Ruptura (ou stagnacao)</h4>
+            <p class="text-neutral-400 text-sm">Crise de mercado expoem o vazio das metricas. Ou a empresa estagma enquanto concorrentes que mediram certo evoluiram.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid: O que medir em vez disso -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Vanity Metrics Comuns</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Numero de usuarios registrados (sem DAU/MAU)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Total de ideias submetidas (sem taxa de implementacao)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Orcamento de inovacao em $ absolutos</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Numero de treinamentos realizados</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Downloads / pageviews sem conversao</span></li>
+          </ul>
+        </div>
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Alternativas Acionaveis</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>DAU/MAU ratio (engajamento real)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>% de ideias chegando a prototipo e a lancamento</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>ROI de inovacao (receita nova / orcamento investido)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Mudanca de comportamento pos-treinamento (survey 90d)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Taxa de retencao e LTV de produtos novos</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Dica Final -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Regra de Ouro
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-7-t6-p3">Antes de adotar qualquer metrica de inovacao, pergunte: "Esta metrica poderia mostrar que estamos indo mal?" Se a resposta for nao — e uma vanity metric. Metricas honestas mostram tanto o positivo quanto o negativo. E so metricas honestas constroem cultura de inovacao real.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- RESUMO DO MODULO -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Medir errado e pior que nao medir</strong>
+              <span class="text-neutral-400"> - A Lei de Goodhart garante que qualquer metrica que vira meta perde seu poder de indicador. Cuidado com o que voce otimiza</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Input → Output → Outcome</strong>
+              <span class="text-neutral-400"> - Construa um portfolio equilibrado dos tres niveis. Metricas so de input ou output nao provam que inovacao aconteceu</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">O funil revela o gargalo</strong>
+              <span class="text-neutral-400"> - Medir taxas de conversao entre etapas mostra onde as ideias morrem e o que precisar mudar na cultura ou no processo</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Cultura tambem e mensuravel</strong>
+              <span class="text-neutral-400"> - Seguranca psicologica (escala de Edmondson), % de ideias implementadas e ESAT por equipe sao metricas criticas que a maioria ignora</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Innovation accounting (Lean)</strong>
+              <span class="text-neutral-400"> - Baseline → Tuning → Pivot ou Persevere. Para contextos de alta incerteza, metricas de comportamento do cliente substituem projecoes financeiras</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Vanity metrics destroem a cultura</strong>
+              <span class="text-neutral-400"> - Numeros que so crescem e nunca revelam problema sao sinalizadores de teatro. Uma boa metrica pode mostrar que as coisas vao mal</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-emerald-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">2.1 - Design Thinking — a proxima trilha comeca com a metodologia que coloca o usuario no centro do processo de inovacao</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="../trilha2/modulo-2-1.html" class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors">
+            2.1 - Design Thinking &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

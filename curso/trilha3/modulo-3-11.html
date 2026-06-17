@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Futuro da Inovacao | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha purple) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a>
+      <span>/</span>
+      <span class="text-purple-400">Modulo 3.11</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MODULO 3.11</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🔮 Futuro da Inovacao</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Megatendencias que redesenham o jogo, o novo perfil do profissional inovador, etica como vantagem competitiva, antifragilidade de Taleb e o mapa pratico para voce agir amanha. O encerramento que conecta tudo que voce aprendeu.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">55</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Avancado</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Estrategia</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="3-11" data-inema-track="3">
+
+    <!-- TOPICO 1: Megatendencias -->
+    <section id="topico-1" data-inema-topic="modulo-3-11#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🌐 Megatendencias que Redesenham a Inovacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-11-t1-p1">
+        Inovar sem enxergar as forcas macro e como remar sem saber a corrente. Quatro megatendencias estao redefinindo o terreno de jogo nos proximos 10-20 anos: <strong class="text-purple-400">Inteligencia Artificial generalista</strong>, <strong class="text-purple-400">sustentabilidade e ESG como imperativo de mercado</strong>, <strong class="text-purple-400">descentralizacao de poder e infraestrutura</strong> e <strong class="text-purple-400">longevidade humana como novo mercado</strong>. Ignorar qualquer uma delas e construir estrategia sobre areia.
+      </p>
+
+      <!-- SVG Futurista: 4 megatendencias fan-out -->
+      <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-4 mb-8 overflow-hidden">
+        <svg id="m3-11-svg-mega" role="img" aria-label="Diagrama das 4 megatendencias: IA, ESG, Descentralizacao e Longevidade convergindo para o futuro da inovacao" viewBox="0 0 720 320" class="w-full h-auto" font-family="Inter,sans-serif">
+          <defs>
+            <linearGradient id="m3-11-grad-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a855f7" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.7"/>
+            </linearGradient>
+            <linearGradient id="m3-11-grad-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.7"/>
+            </linearGradient>
+            <filter id="m3-11-glow">
+              <feGaussianBlur stdDeviation="1.8" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <pattern id="m3-11-grid" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+              <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#a855f7" stroke-width="0.2" opacity="0.3"/>
+            </pattern>
+          </defs>
+          <!-- fundo grid -->
+          <rect width="720" height="320" fill="#0d0a1a"/>
+          <rect width="720" height="320" fill="url(#m3-11-grid)"/>
+          <!-- no central -->
+          <rect x="285" y="120" width="150" height="80" rx="12" fill="#1a1230" stroke="#a855f7" stroke-width="2" filter="url(#m3-11-glow)"/>
+          <text x="360" y="155" text-anchor="middle" fill="#c084fc" font-size="11" font-weight="600">FUTURO DA</text>
+          <text x="360" y="172" text-anchor="middle" fill="#c084fc" font-size="11" font-weight="600">INOVACAO</text>
+          <text x="360" y="188" text-anchor="middle" fill="#9d8ccc" font-size="9">convergencia</text>
+          <!-- no IA -->
+          <rect x="30" y="30" width="140" height="60" rx="10" fill="#1a1230" stroke="#c084fc" stroke-width="1.5" class="wf-a"/>
+          <text x="100" y="55" text-anchor="middle" fill="#c084fc" font-size="12" font-weight="600">&#129504; IA Generalista</text>
+          <text x="100" y="72" text-anchor="middle" fill="#9d8ccc" font-size="9">AGI + modelos multimodais</text>
+          <line x1="170" y1="60" x2="285" y2="145" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+          <!-- no ESG -->
+          <rect x="30" y="230" width="140" height="60" rx="10" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.5" class="wf-a"/>
+          <text x="100" y="255" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="600">&#127807; ESG</text>
+          <text x="100" y="272" text-anchor="middle" fill="#7cb9d8" font-size="9">net-zero + biodiversidade</text>
+          <line x1="170" y1="260" x2="285" y2="185" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+          <!-- no Descentralizacao -->
+          <rect x="550" y="30" width="140" height="60" rx="10" fill="#1a1230" stroke="#c084fc" stroke-width="1.5" class="wf-a"/>
+          <text x="620" y="52" text-anchor="middle" fill="#c084fc" font-size="11" font-weight="600">&#127758; Descentralizacao</text>
+          <text x="620" y="69" text-anchor="middle" fill="#9d8ccc" font-size="9">web3 + IA distribuida</text>
+          <line x1="550" y1="60" x2="435" y2="145" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+          <!-- no Longevidade -->
+          <rect x="550" y="230" width="140" height="60" rx="10" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.5" class="wf-a"/>
+          <text x="620" y="255" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="600">&#129489; Longevidade</text>
+          <text x="620" y="272" text-anchor="middle" fill="#7cb9d8" font-size="9">healthspan + silver economy</text>
+          <line x1="550" y1="260" x2="435" y2="185" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+          <!-- rotulo -->
+          <text x="360" y="310" text-anchor="middle" fill="#6b7280" font-size="9">Megatendencias 2025-2040 — INEMA.CLUB ilustrativo</text>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h3 class="text-base font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">🤖</span> IA Generalista</h3>
+          <p class="text-neutral-300 text-sm leading-relaxed">O McKinsey Global Institute estima que a IA pode adicionar US$ 4,4 trilhoes por ano a economia global. Modelos multimodais (texto, codigo, imagem, audio) estao comprimindo o tempo entre ideia e prototipo de meses para horas. Inovar sem fluencia em IA em 2027 sera como inovar sem internet em 2005.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h3 class="text-base font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">🌱</span> Sustentabilidade e ESG</h3>
+          <p class="text-neutral-300 text-sm leading-relaxed">Regulamentacoes como CSRD (Europa) e ISSB (global) ja tornam o relatorio ESG obrigatorio para grandes empresas. Segundo a BCG, empresas com forte desempenho ESG entregam retorno ao acionista 5-7% superior na ultima decada. Sustentabilidade deixou de ser PR e virou restricao de mercado — e fonte de inovacao em modelo de negocio.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h3 class="text-base font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">🌐</span> Descentralizacao</h3>
+          <p class="text-neutral-300 text-sm leading-relaxed">IA na borda (edge AI), computacao distribuida e infraestrutura aberta estao quebrando o monopolio dos grandes centros de dados. DAOs (Decentralized Autonomous Organizations) experimentos com governanca sem hierarquia. O poder de inovar esta migando de labs corporativos para comunidades globais de individuos.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h3 class="text-base font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">🧬</span> Longevidade</h3>
+          <p class="text-neutral-300 text-sm leading-relaxed">A populacao acima de 60 anos chegara a 2,1 bilhoes em 2050 (ONU). A silver economy vale hoje US$ 15 trilhoes globais. Empresas como Longevity Corp e o projeto Altos Labs (Jeff Bezos) apostam em reverter o envelhecimento biologico. Mercados inteiros — saude preventiva, mobilidade, aprendizado continuo — serao reinventados.</p>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Futuro do trabalho e da inovacao -->
+    <section id="topico-2" data-inema-topic="modulo-3-11#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">💼 Futuro do Trabalho e da Inovacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-11-t2-p1">
+        O World Economic Forum projeta que <strong class="text-purple-400">85 milhoes de empregos serao deslocados</strong> e 97 milhoes de novos papeis serao criados ate 2025. O que muda nao e so o que fazemos — e como inovamos. Times menores e mais autonomos, colaboracao assincrona global e co-criacao humano-IA estao redefinindo o que significa "trabalhar em inovacao".
+      </p>
+
+      <!-- Timeline: evolucao do trabalho de inovacao -->
+      <h2 class="text-2xl font-bold mb-6">Conteudo detalhado</h2>
+
+      <div class="space-y-4 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm">2000</div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 flex-1">
+            <h4 class="font-semibold text-white mb-1">Era dos Labs de Inovacao</h4>
+            <p class="text-neutral-300 text-sm">Grandes empresas criam centros de inovacao isolados. Poucas pessoas "autorizada a inovar". Resultado: teatro de inovacao desconectado do core.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm">2012</div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 flex-1">
+            <h4 class="font-semibold text-white mb-1">Era Agil e dos Times Autonomos</h4>
+            <p class="text-neutral-300 text-sm">Squads, tribos, guilds (Spotify model). Inovacao distribuida em times pequenos com autonomia. Primeiros experimentos de OKRs ligando inovacao a estrategia.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm">2020</div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 flex-1">
+            <h4 class="font-semibold text-white mb-1">Era Remota e Assincrona</h4>
+            <p class="text-neutral-300 text-sm">Pandemia acelera colaboracao distribuida. Ferramentas como Miro, Notion, Loom viram infraestrutura de inovacao. Times globais sem escritorio fixo.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm">2025+</div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 flex-1">
+            <h4 class="font-semibold text-white mb-1">Era da Co-Criacao Humano-IA</h4>
+            <p class="text-neutral-300 text-sm">Agentes de IA executam tarefas rotineiras de discovery e prototipagem. Humanos focam em julgamento, empatia, direcao estrategica. O "inovador" nao e mais quem sabe mais — e quem faz as melhores perguntas.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-base font-semibold text-white mb-4">O Novo Perfil do Profissional de Inovacao</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-purple-500/10 rounded-lg p-3 border border-purple-500/20">
+            <div class="text-purple-400 font-semibold text-sm mb-1">T-shaped + IA fluent</div>
+            <p class="text-xs text-neutral-300">Profundidade em uma area + amplitude cross-funcional + capacidade de trabalhar com e direcionar ferramentas de IA.</p>
+          </div>
+          <div class="bg-purple-500/10 rounded-lg p-3 border border-purple-500/20">
+            <div class="text-purple-400 font-semibold text-sm mb-1">Facilitador sistemico</div>
+            <p class="text-xs text-neutral-300">Menos executor, mais orquestrador. Conecta ecossistemas, traduz entre areas, mantem ritmo de aprendizado do time.</p>
+          </div>
+          <div class="bg-purple-500/10 rounded-lg p-3 border border-purple-500/20">
+            <div class="text-purple-400 font-semibold text-sm mb-1">Aprendiz permanente</div>
+            <p class="text-xs text-neutral-300">Half-life do conhecimento tecnico caiu de 5 anos para 18-24 meses. Quem para de aprender ja esta defasado antes de perceber.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Inovacao responsavel e etica -->
+    <section id="topico-3" data-inema-topic="modulo-3-11#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">⚖️ Inovacao Responsavel e Etica</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-11-t3-p1">
+        "Move fast and break things" funcionou para conquistar mercados — e gerou Cambridge Analytica, vies algoritmico, dark patterns e desinformacao em escala. A proxima onda de inovacao vai exigir <strong class="text-purple-400">responsabilidade como competencia central</strong>, nao como compliance. Empresas que internalizam etica como vantagem competitiva capturam confianca — o recurso mais escasso da economia digital.
+      </p>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-5">
+          <h3 class="text-base font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">✅</span> Inovacao Responsavel</h3>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">✓</span><span>Ethics by design: privacidade, inclusao e impacto ambiental incorporados desde o dia 1</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">✓</span><span>Comites de etica de produto com poder de veto real (nao so de aconselhamento)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">✓</span><span>Transparencia algoritmia: usuarios sabem quando interagem com IA e como decisoes sao tomadas</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">✓</span><span>Testes de impacto em grupos vulneraveis antes do lancamento</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h3 class="text-base font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">❌</span> Armadilhas Comuns</h3>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Etica como checklist juridico de final de projeto — quando o custo de mudanca ja e alto</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Greenwashing e social washing: metricas ESG bonitas sem mudanca real de pratica</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Vies em datasets de treinamento de IA perpetuando discriminacao em escala</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Transparencia performatica: politicas longas de privacidade que ninguem le</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-base font-semibold text-white mb-3">Frameworks de Referencia</h3>
+        <div class="space-y-3 text-sm text-neutral-300">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 font-bold w-24 flex-shrink-0">EU AI Act</span>
+            <span>Classificacao de riscos de IA em 4 niveis (proibido / alto / limitado / minimo). Empresas que vendem para a Europa precisam mapear seus sistemas ja.</span>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 font-bold w-24 flex-shrink-0">Responsible AI</span>
+            <span>Microsoft, Google e IBM publicaram principios de IA responsavel (fairness, reliability, privacy, inclusiveness, transparency, accountability). Use como benchmark interno.</span>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 font-bold w-24 flex-shrink-0">B Corp</span>
+            <span>Certificacao B Corp avalia impacto social e ambiental de forma auditavel. 6.000+ empresas em 80 paises. Virou sinal de qualidade para talentos e investidores.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> Etica como Moat</h3>
+        <p class="text-neutral-300 text-sm">Confianca e o novo monopolio. Edelman Trust Barometer 2024: apenas 46% da populacao global confia em empresas. As que constroem confianca sistematicamente — transparencia, responsabilidade, impacto positivo — constroem um moat que concorrentes nao conseguem copiar rapidamente porque e cultural, nao tecnologico.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Velocidade, resiliencia e antifragilidade -->
+    <section id="topico-4" data-inema-topic="modulo-3-11#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">⚡ Velocidade, Resiliencia e Antifragilidade</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-11-t4-p1">
+        Nassim Nicholas Taleb distingue tres tipos de sistemas em seu livro <em>Antifragil</em> (2012): fragil (quebra com o choque), resiliente (resiste e volta ao estado original) e <strong class="text-purple-400">antifragil (melhora com o choque)</strong>. Organizacoes inovadoras do seculo XXI precisam ser antifrageis — nao apenas sobreviver a turbulencia, mas usar as crises como combustivel de crescimento.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-base font-semibold text-purple-400 mb-4">A Trilogia de Taleb Aplicada a Inovacao</h3>
+        <div class="space-y-3">
+          <div class="flex items-start space-x-4">
+            <span class="flex-shrink-0 w-20 text-center px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs font-bold">FRAGIL</span>
+            <div>
+              <p class="text-sm text-neutral-300"><strong class="text-white">Empresa com plano unico, hierarquia rigida, budget de inovacao em silo.</strong> Uma crise corta o programa. Uma troca de CEO mata a iniciativa. Nenhum aprendizado sobrevive.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <span class="flex-shrink-0 w-20 text-center px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs font-bold">RESILIENTE</span>
+            <div>
+              <p class="text-sm text-neutral-300"><strong class="text-white">Empresa que sobrevive a crise e volta ao normal.</strong> Boa gestao de risco, buffer financeiro, equipes estabilizadas. Mas nao aprende com o choque — retorna ao ponto de partida.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <span class="flex-shrink-0 w-20 text-center px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs font-bold">ANTIFRAGIL</span>
+            <div>
+              <p class="text-sm text-neutral-300"><strong class="text-white">Empresa que emerge mais forte da crise.</strong> Usa o choque para eliminar ineficiencias, testar hipoteses em condicoes reais, recrutar talentos que fugiram dos frageis, e ganhar market share de concorrentes paralisados.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-5">
+          <h3 class="text-base font-semibold text-purple-400 mb-3">Como Construir Antifragilidade</h3>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">✓</span><span>Optionalidade: manter varios apostas pequenas em vez de um grande bet (portfolio de inovacao)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">✓</span><span>Postmortem sistemico: cada falha vira aprendizado documentado e compartilhado</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">✓</span><span>Stress testing deliberado: simular crises antes delas chegarem (ex: war gaming)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">✓</span><span>Slack intencional: reservar 20% de capacidade para exploracao nao planejada</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h3 class="text-base font-semibold text-red-400 mb-3">Sinais de Fragilidade</h3>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Inovacao depende de uma pessoa (key-person risk no programa)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Budget de inovacao e o primeiro a cortar em crise (sinal de que nao e estrategico)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Cultura que pune erros impede experimentacao em momentos de alta turbulencia</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span>Plano rigido de 5 anos em ambiente VUCA — falsa seguranca</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800/50 rounded-xl border border-dark-600 p-5 mb-6">
+        <h3 class="text-sm font-semibold text-neutral-400 mb-2">Caso: Amazon durante a crise de 2008</h3>
+        <p class="text-neutral-300 text-sm">Enquanto concorrentes cortavam investimento, a Amazon acelerou o AWS — lancado em 2006, ainda deficitario. A crise fordcou clientes a buscar reducao de custo de TI. O AWS saiu de experimento para negocio principal. Em 2024, gera mais de 60% do lucro operacional da empresa. <strong class="text-purple-400">Antifragilidade classica: usou o choque como trampolim.</strong></p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Como se preparar -->
+    <section id="topico-5" data-inema-topic="modulo-3-11#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">🧭 Como se Preparar: Skills, Mindset e Aprendizado Continuo</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-11-t5-p1">
+        Conhecimento e perecivel. Mindset e duravel. A preparacao para o futuro da inovacao nao e colecionar certificados — e construir <strong class="text-purple-400">sistemas pessoais de aprendizado</strong> que se atualizam continuamente. O MIT Sloan Management Review aponta que as habilidades mais criticas para lideres de inovacao em 2025 sao pensamento sistemico, fluencia em dados e IA, e gestao de ambiguidade — nenhuma delas vem de um curso unico.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-base font-semibold text-white mb-4">Stack de Habilidades do Inovador do Futuro</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Hard Skills</h4>
+            <ul class="space-y-1 text-xs text-neutral-300">
+              <li>• Fluencia em IA (prompt engineering, agentes)</li>
+              <li>• Analise de dados basica (SQL, Python ou ferramentas no-code)</li>
+              <li>• Financas de inovacao (unit economics, ROI, valuacao)</li>
+              <li>• Design e prototipagem rapida</li>
+              <li>• Gestao de produto (discovery a delivery)</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Soft Skills</h4>
+            <ul class="space-y-1 text-xs text-neutral-300">
+              <li>• Tolerancia a ambiguidade e conforto com incerteza</li>
+              <li>• Facilitacao e co-criacao</li>
+              <li>• Comunicacao de visao (storytelling estrategico)</li>
+              <li>• Empatia sistemica (usuarios + stakeholders + sistemas)</li>
+              <li>• Resiliencia cognitiva e autorregulacao</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Meta-Skills</h4>
+            <ul class="space-y-1 text-xs text-neutral-300">
+              <li>• Aprender a aprender (learning agility)</li>
+              <li>• Pensar em sistemas (nao em silos)</li>
+              <li>• Questionar pressupostos (first principles)</li>
+              <li>• Conectar pontos entre dominios diferentes</li>
+              <li>• Gerenciar a propria atencao e energia</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-base font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Sistema de Aprendizado Continuo (SLA)</h3>
+        <p class="text-neutral-300 text-sm mb-3">Um SLA pessoal e uma rotina estruturada que garante atualizacao constante sem depender de motivacao pontual. Componentes sugeridos:</p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div class="bg-dark-800/60 rounded-lg p-3 text-center">
+            <div class="text-primary font-bold text-lg">15min</div>
+            <div class="text-xs text-neutral-400">Leitura diaria (newsletter, artigo, paper)</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-3 text-center">
+            <div class="text-primary font-bold text-lg">1h/sem</div>
+            <div class="text-xs text-neutral-400">Experimento pratico (build, teste, deploy)</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-3 text-center">
+            <div class="text-primary font-bold text-lg">1x/mes</div>
+            <div class="text-xs text-neutral-400">Conversa com alguem fora da sua bolha</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-3 text-center">
+            <div class="text-primary font-bold text-lg">1x/trim</div>
+            <div class="text-xs text-neutral-400">Revisao do seu mapa de competencias</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-base font-semibold text-white mb-3">Fontes de Aprendizado de Alto Sinal-Ruido</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-neutral-300">
+          <div>
+            <h4 class="text-xs font-semibold text-purple-400 mb-2">Publicacoes</h4>
+            <ul class="space-y-1 text-xs">
+              <li>• MIT Sloan Management Review</li>
+              <li>• HBR (Harvard Business Review)</li>
+              <li>• McKinsey Quarterly</li>
+              <li>• Nature + Science (para tendencias de base)</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xs font-semibold text-purple-400 mb-2">Livros Essenciais (proxima fase)</h4>
+            <ul class="space-y-1 text-xs">
+              <li>• <em>Antifragil</em> — Nassim Taleb</li>
+              <li>• <em>The Innovator's Dilemma</em> — Clayton Christensen</li>
+              <li>• <em>Thinking in Systems</em> — Donella Meadows</li>
+              <li>• <em>The Coming Wave</em> — Mustafa Suleyman</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Sintese — do conhecimento a acao -->
+    <section id="topico-6" data-inema-topic="modulo-3-11#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">🚀 Sintese: do Conhecimento a Acao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-11-t6-p1">
+        Voce percorreu tres trilhas, 18 modulos e mais de 100 topicos. Nao faltam conceitos — o que diferencia quem transforma e quem apenas sabe e <strong class="text-purple-400">a decisao de agir</strong>. Conhecimento sem execucao e apenas entretenimento intelectual. Esta secao e o mapa para seu primeiro passo concreto depois de fechar esta pagina.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-base font-semibold text-purple-400 mb-4">A Grande Sintese: 5 Principios que Unem as 3 Trilhas</h3>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-purple-500/30 text-purple-400 font-bold text-sm">1</span>
+            <div>
+              <h4 class="text-sm font-semibold text-white mb-1">Cultura precede processo</h4>
+              <p class="text-xs text-neutral-300">Nenhum framework (Design Thinking, Lean, OKR) funciona em solo cultural ruim. Trilha 1 vem antes das outras por uma razao: sem psicologia de seguranca e lideranca que protege a experimentacao, as ferramentas sao decoracao.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-purple-500/30 text-purple-400 font-bold text-sm">2</span>
+            <div>
+              <h4 class="text-sm font-semibold text-white mb-1">Hipotese > Plano</h4>
+              <p class="text-xs text-neutral-300">Em todo o curso repetimos: substitua certeza por testabilidade. Um business case detalhado de 40 paginas para um produto nao existente e ficcao. Uma hipotese clara com criterio de refutacao e ciencia.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-purple-500/30 text-purple-400 font-bold text-sm">3</span>
+            <div>
+              <h4 class="text-sm font-semibold text-white mb-1">Velocidade de aprendizado e a unica metrica invariante</h4>
+              <p class="text-xs text-neutral-300">Em ambientes VUCA, o que importa nao e velocidade de execucao — e velocidade de aprendizado. Times que aprendem mais rapido que os concorrentes vencem no longo prazo, independente do tamanho.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-purple-500/30 text-purple-400 font-bold text-sm">4</span>
+            <div>
+              <h4 class="text-sm font-semibold text-white mb-1">Inovacao e esporte coletivo</h4>
+              <p class="text-xs text-neutral-300">Intraempreendedores precisam de programa. Programas precisam de governanca. Governanca precisa de lideranca. Comunidades de pratica multiplicam o impacto. Nenhum genio individual substitui o sistema.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-purple-500/30 text-purple-400 font-bold text-sm">5</span>
+            <div>
+              <h4 class="text-sm font-semibold text-white mb-1">O futuro pertence a quem age com curiosidade e responsabilidade</h4>
+              <p class="text-xs text-neutral-300">As megatendencias sao forcas poderosas demais para ignorar e rapidas demais para esperar o momento perfeito. A resposta certa e curiosidade ativa — explorar, testar, errar rapido — combinada com responsabilidade sobre o impacto gerado.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-base font-semibold text-white mb-4">Seu Primeiro Passo: Plano de 30 Dias</h3>
+        <p class="text-sm text-neutral-300 mb-4">Escolha UM de cada linha. Nao tente fazer tudo. Um passo concreto vale mais que dez planos:</p>
+        <div class="space-y-3">
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 text-xs font-bold text-purple-400 w-20">Semana 1</span>
+            <div class="text-sm text-neutral-300">Mapeie o problema real que voce quer resolver com inovacao no seu contexto. Escreva uma hipotese no formato "Acreditamos que [usuario] precisa de [solucao] para [resultado]. Saberemos que estamos certos quando [metrica]."</div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 text-xs font-bold text-purple-400 w-20">Semana 2</span>
+            <div class="text-sm text-neutral-300">Fale com 5 pessoas que vivem o problema. Nao venda — escute. Use o protocolo de entrevista de Jobs to Be Done (Modulo 2.5). Documente as surpresas.</div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 text-xs font-bold text-purple-400 w-20">Semana 3</span>
+            <div class="text-sm text-neutral-300">Construa o menor prototipo possivel que teste a hipotese central. Pode ser um slide, uma landing page, um mockup no Figma ou uma conversa estruturada.</div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 text-xs font-bold text-purple-400 w-20">Semana 4</span>
+            <div class="text-sm text-neutral-300">Teste com 3-5 usuarios reais. Documente o que funcionou, o que surpreendeu e o que precisa mudar. Compartilhe os aprendizados com alguem que pode apoiar o proximo ciclo.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> A Unica Coisa que Separa Quem Sabe de Quem Transforma</h3>
+        <p class="text-neutral-300 text-sm">Nao e talento. Nao e recursos. Nao e o momento certo. E a decisao de comecar antes de estar pronto. Toda grande inovacao comeou com alguem que tinha menos informacao do que voce tem agora e decidiu agir assim mesmo. O conhecimento que voce construiu aqui e a base. O proximo passo e seu.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">🏆</span> Voce Concluiu a Trilha
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">4 megatendencias que redesenham o jogo</strong>
+              <span class="text-neutral-400"> - IA, ESG, descentralizacao e longevidade nao sao hype — sao forcas estruturais</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">O inovador do futuro e facilitador sistemico e aprendiz permanente</strong>
+              <span class="text-neutral-400"> - Nao quem sabe mais, mas quem aprende mais rapido</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Etica e o novo moat competitivo</strong>
+              <span class="text-neutral-400"> - Confianca leva decadas para construir e horas para destruir</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Antifragilidade (Taleb) e o padrao-ouro organizacional</strong>
+              <span class="text-neutral-400"> - Optionalidade, postmortem sistemico e slack intencional constroem sistemas que melhoram com crises</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">O proximo passo e seu: 30 dias, uma hipotese, acao</strong>
+              <span class="text-neutral-400"> - Todo o conhecimento deste curso culmina em uma decisao de comecar</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-purple-400 mb-2">Concluindo o Curso:</h3>
+          <p class="text-neutral-300">Voce completou a Trilha 3 — Avancado. Parabens pela jornada de 3 trilhas e 18 modulos de Cultura de Inovacao. Agora e hora de agir.</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="../../index.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">
+            Concluir o Curso &#10003;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

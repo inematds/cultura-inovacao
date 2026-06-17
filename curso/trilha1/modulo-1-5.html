@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Papel da Lideranca | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC: bloqueante, antes de tudo -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides - OBRIGATORIO */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha emerald) */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5, 150, 105, 0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5, 150, 105, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas e linhas divisorias mais suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG pulse animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-emerald-400">Trilha 1</a>
+      <span>/</span>
+      <span class="text-emerald-400">Modulo 1.5</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center space-x-3 mb-4">
+        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-sm font-semibold rounded-full border border-emerald-500/30">MODULO 1.5</span>
+        <span class="px-3 py-1 bg-dark-700 text-neutral-400 text-sm rounded-full">Trilha Fundamentos</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#129517; Papel da Lideranca</h1>
+      <p class="text-neutral-300 text-lg mb-8 max-w-2xl">O lider como jardineiro da cultura: o que lideres fazem — ou deixam de fazer — que faz a inovacao prosperar ou murchar.</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-dark-800/60 rounded-xl p-4 border border-dark-600">
+          <div class="text-2xl font-bold text-emerald-400">6</div>
+          <div class="text-sm text-neutral-400 mt-1">Topicos</div>
+        </div>
+        <div class="bg-dark-800/60 rounded-xl p-4 border border-dark-600">
+          <div class="text-2xl font-bold text-emerald-400">~35</div>
+          <div class="text-sm text-neutral-400 mt-1">Minutos</div>
+        </div>
+        <div class="bg-dark-800/60 rounded-xl p-4 border border-dark-600">
+          <div class="text-2xl font-bold text-emerald-400">Inter</div>
+          <div class="text-sm text-neutral-400 mt-1">Nivel</div>
+        </div>
+        <div class="bg-dark-800/60 rounded-xl p-4 border border-dark-600">
+          <div class="text-2xl font-bold text-emerald-400">&#128218;</div>
+          <div class="text-sm text-neutral-400 mt-1">Leitura</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="1-5" data-inema-track="1">
+
+    <h2 class="text-2xl font-bold mb-6">Conteudo detalhado</h2>
+
+    <!-- TOPICO 1: Lider como jardineiro vs heroi -->
+    <section id="topico-1" data-inema-topic="modulo-1-5#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#127807; Lider como Jardineiro, nao como Heroi</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-5-t1-p1">
+        Durante decadas, o imaginario corporativo celebrou o lider-heroi: aquele que chega com as respostas prontas, salva a empresa no momento critico e carrega sozinho o peso da transformacao. No contexto de inovacao, essa figura e nao apenas ineficaz — ela e ativamente <strong class="text-emerald-400">destrutiva</strong>. Quando o lider monopoliza as solucoes, a equipe aprende a esperar permissao em vez de experimentar.
+      </p>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-5-t1-p2">
+        A metafora do jardineiro, popularizada por Stanley McChrystal em <em>Team of Teams</em> (2015) e amplificada por Ed Catmull (Pixar) e Satya Nadella (Microsoft), inverte a logica: o lider prepara o solo, remove pedras, garante luz e agua — mas nao forca a planta a crescer. Ele cria as condicoes para que o talento colectivo floresca sem microgerir cada galho.
+      </p>
+
+      <!-- SVG futurista: metafora jardineiro vs heroi -->
+      <svg viewBox="0 0 700 220" class="w-full h-auto mb-6 rounded-xl" role="img" aria-label="Diagrama: lider-heroi centraliza decisoes vs lider-jardineiro distribui autonomia" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="m1-5-grad-hero" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#dc2626" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#7f1d1d" stop-opacity="0.15"/>
+          </linearGradient>
+          <linearGradient id="m1-5-grad-garden" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#10b981" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#064e3b" stop-opacity="0.15"/>
+          </linearGradient>
+          <filter id="m1-5-glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <pattern id="m1-5-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#374151" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <!-- fundo grid -->
+        <rect width="700" height="220" fill="url(#m1-5-grid)"/>
+        <!-- painel heroi -->
+        <rect x="20" y="20" width="300" height="180" rx="12" fill="url(#m1-5-grad-hero)" stroke="#dc2626" stroke-width="1" stroke-opacity="0.4"/>
+        <text x="170" y="50" text-anchor="middle" fill="#f87171" font-size="12" font-weight="700" font-family="Inter, sans-serif">LIDER-HEROI</text>
+        <!-- no central heroi -->
+        <circle cx="170" cy="95" r="22" fill="#dc2626" fill-opacity="0.7" filter="url(#m1-5-glow)"/>
+        <text x="170" y="100" text-anchor="middle" fill="#fff" font-size="10" font-family="Inter, sans-serif">LIDER</text>
+        <!-- nos subordinados apontando para heroi -->
+        <circle cx="80" cy="155" r="12" fill="#7f1d1d" fill-opacity="0.7" class="wf-a"/>
+        <circle cx="130" cy="170" r="12" fill="#7f1d1d" fill-opacity="0.7" class="wf-a"/>
+        <circle cx="170" cy="165" r="12" fill="#7f1d1d" fill-opacity="0.7" class="wf-a"/>
+        <circle cx="210" cy="170" r="12" fill="#7f1d1d" fill-opacity="0.7" class="wf-a"/>
+        <circle cx="260" cy="155" r="12" fill="#7f1d1d" fill-opacity="0.7" class="wf-a"/>
+        <line x1="80" y1="143" x2="155" y2="112" stroke="#dc2626" stroke-width="1.5" stroke-opacity="0.5" marker-end="url(#m1-5-arr-red)"/>
+        <line x1="130" y1="158" x2="158" y2="113" stroke="#dc2626" stroke-width="1.5" stroke-opacity="0.5"/>
+        <line x1="170" y1="153" x2="170" y2="118" stroke="#dc2626" stroke-width="1.5" stroke-opacity="0.5"/>
+        <line x1="210" y1="158" x2="182" y2="113" stroke="#dc2626" stroke-width="1.5" stroke-opacity="0.5"/>
+        <line x1="260" y1="143" x2="185" y2="112" stroke="#dc2626" stroke-width="1.5" stroke-opacity="0.5"/>
+        <text x="170" y="205" text-anchor="middle" fill="#f87171" font-size="10" font-family="Inter, sans-serif">Decisoes centralizadas — gargalo</text>
+        <!-- painel jardineiro -->
+        <rect x="380" y="20" width="300" height="180" rx="12" fill="url(#m1-5-grad-garden)" stroke="#10b981" stroke-width="1" stroke-opacity="0.4"/>
+        <text x="530" y="50" text-anchor="middle" fill="#34d399" font-size="12" font-weight="700" font-family="Inter, sans-serif">LIDER-JARDINEIRO</text>
+        <!-- no central jardineiro menor, ao centro -->
+        <circle cx="530" cy="95" r="16" fill="#10b981" fill-opacity="0.5" filter="url(#m1-5-glow)"/>
+        <text x="530" y="100" text-anchor="middle" fill="#fff" font-size="9" font-family="Inter, sans-serif">LIDER</text>
+        <!-- nos autonomos ao redor -->
+        <circle cx="440" cy="60" r="14" fill="#064e3b" fill-opacity="0.9" stroke="#38bdf8" stroke-width="1.2" class="wf-a"/>
+        <circle cx="530" cy="45" r="14" fill="#064e3b" fill-opacity="0.9" stroke="#38bdf8" stroke-width="1.2" class="wf-a"/>
+        <circle cx="620" cy="60" r="14" fill="#064e3b" fill-opacity="0.9" stroke="#38bdf8" stroke-width="1.2" class="wf-a"/>
+        <circle cx="450" cy="155" r="14" fill="#064e3b" fill-opacity="0.9" stroke="#38bdf8" stroke-width="1.2" class="wf-a"/>
+        <circle cx="610" cy="155" r="14" fill="#064e3b" fill-opacity="0.9" stroke="#38bdf8" stroke-width="1.2" class="wf-a"/>
+        <!-- linhas bidirecionais -->
+        <line x1="444" y1="73" x2="520" y2="87" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.6"/>
+        <line x1="530" y1="59" x2="530" y2="79" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.6"/>
+        <line x1="616" y1="73" x2="540" y2="87" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.6"/>
+        <line x1="457" y1="142" x2="520" y2="106" stroke="#38bdf8" stroke-width="1.2" stroke-opacity="0.6"/>
+        <line x1="603" y1="142" x2="540" y2="106" stroke="#38bdf8" stroke-width="1.2" stroke-opacity="0.6"/>
+        <!-- conexoes laterais entre nos (rede) -->
+        <line x1="464" y1="155" x2="596" y2="155" stroke="#38bdf8" stroke-width="1" stroke-dasharray="4 3" stroke-opacity="0.4"/>
+        <text x="530" y="205" text-anchor="middle" fill="#34d399" font-size="10" font-family="Inter, sans-serif">Autonomia distribuida — rede resiliente</text>
+      </svg>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-5">
+          <h3 class="text-base font-semibold text-emerald-400 mb-3">&#10003; O que jardineiros fazem</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li>Criam condicoes para que ideias germinem</li>
+            <li>Removem obstaculos burocraticos do caminho</li>
+            <li>Fazem perguntas em vez de dar ordens</li>
+            <li>Celebram tentativas, mesmo as que falham</li>
+            <li>Distribuem credito e amplificam vozes da equipe</li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h3 class="text-base font-semibold text-red-400 mb-3">&#10007; O que herois fazem (e destroem)</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li>Monopolizam decisoes e solucoess</li>
+            <li>Constroem culto a personalidade em torno de si</li>
+            <li>Punem o erro em vez de aprender com ele</li>
+            <li>Exigem concordancia em vez de debate critico</li>
+            <li>Criam dependencia que paralisa na ausencia deles</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-4">
+        <h3 class="text-sm font-semibold text-primary mb-2">&#128161; Dado de pesquisa</h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m1-5-t1-p3">Estudo da Gallup (2023) com 122 mil equipes mostrou que o comportamento do gestor direto responde por <strong class="text-primary">70% da variancia</strong> no engajamento dos colaboradores — mais do que qualquer politica corporativa ou beneficio financeiro. O jardineiro ou o heroi sao, literalmente, o ambiente da equipe.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 2: Seguranca psicologica (Edmondson) -->
+    <section id="topico-2" data-inema-topic="modulo-1-5#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#128994; Comportamentos que Criam Seguranca Psicologica</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-5-t2-p1">
+        Amy Edmondson, professora da Harvard Business School, cunhou o termo <strong class="text-emerald-400">seguranca psicologica</strong> nos anos 1990 ao estudar equipes medicas: times onde as enfermeiras reportavam <em>mais</em> erros eram na verdade <em>melhores</em> — porque o ambiente permitia falar abertamente. Seu livro <em>The Fearless Organization</em> (2018) sistematizou como lideres criam ou destroem essa seguranca dia a dia.
+      </p>
+
+      <!-- Timeline dos comportamentos -->
+      <div class="mb-6">
+        <h3 class="text-base font-semibold text-emerald-400 mb-4">Os 4 comportamentos fundadores (Edmondson, 2018)</h3>
+        <div class="space-y-4">
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 flex flex-col items-center">
+              <div class="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-sm">A</div>
+              <div class="w-px flex-1 bg-dark-600 mt-1"></div>
+            </div>
+            <div class="pb-4">
+              <h4 class="font-semibold text-neutral-100 mb-1">Enquadrar o trabalho como problema de aprendizado</h4>
+              <p class="text-neutral-300 text-sm" data-inema-block="m1-5-t2-p2">Apresentar tarefas como territorios incertos que exigem colaboracao — nao como execucao de um plano ja fixado. Frases como "Precisamos da perspectiva de todos para acertar" sinalizam que contribuicoes sao bem-vindas.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 flex flex-col items-center">
+              <div class="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-sm">B</div>
+              <div class="w-px flex-1 bg-dark-600 mt-1"></div>
+            </div>
+            <div class="pb-4">
+              <h4 class="font-semibold text-neutral-100 mb-1">Reconhecer a propria falibilidade</h4>
+              <p class="text-neutral-300 text-sm" data-inema-block="m1-5-t2-p3">Lideres que dizem "posso estar errado — me corrija se vir algo que eu nao vejo" abrem espaco para dissidencia construtiva. Satya Nadella aplicou isso sistematicamente ao assumir a Microsoft em 2014, revertendo uma cultura de silos e medo.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 flex flex-col items-center">
+              <div class="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-sm">C</div>
+              <div class="w-px flex-1 bg-dark-600 mt-1"></div>
+            </div>
+            <div class="pb-4">
+              <h4 class="font-semibold text-neutral-100 mb-1">Ser acessivel e receptivo</h4>
+              <p class="text-neutral-300 text-sm" data-inema-block="m1-5-t2-p4">Linguagem corporal, disponibilidade e reacoes ao feedback formam o "ambiente emocional" da equipe. Um lider que interrompe, olha o celular durante reunioes ou revida criticas sinaliza que falar e arriscado.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 flex flex-col items-center">
+              <div class="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-sm">D</div>
+            </div>
+            <div class="pb-4">
+              <h4 class="font-semibold text-neutral-100 mb-1">Responder produtivamente ao fracasso</h4>
+              <p class="text-neutral-300 text-sm" data-inema-block="m1-5-t2-p5">A reacao do lider ao primeiro erro define a cultura para os proximos anos. Investigar causas, extrair aprendizado e proteger quem errou de boa-fe sao sinais inequivocos de que experimentar e seguro.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5 mb-4">
+        <h3 class="text-sm font-semibold text-blue-400 mb-2">&#128202; Projeto Aristoteles — Google (2016)</h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m1-5-t2-p6">O Google analisou 180 equipes internas por 2 anos. O fator numero 1 que diferenciava equipes de alto desempenho? <strong class="text-blue-400">Seguranca psicologica</strong>. Nao talentos individuais, nem recursos, nem composicao de senioridade. Times onde as pessoas sentiam que podiam arriscar sem humilhacao entregavam mais, inovavam mais e retinham talentos por mais tempo.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 3: Modelar vulnerabilidade -->
+    <section id="topico-3" data-inema-topic="modulo-1-5#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#129309; Modelar Vulnerabilidade e Admitir os Proprios Erros</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-5-t3-p1">
+        Brene Brown, pesquisadora da Universidade de Houston, passou duas decadas estudando coragem e lideranca. Sua conclusao mais contraintuitiva: <strong class="text-emerald-400">vulnerabilidade nao e fraqueza — e o ponto de partida da coragem e da inovacao</strong>. Lideres que admitem incerteza e erro modelam para a equipe que e seguro fazer o mesmo. O oposto — o lider que nunca erra e nunca muda de ideia — cria uma cultura de fingimento.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-5">
+          <h3 class="text-base font-semibold text-emerald-400 mb-3">&#10003; Praticas de vulnerabilidade autentica</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li>"Eu errei nessa decisao — aqui esta o que aprendi"</li>
+            <li>Compartilhar dilemmas em voz alta antes de decidir</li>
+            <li>Pedir feedback dos subordinados de forma explicita e regular</li>
+            <li>Mudar de posicao publicamente quando os dados mudam</li>
+            <li>Reconhecer quando nao sabe a resposta</li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h3 class="text-base font-semibold text-red-400 mb-3">&#10007; Sinais de cultura de fingimento</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li>Lider que nunca revisita decisoes passadas</li>
+            <li>Reunioes onde todo mundo concorda com o chefe</li>
+            <li>Erros que "desaparecem" sem aprendizado documentado</li>
+            <li>Cultura de "nao trazer problemas sem solucao"</li>
+            <li>Feedback 360 com perguntas que ninguem responde honestamente</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="text-neutral-300 mb-4 leading-relaxed" data-inema-block="m1-5-t3-p2">
+        A Pixar e um dos casos mais documentados de vulnerabilidade estrutural na lideranca. Ed Catmull criou o <strong class="text-emerald-400">Braintrust</strong> — reunioes onde diretores apresentavam versoes inacabadas de filmes para criticas brutalmente honestas de colegas. A regra: o feedback nao e vinculante. O diretor nao e obrigado a seguir nenhuma sugestao. Mas ele <em>precisa</em> ouvir. Resultado: 14 filmes consecutivos acima de 97% no Rotten Tomatoes entre 1995 e 2010.
+      </p>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-4">
+        <h3 class="text-sm font-semibold text-primary mb-2">&#128161; O paradoxo da confianca</h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m1-5-t3-p3">Pesquisa de Zenger e Folkman (Harvard Business Review, 2019) com mais de 87 mil lideres mostrou que admitir erros <strong class="text-primary">aumenta</strong> a percepcao de competencia e confianca — nao diminui. O comportamento que lideres mais temem (parecer infalivel = ser respeitado) e exatamente o que corroi a credibilidade ao longo do tempo.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 4: Proteger o espaco -->
+    <section id="topico-4" data-inema-topic="modulo-1-5#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#128274; Proteger o Espaco: Tempo, Recursos e Ar para Experimentar</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-5-t4-p1">
+        Inovacao nao acontece nos intervalos da operacao — ela precisa de espaco explicito, alocado e protegido. O papel do lider aqui e duplo: <strong class="text-emerald-400">abrir esse espaco</strong> e <strong class="text-emerald-400">defender ele contra as urgencias do dia a dia</strong>. Sem protecao ativa, o operacional sempre vai devorar o experimental. A tirania do urgente mata o importante.
+      </p>
+
+      <!-- Mini-cards de praticas reais -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4">
+          <div class="text-2xl mb-2">&#8987;</div>
+          <h4 class="font-semibold text-emerald-400 text-sm mb-2">Tempo alocado</h4>
+          <p class="text-neutral-400 text-xs">Google "20% time" gerou Gmail, Google Maps e Google News. 3M reserva 15% do tempo de engenheiros para projetos proprios desde 1948 — origem do Post-it.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4">
+          <div class="text-2xl mb-2">&#128176;</div>
+          <h4 class="font-semibold text-emerald-400 text-sm mb-2">Orcamento protegido</h4>
+          <p class="text-neutral-400 text-xs">Amazon tem "two-pizza teams" com orcamento proprio. Jeff Bezos bloqueava cortes em projetos de longo prazo mesmo sob pressao de resultados trimestrais — AWS nasceu assim em 2003.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4">
+          <div class="text-2xl mb-2">&#128736;</div>
+          <h4 class="font-semibold text-emerald-400 text-sm mb-2">Infraestrutura de experimento</h4>
+          <p class="text-neutral-400 text-xs">Netflix tem cultura de "chaos engineering" — times tem autonomia para derrubar sistemas em producao para testar resiliencia. O lider protege essa pratica contra o impulso de zerar o risco.</p>
+        </div>
+      </div>
+
+      <p class="text-neutral-300 mb-4 leading-relaxed" data-inema-block="m1-5-t4-p2">
+        O conceito de <strong class="text-emerald-400">ambidestria organizacional</strong> (O'Reilly e Tushman, 2004) formaliza isso: empresas precisam operar dois motores simultaneamente — <em>exploitation</em> (otimizar o que existe) e <em>exploration</em> (inventar o que vira). O lider e o unico que consegue alocar recursos entre os dois sem deixar o operacional destruir o exploratorio.
+      </p>
+
+      <div class="bg-dark-800/50 rounded-xl border border-dark-600 p-5 mb-4">
+        <h3 class="text-sm font-semibold text-neutral-300 mb-3">Como proteger o espaco na pratica</h3>
+        <div class="space-y-2">
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-0.5 flex-shrink-0">&#10003;</span>
+            <span class="text-neutral-300 text-sm">Bloquear agenda recorrente para projetos exploratorios — nao "quando sobrar tempo"</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-0.5 flex-shrink-0">&#10003;</span>
+            <span class="text-neutral-300 text-sm">Criar metricas de inovacao separadas das metricas operacionais</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-0.5 flex-shrink-0">&#10003;</span>
+            <span class="text-neutral-300 text-sm">Dizer "nao" a demandas que invadem o espaco de experimentacao</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-0.5 flex-shrink-0">&#10003;</span>
+            <span class="text-neutral-300 text-sm">Comunicar ao time que o espaco e sagrado — e manter essa promessa</span>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 5: De dar respostas a fazer perguntas -->
+    <section id="topico-5" data-inema-topic="modulo-1-5#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#10067; De Dar Respostas a Fazer Perguntas</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-5-t5-p1">
+        Michael Marquardt, em <em>Leading with Questions</em> (2014), argumenta que a transicao mais profunda que um lider pode fazer e parar de ser a pessoa com respostas e tornar-se a pessoa com perguntas. Isso nao e fraqueza — e a reconhecia de que em ambientes complexos e incertos, o lider raramente tem acesso a toda informacao relevante. As perguntas certas desbloqueiam o saber distribuido da equipe.
+      </p>
+
+      <!-- Grid comparativo de frases -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h3 class="text-base font-semibold text-red-400 mb-3">&#10007; Lider que da respostas</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm font-mono">
+            <li class="bg-dark-800/50 px-3 py-2 rounded-lg">"A solucao e fazer X."</li>
+            <li class="bg-dark-800/50 px-3 py-2 rounded-lg">"Ja tentamos isso antes. Nao funciona."</li>
+            <li class="bg-dark-800/50 px-3 py-2 rounded-lg">"Deixa comigo, eu resolvo."</li>
+            <li class="bg-dark-800/50 px-3 py-2 rounded-lg">"Voces precisam focar em X."</li>
+          </ul>
+        </div>
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-5">
+          <h3 class="text-base font-semibold text-emerald-400 mb-3">&#10003; Lider que faz perguntas</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm font-mono">
+            <li class="bg-dark-800/50 px-3 py-2 rounded-lg">"O que voces acham que causou isso?"</li>
+            <li class="bg-dark-800/50 px-3 py-2 rounded-lg">"O que ainda nao tentamos?"</li>
+            <li class="bg-dark-800/50 px-3 py-2 rounded-lg">"O que voce precisaria para resolver isso?"</li>
+            <li class="bg-dark-800/50 px-3 py-2 rounded-lg">"Se nao houvesse restricoes, o que fariam?"</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="text-neutral-300 mb-4 leading-relaxed" data-inema-block="m1-5-t5-p2">
+        A tecnica do <strong class="text-emerald-400">coaching conversacional</strong> — onde o lider suprime a urgencia de dar respostas e mantem a pergunta aberta por mais tempo — e uma das mais dificeis de aprender porque vai contra o instinto de quem chegou ao topo sendo a pessoa com respostas. Edgar Schein chamou isso de <em>humble inquiry</em>: a pratica de fazer perguntas genuinas a partir de curiosidade real, nao como tecnica manipuladora.
+      </p>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-4">
+        <h3 class="text-sm font-semibold text-primary mb-2">&#128161; Perguntas de ouro para inovacao</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+          <div class="bg-dark-800/60 px-3 py-2 rounded-lg text-neutral-300 text-sm">"Por que fazemos assim desde sempre?"</div>
+          <div class="bg-dark-800/60 px-3 py-2 rounded-lg text-neutral-300 text-sm">"O que o cliente realmente quer — nao o que pediu?"</div>
+          <div class="bg-dark-800/60 px-3 py-2 rounded-lg text-neutral-300 text-sm">"Se falhassemos, qual seria a causa mais provavel?"</div>
+          <div class="bg-dark-800/60 px-3 py-2 rounded-lg text-neutral-300 text-sm">"O que uma empresa iniciante faria nessa situacao?"</div>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 6: Armadilhas -->
+    <section id="topico-6" data-inema-topic="modulo-1-5#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#9888;&#65039; Armadilhas: Microgestao, Efeito HiPPO e Matar Ideias por Medo</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-5-t6-p1">
+        Mesmo lideres bem-intencionados destroem inovacao sem perceber. As tres armadilhas mais documentadas sao a microgestao, o efeito HiPPO e o reflexo de matar ideias por desconforto. Cada uma opera de forma diferente, mas o resultado e o mesmo: a equipe aprende que inovar e arriscado e para de tentar.
+      </p>
+
+      <!-- Alerta microgestao -->
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">&#128269;</span> Armadilha 1: Microgestao
+        </h3>
+        <p class="text-neutral-300 text-sm mb-3" data-inema-block="m1-5-t6-p2">A microgestao nao nasce de malicia — nasce de ansiedade. O lider microgestor tem medo de que a equipe erre e, ao tentar prevenir erros, elimina precisamente a autonomia que gera inovacao. Estudos da Gallup mostram que colaboradores microgerenciados tem 28% menos probabilidade de propor novas ideias.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <h4 class="text-red-400 text-xs font-semibold mb-2">Sinais de microgestao</h4>
+            <ul class="text-neutral-400 text-xs space-y-1">
+              <li>&#8594; Pede atualizacoes multiplas vezes ao dia</li>
+              <li>&#8594; Revisa cada detalhe antes de aprovar</li>
+              <li>&#8594; Nao delega decisoes visivelmente simples</li>
+              <li>&#8594; Refaz o trabalho da equipe "do jeito certo"</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-emerald-400 text-xs font-semibold mb-2">Antidoto</h4>
+            <ul class="text-neutral-400 text-xs space-y-1">
+              <li>&#10003; Definir OKRs claros e soltar o como</li>
+              <li>&#10003; Acordar checkpoints em vez de status continuo</li>
+              <li>&#10003; Tolerar que o resultado seja 80% do ideal</li>
+              <li>&#10003; Reconhecer o medo proprio como fonte do problema</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerta HiPPO -->
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">&#128024;</span> Armadilha 2: Efeito HiPPO
+        </h3>
+        <p class="text-neutral-300 text-sm mb-3" data-inema-block="m1-5-t6-p3">HiPPO = <em>Highest Paid Person's Opinion</em>. O efeito ocorre quando a opiniao de quem tem mais cargo ou salario automaticamente vence qualquer debate, independente de dados ou evidencias. Jeff Bezos nominou o HiPPO como um dos maiores inimigos da inovacao na Amazon — e criou a cultura de "work backwards from the customer" como antidoto sistematico.</p>
+        <div class="bg-dark-800/50 rounded-lg p-4">
+          <h4 class="text-sm font-semibold text-neutral-300 mb-2">Como o HiPPO mata inovacao</h4>
+          <div class="grid grid-cols-3 gap-2 text-center text-xs">
+            <div class="bg-red-900/30 rounded-lg p-3 border border-red-500/20">
+              <div class="text-red-400 font-bold mb-1">FASE 1</div>
+              <div class="text-neutral-400">Lider opina cedo na discussao</div>
+            </div>
+            <div class="bg-red-900/30 rounded-lg p-3 border border-red-500/20">
+              <div class="text-red-400 font-bold mb-1">FASE 2</div>
+              <div class="text-neutral-400">Equipe converge para a opniao do chefe</div>
+            </div>
+            <div class="bg-red-900/30 rounded-lg p-3 border border-red-500/20">
+              <div class="text-red-400 font-bold mb-1">FASE 3</div>
+              <div class="text-neutral-400">Divergencias sao suprimidas — pensamento de grupo</div>
+            </div>
+          </div>
+          <p class="text-neutral-400 text-xs mt-3">Solucao: o lider <strong class="text-emerald-400">fala por ultimo</strong>. Deixa a equipe apresentar perspectivas antes de expor a propria opniao.</p>
+        </div>
+      </div>
+
+      <!-- Alerta matar ideias -->
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">&#128683;</span> Armadilha 3: Matar Ideias por Medo
+        </h3>
+        <p class="text-neutral-300 text-sm mb-3" data-inema-block="m1-5-t6-p4">Frases que parecem inocentes mas destroem inovacao sistematicamente — o que Clayton Christensen chamava de "the innovator's dilemma at the management layer". Cada vez que um lider usa um desses "idea killers", a equipe registra o sinal: <em>nao vale a pena arriscar aqui</em>.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div class="bg-dark-800/60 px-3 py-2 rounded-lg text-red-300 text-sm font-mono">"Sempre fizemos assim"</div>
+          <div class="bg-dark-800/60 px-3 py-2 rounded-lg text-red-300 text-sm font-mono">"Nao e o momento certo"</div>
+          <div class="bg-dark-800/60 px-3 py-2 rounded-lg text-red-300 text-sm font-mono">"Ja tentamos antes e nao funcionou"</div>
+          <div class="bg-dark-800/60 px-3 py-2 rounded-lg text-red-300 text-sm font-mono">"Isso nunca vai ser aprovado la cima"</div>
+          <div class="bg-dark-800/60 px-3 py-2 rounded-lg text-red-300 text-sm font-mono">"Muito arriscado para o momento"</div>
+          <div class="bg-dark-800/60 px-3 py-2 rounded-lg text-red-300 text-sm font-mono">"Voce nao entende a complexidade disso"</div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-4">
+        <h3 class="text-sm font-semibold text-primary mb-2">&#128161; Regra de ouro: o lider que fala primeiro mata a diversidade de opiniao</h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m1-5-t6-p5">Jeff Bezos, Reed Hastings (Netflix) e Steve Jobs em seu segundo periodo na Apple compartilham uma pratica: em decisoes importantes, o lider estrutura o debate, faz perguntas e <strong class="text-primary">fala por ultimo</strong>. Isso nao e passividade — e disciplina. A lideranca que se cala para ouvir e a mais poderosa de todas.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- RESUMO DO MODULO -->
+    <section class="bg-dark-800 rounded-2xl border border-dark-600 p-8 mb-8">
+      <h2 class="text-xl font-bold text-emerald-400 mb-4">Resumo do Modulo 1.5</h2>
+      <div class="space-y-3 mb-6">
+        <div class="flex items-start gap-3">
+          <span class="text-emerald-400 flex-shrink-0 mt-0.5">&#10003;</span>
+          <span class="text-neutral-300">O lider-jardineiro cria condicoes para a inovacao florescer — nao carrega sozinho a solucao</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-emerald-400 flex-shrink-0 mt-0.5">&#10003;</span>
+          <span class="text-neutral-300">Seguranca psicologica (Edmondson) e o fator numero 1 em equipes inovadoras — construida por comportamentos especificos do lider</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-emerald-400 flex-shrink-0 mt-0.5">&#10003;</span>
+          <span class="text-neutral-300">Modelar vulnerabilidade e admitir erros publicamente aumenta — nao diminui — a credibilidade do lider</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-emerald-400 flex-shrink-0 mt-0.5">&#10003;</span>
+          <span class="text-neutral-300">Sem espaco protegido (tempo, orcamento, autonomia), a operacao sempre devora a experimentacao</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-emerald-400 flex-shrink-0 mt-0.5">&#10003;</span>
+          <span class="text-neutral-300">Perguntas desbloqueiam o saber distribuido — dar respostas cria dependencia e inibe a iniciativa</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-emerald-400 flex-shrink-0 mt-0.5">&#10003;</span>
+          <span class="text-neutral-300">Microgestao, efeito HiPPO e "idea killers" destroem inovacao silenciosamente — mesmo sem intencao</span>
+        </div>
+      </div>
+
+      <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+        <h3 class="font-semibold text-emerald-400 mb-2">Proximo Modulo:</h3>
+        <p class="text-neutral-300">1.6 - Barreiras Comuns</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+          &#8592; Voltar para Trilha
+        </a>
+        <a href="modulo-1-6.html" class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors">
+          Proximo Modulo &#8594;
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+      <p class="mt-2">
+        <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTopic(topicId) {
+      const explanation = document.getElementById('exp-' + topicId);
+      if (explanation) explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

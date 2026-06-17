@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Mindset de Crescimento | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC: bloqueante, antes de tudo -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides - OBRIGATORIO */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha emerald) */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5, 150, 105, 0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5, 150, 105, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas e linhas divisorias mais suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG pulse animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-emerald-400">Trilha 1</a>
+      <span>/</span>
+      <span class="text-emerald-400">Modulo 1.4</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">
+        MODULO 1.4
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🌱 Mindset de Crescimento</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">A mentalidade que separa quem inova continuamente de quem para no primeiro obstaculo. Dweck, neuroplasticidade e o "ainda nao" que muda tudo.</p>
+
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">45</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Basico</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Teoria</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEUDO -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="1-4" data-inema-track="1">
+
+    <!-- TOPICO 1: Mindset fixo vs mindset de crescimento -->
+    <section id="topico-1" data-inema-topic="modulo-1-4#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🧠 Mindset Fixo vs Mindset de Crescimento</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t1-p1">
+        Carol Dweck, psicologoa da Universidade de Stanford, passou tres decadas estudando por que algumas pessoas prosperam diante de desafios enquanto outras recuam. Sua conclusao: tudo comeca com uma crenca fundamental sobre a propria inteligencia e capacidade. Ela chamou isso de <strong class="text-emerald-400">mindset</strong> — e identificou dois tipos opostos que moldam profundamente o comportamento humano e organizacional.
+      </p>
+
+      <!-- Diagrama SVG: Mindset Fixo vs Crescimento -->
+      <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 820 420" class="w-full h-auto" role="img" aria-label="Diagrama comparativo: Mindset Fixo (esquerda, neutro) vs Mindset de Crescimento (direita, emerald/ciano). Dois paineis mostram crencas, reacao ao erro e trajetoria resultante">
+          <defs>
+            <linearGradient id="m1-4-grad-em" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/>
+            </linearGradient>
+            <linearGradient id="m1-4-grad-cy" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#0ea5e9"/>
+            </linearGradient>
+            <filter id="m1-4-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m1-4-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+              <circle cx="1.2" cy="1.2" r="1.2" fill="#10b981" opacity="0.10"/>
+            </pattern>
+          </defs>
+
+          <rect x="0" y="0" width="820" height="420" fill="url(#m1-4-grid)"/>
+
+          <!-- Painel Esquerdo: Mindset Fixo -->
+          <rect x="20" y="20" width="370" height="380" rx="16" fill="#26201a" stroke="#9ca3af" stroke-width="2"/>
+          <text x="205" y="58" text-anchor="middle" fill="#e5e7eb" font-family="Inter,sans-serif" font-weight="600" font-size="17">MINDSET FIXO</text>
+          <text x="205" y="78" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="12">"Inteligencia e talento sao inatos"</text>
+
+          <!-- Items mindset fixo -->
+          <rect x="40" y="94" width="330" height="44" rx="8" fill="#1f1a12" stroke="#6b7280" stroke-width="1.4"/>
+          <text x="60" y="114" fill="#9ca3af" font-family="Inter,sans-serif" font-size="12">&#10007;  Evita desafios (pode falhar e parecer burro)</text>
+          <text x="60" y="130" fill="#9ca3af" font-family="Inter,sans-serif" font-size="11">    Desafia = ameaca a identidade</text>
+
+          <rect x="40" y="148" width="330" height="44" rx="8" fill="#1f1a12" stroke="#6b7280" stroke-width="1.4"/>
+          <text x="60" y="168" fill="#9ca3af" font-family="Inter,sans-serif" font-size="12">&#10007;  Desiste diante de obstaculos</text>
+          <text x="60" y="184" fill="#9ca3af" font-family="Inter,sans-serif" font-size="11">    Esforco = sinal de falta de talento</text>
+
+          <rect x="40" y="202" width="330" height="44" rx="8" fill="#1f1a12" stroke="#6b7280" stroke-width="1.4"/>
+          <text x="60" y="222" fill="#9ca3af" font-family="Inter,sans-serif" font-size="12">&#10007;  Ignora feedback critico</text>
+          <text x="60" y="238" fill="#9ca3af" font-family="Inter,sans-serif" font-size="11">    Critica = ataque pessoal</text>
+
+          <rect x="40" y="256" width="330" height="44" rx="8" fill="#1f1a12" stroke="#6b7280" stroke-width="1.4"/>
+          <text x="60" y="276" fill="#9ca3af" font-family="Inter,sans-serif" font-size="12">&#10007;  Sucesso dos outros ameaca</text>
+          <text x="60" y="292" fill="#9ca3af" font-family="Inter,sans-serif" font-size="11">    Comparacao = competicao de valor pessoal</text>
+
+          <!-- Resultado fixo -->
+          <rect x="40" y="316" width="330" height="64" rx="10" fill="#2a1a1a" stroke="#ef4444" stroke-width="1.8"/>
+          <text x="205" y="342" text-anchor="middle" fill="#f87171" font-family="Inter,sans-serif" font-weight="600" font-size="13">Plateau precoce</text>
+          <text x="205" y="362" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="11">Potencial subaproveitado, inovacao bloqueada</text>
+          <text x="205" y="376" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="11">Medo de errar paralisa a experimentacao</text>
+
+          <!-- Painel Direito: Mindset de Crescimento -->
+          <g filter="url(#m1-4-glow)">
+            <rect x="430" y="20" width="370" height="380" rx="16" fill="#0e2018" stroke="url(#m1-4-grad-em)" stroke-width="2"/>
+          </g>
+          <text x="615" y="58" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="600" font-size="17">MINDSET DE CRESCIMENTO</text>
+          <text x="615" y="78" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="12">"Capacidades se desenvolvem com esforco"</text>
+
+          <!-- Items mindset crescimento -->
+          <rect x="450" y="94" width="330" height="44" rx="8" fill="#0a1a12" stroke="#34d399" stroke-width="1.4"/>
+          <text x="470" y="114" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="12">&#10003;  Abraca desafios como oportunidade</text>
+          <text x="470" y="130" fill="#6ee7b7" font-family="Inter,sans-serif" font-size="11">    Desafio = chance de crescer</text>
+
+          <rect x="450" y="148" width="330" height="44" rx="8" fill="#0a1a12" stroke="#34d399" stroke-width="1.4"/>
+          <text x="470" y="168" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="12">&#10003;  Persiste diante de obstaculos</text>
+          <text x="470" y="184" fill="#6ee7b7" font-family="Inter,sans-serif" font-size="11">    Esforco = caminho para maestria</text>
+
+          <rect x="450" y="202" width="330" height="44" rx="8" fill="#0a1a12" stroke="#38bdf8" stroke-width="1.4"/>
+          <text x="470" y="222" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="12">&#10003;  Aprende com criticas e feedback</text>
+          <text x="470" y="238" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">    Critica = dado valioso para ajuste</text>
+
+          <rect x="450" y="256" width="330" height="44" rx="8" fill="#0a1a12" stroke="#38bdf8" stroke-width="1.4"/>
+          <text x="470" y="276" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="12">&#10003;  Inspira-se no sucesso dos outros</text>
+          <text x="470" y="292" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">    Excelencia alheia = modelo e motivacao</text>
+
+          <!-- Resultado crescimento -->
+          <rect x="450" y="316" width="330" height="64" rx="10" fill="#0a2218" stroke="#34d399" stroke-width="2"/>
+          <text x="615" y="342" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="600" font-size="13">Crescimento continuo</text>
+          <text x="615" y="362" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="11">Potencial em expansao, inovacao organica</text>
+          <text x="615" y="376" text-anchor="middle" fill="#a7f3d0" font-family="Inter,sans-serif" font-size="11">Erro = combustivel para o proximo ciclo</text>
+
+          <!-- Seta central -->
+          <line x1="395" y1="210" x2="425" y2="210" stroke="#38bdf8" stroke-width="2.5" opacity="0.7"/>
+          <polygon points="425,204 435,210 425,216" fill="#38bdf8" opacity="0.7"/>
+          <text x="410" y="198" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="10">mudanca</text>
+          <text x="410" y="226" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="10">possivel</text>
+        </svg>
+      </div>
+
+      <!-- Conceito: neurociencia -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🔬</span> A Neurociencia por Tras do Conceito
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-4-t1-p2">
+          O que Dweck identificou comportamentalmente encontrou respaldo na neurociencia: o cerebro humano exibe <strong class="text-emerald-400">neuroplasticidade</strong> — a capacidade de formar novas conexoes neurais ao longo de toda a vida. Cada vez que aprendemos algo novo ou praticamos uma habilidade, sinapses se fortalecem e novos circuitos se formam. A inteligencia nao e um dado fixo de nascimento; e um sistema biologico dinamico que responde ao uso.
+        </p>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span>Estudos de EEG mostraram que individuos com mindset de crescimento exibem maior atividade cerebral ao processar erros — o cerebro literalmente "presta atencao" ao feedback negativo como oportunidade</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span>Pessoas com mindset fixo exibem menos atividade neural apos erros — o cerebro tende a ignorar informacoes que contradizem a autoimagem</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-400 mt-1">&#8226;</span>
+            <span>A propria crenca sobre a plasticidade cerebral influencia o desempenho: estudantes ensinados sobre neuroplasticidade apresentam desempenho superior em matematica em estudos longitudinais</span>
+          </li>
+        </ul>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 2: Como o mindset molda a inovacao -->
+    <section id="topico-2" data-inema-topic="modulo-1-4#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">🚀 Mindset e Inovacao: Medo do Erro vs Experimentacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t2-p1">
+        Inovar exige tentar o que ainda nao foi feito — e portanto exige aceitar que a maioria das tentativas vai falhar. Numa organizacao dominada por mindset fixo, essa realidade e paralisante: cada falha ameaca a reputacao e o valor percebido de quem tenta. O resultado pratico e uma cultura onde <strong class="text-emerald-400">ninguem arrisca porque o custo de errar e alto demais</strong>. A experimentacao morre antes de comecar.
+      </p>
+
+      <!-- Grid: impacto no ciclo de inovacao -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">Org com Mindset Fixo</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Projetos de inovacao sao apresentados como ja "certeiros" — ninguem admite incerteza real</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Post-mortems viram sessoes de culpa, nao de aprendizado</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Ideias radicais sao filtradas antes de chegar a lideranca para "nao fazer feio"</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Pilotos falhos sao escondidos ou minimizados nos relatorios</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">Org com Mindset de Crescimento</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Projetos comecam com hipoteses explicitas e criterios de sucesso/fracasso definidos</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Post-mortems sao rituais celebrados — "o que aprendemos?" e a pergunta central</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Ideias radicais sobem sem filtro; a lideranca espera surpresas</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Fracassos de pilotos sao documentados e compartilhados como ativos de conhecimento</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Dados de Pesquisa -->
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> Impacto Mensuravel do Mindset na Inovacao
+        </h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span>Empresas listadas por seus proprios funcionarios como tendo "cultura de crescimento" geram <strong>34% mais receita de inovacao</strong> (produtos/servicos lancados nos ultimos 3 anos) vs. organizacoes de cultura fixa (Deloitte, 2022)</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span>Em estudos experimentais de Dweck com executivos, grupos ensinados sobre mindset de crescimento propuseram <strong>2,3x mais ideias fora da caixa</strong> em sessoes de ideacao vs. grupos controle</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span><strong>47%</strong> dos profissionais de inovacao apontam "medo de falhar publicamente" como a principal barreira para propor ideias novas (InnoLead Research, 2023)</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Dica Pratica -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Sinal Diagnostico Imediato
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-4-t2-p2">Pergunte ao seu time: "Qual foi o ultimo experimento que voce fez que nao deu certo?" Se ninguem responder em 10 segundos — ou se a resposta for seguida de desculpas — sua organizacao tem um problema de mindset, nao de competencia tecnica. Times que inovam falam de fracassos com tanta naturalidade quanto de sucessos.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 3: O poder do "ainda nao" -->
+    <section id="topico-3" data-inema-topic="modulo-1-4#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">⏳ O Poder do "Ainda Nao" (The Power of Yet)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t3-p1">
+        Em 2014, Dweck deu uma palestra no TED que se tornou uma das mais vistas sobre educacao. O conceito central: uma escola em Chicago tinha substituido a nota de "reprovado" por "ainda nao aprovado". Dois palavrinhas — <em>"ainda nao"</em> — mudaram completamente o sinal enviado ao aluno. Em vez de "voce falhou", o recado passa a ser: <strong class="text-emerald-400">"voce esta no caminho"</strong>. Esse deslocamento de enquadramento tem implicacoes profundas para como organizacoes lidam com erros e desenvolvimento.
+      </p>
+
+      <!-- Conceito Central -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🌱</span> "Ainda Nao" vs "Reprovado": A Psicologia do Enquadramento
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m1-4-t3-p2">
+          Quando alguem ouve "voce nao conseguiu", o significado implicito e: <em>voce nao tem o que e preciso</em>. O passado define o futuro. Quando ouve "voce ainda nao conseguiu", o significado e: <em>voce esta em transito</em>. Existe um caminho. O tempo verbal do "ainda" aponta para frente.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600 text-center">
+            <div class="text-2xl mb-2">📝</div>
+            <div class="text-sm font-semibold text-emerald-400 mb-1">Elogie o processo</div>
+            <div class="text-xs text-neutral-400">Nao "voce e inteligente", mas "voce se dedicou muito a isso"</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600 text-center">
+            <div class="text-2xl mb-2">🔄</div>
+            <div class="text-sm font-semibold text-emerald-400 mb-1">Reencuadre o erro</div>
+            <div class="text-xs text-neutral-400">Nao "falhamos", mas "descobrimos o que nao funciona — proximo passo?"</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600 text-center">
+            <div class="text-2xl mb-2">🎯</div>
+            <div class="text-sm font-semibold text-emerald-400 mb-1">Defina o proximo passo</div>
+            <div class="text-xs text-neutral-400">Todo feedback negativo tem uma pergunta: "o que aprendemos e como ajustamos?"</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline: da nota "F" ao "ainda nao" -->
+      <h3 class="text-lg font-semibold text-emerald-400 mb-4">Como Aplicar o "Ainda Nao" em Contexto Corporativo</h3>
+      <div class="space-y-4 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold text-sm">1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Nas avaliacoes de desempenho</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t3-p3">Substitua "nao atingiu a meta" por "ainda nao atingiu e identificamos dois bloqueios especificos: X e Y. Plano para proximo ciclo: Z." Isso transforma avaliacao de julgamento em planejamento.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold text-sm">2</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Em projetos de inovacao</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t3-p4">O piloto falhou? A linguagem importa: "esse caminho nao funcionou ainda — o que o dado nos diz sobre o proximo experimento?" Mantem a equipe no modo de investigacao, nao no modo de defesa.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <span class="text-emerald-400 font-bold text-sm">3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">No desenvolvimento de pessoas</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t3-p5">Lideres que dizem "voce ainda nao domina isso, mas veja o quanto avancou nos ultimos 90 dias" criam mais motivacao intrinseca do que metas de bonus. A trajetoria visivel e mais motivadora que a recompensa futura.</p>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 4: Erro como dado (Amy Edmondson) -->
+    <section id="topico-4" data-inema-topic="modulo-1-4#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">🔬 Erro como Dado: Falha Inteligente vs Negligente</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t4-p1">
+        Amy Edmondson, professora da Harvard Business School e criadora do conceito de seguranca psicologica, foi alem de Dweck ao distinguir tipos de falha. Nem todo erro e igual: alguns decorrem de negligencia ou falta de atencao; outros sao inevitaveis em sistemas complexos; e outros sao resultados de hipoteses testadas deliberadamente — o que ela chama de <strong class="text-emerald-400">falhas inteligentes</strong>. A cultura que pune todos os erros da mesma forma destroi exatamente o tipo de falha mais valioso para a inovacao.
+      </p>
+
+      <!-- Conceito Principal: tipologia de falhas -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center">
+          <span class="mr-2">🗂️</span> Taxonomia de Edmondson: Tres Tipos de Falha
+        </h3>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-bold">EVITAR</div>
+            <div>
+              <div class="font-semibold text-white mb-1">Falha por Negligencia</div>
+              <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t4-p2">Ocorre quando procedimentos conhecidos nao sao seguidos, quando ha descuido ou quando o conhecimento ja existe e nao foi aplicado. Deve ser investigada, reduzida e tratada com treinamento ou melhoria de processo. Exemplo: falha de controle de qualidade em producao por saltar etapa padrao.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold">ACEITAR</div>
+            <div>
+              <div class="font-semibold text-white mb-1">Falha por Complexidade</div>
+              <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t4-p3">Ocorre em sistemas com multiplas variaveis interagindo de forma imprevista. Ninguem errou — o sistema era simplesmente opaco demais para prever o resultado. Deve ser investigada para aumentar compreensao do sistema, mas nao gera culpa individual. Exemplo: falha em cadeia de suprimentos por combinacao rara de eventos.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">CELEBRAR</div>
+            <div>
+              <div class="font-semibold text-white mb-1">Falha Inteligente</div>
+              <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t4-p4">Ocorre na fronteira do conhecimento, quando uma hipotese bem formulada e testada de forma deliberada e revela uma resposta negativa. E a falha mais valiosa de todas — cada "nao funciona" nesse contexto elimina uma possibilidade e refina o espaco de solucoes. Deve ser documentada, celebrada e disseminada. Exemplo: piloto de novo modelo de negocio que falhou mas gerou insight sobre o segmento.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dados de Pesquisa -->
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📊</span> O Problema Cultural: Tudo e Tratado Igual
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m1-4-t4-p5">Em pesquisa com mais de 2.000 executivos em 17 paises (HBS, 2011), Edmondson identificou que:</p>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span><strong>70% das organizacoes</strong> punem todos os tipos de falha de forma equivalente, destruindo a distincao entre negligencia e experimentacao inteligente</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span>Nos melhores hospitais estudados, as equipes relatavam <strong>mais erros</strong> — nao porque erravam mais, mas porque tinham seguranca para relata-los e aprender com eles</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-blue-400 mt-1">&#8226;</span>
+            <span>A proporcao ideal de "falhas inteligentes documentadas por projeto" nas empresas mais inovadoras era de <strong>1 para cada 3 experimentos</strong> rodados — evidencia de que estavam realmente na fronteira do conhecimento</span>
+          </li>
+        </ul>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 5: Praticas para cultivar mindset em times -->
+    <section id="topico-5" data-inema-topic="modulo-1-4#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">🛠️ Praticas para Cultivar Mindset de Crescimento em Times</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t5-p1">
+        Mindset nao e um traco de personalidade imutavel — e um padrao de resposta que pode ser moldado pelo ambiente, pela lideranca e pelos rituais de um time. A boa noticia: voce nao precisa esperar que todos "mudem de mentalidade" por conta propria. Estruturas e praticas certas criam as condicoes para que o mindset de crescimento emerja e se consolide ao longo do tempo.
+      </p>
+
+      <!-- Grid de praticas -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🔁</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Retrospectivas de Aprendizado</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t5-p2">Ao final de cada sprint, projeto ou trimestre, dedique tempo nao apenas a "o que deu certo/errado", mas a "o que aprendemos que nao sabiamos antes?" Separe os aprendizados dos erros — isso encoraja a producao deliberada de conhecimento novo, nao apenas analise post-hoc.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🏆</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Premio para a Melhor Falha</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t5-p3">Empresas como Tata Group (Premio para a Melhor Falha Cancelada), Grey Advertising e Amazon reconhecem publicamente o experimento que falhou da forma mais inteligente. O rito do reconhecimento publico quebra o taboo cultural do erro de forma mais rapida do que qualquer treinamento.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">💬</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Feedback Formulado como Aprendizado</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t5-p4">Treine lideres a dar feedback no modelo "o que estava bem + o que pode evoluir + como". Nao "voce errou aqui", mas "essa decisao gerou resultado X; dado o que sabemos agora, o que voce faria diferente?" Orienta para o futuro, nao para o passado.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">📋</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Hipoteses Antes de Executar</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t5-p5">Antes de qualquer iniciativa, documente: "Qual e nossa hipotese? O que esperamos que aconteca e por que?" Isso transforma qualquer resultado — sucesso ou falha — em dado valioso, porque havia uma predicao previa para comparar. Sem hipotese explicita, nao ha aprendizado, apenas reacao.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">🗣️</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Lideranca Vulneravel</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t5-p6">Nada instala mindset de crescimento mais rapido do que um lider que diz publicamente: "Eu errei nisso. Aqui esta o que aprendi." A vulnerabilidade de cima libera a seguranca de baixo. Brene Brown e Amy Edmondson convergem neste ponto: vulnerabilidade estrategica da lideranca e o detonador da cultura de crescimento.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <div class="text-2xl mb-2">📚</div>
+          <h4 class="font-semibold text-emerald-400 mb-2">Biblioteca de Experimentos</h4>
+          <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t5-p7">Documente experimentos passados em um repositorio acessivel: hipotese, metodo, resultado, aprendizado. Isso cria ativos de conhecimento organizacional, evita repeticao de erros identicos e demonstra institucionalmente que experimentar e valorizado — "nossas falhas viram acervo".</p>
+        </div>
+      </div>
+
+      <!-- Dica Pratica -->
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">🚀</span> Por Onde Comecar Amanha
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-4-t5-p8">Escolha UMA pratica, nao seis. Comece pela mais facil de implementar no seu contexto. Se voce lidera um time pequeno, comece pela retrospectiva de aprendizado. Se voce e um gestor senior, comece pela vulnerabilidade publica — compartilhe um erro que voce cometeu e o que aprendeu. O sinal que isso envia para a organizacao tem valor desproporcional ao esforco.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 6: Armadilhas — "False Growth Mindset" -->
+    <section id="topico-6" data-inema-topic="modulo-1-4#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">⚠️ Armadilhas: O "False Growth Mindset" e Como Evitar</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t6-p1">
+        Em 2015, Dweck publicou um artigo critico sobre o modo como o conceito de growth mindset havia sido absorvido pelo mundo corporativo e educacional. Sua conclusao foi preocupante: a maioria das organizacoes que "adotaram" o mindset de crescimento estava praticando uma versao superficial e distorcida — o que ela chamou de <strong class="text-emerald-400">false growth mindset</strong>. Entender essas distorcoes e tao importante quanto entender o conceito original.
+      </p>
+
+      <!-- Alerta Principal -->
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-4 flex items-center">
+          <span class="mr-2">⚠️</span> As 4 Distorcoes Mais Comuns
+        </h3>
+        <div class="space-y-5">
+          <div>
+            <h4 class="font-semibold text-white mb-2">1. "Esforco e tudo que importa"</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t6-p2">Elogiar apenas o esforco sem vincular ao aprendizado cria o que Dweck chama de "esforco sem estrategia". Um aluno ou profissional que se esforca muito mas usa a abordagem errada nao esta crescendo — esta se cansando. O mindset de crescimento autentico envolve esforco <em>mais</em> estrategia <em>mais</em> aprendizado. Apenas elogiar "voce trabalhou muito" sem analisar o metodo e incompleto.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-2">2. "Tenho mindset de crescimento em tudo"</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t6-p3">Ninguem tem mindset de crescimento em todas as areas ao mesmo tempo. Dweck admite que ela propria tem gatilhos em que regride para mindset fixo — situacoes de alta pressao ou em que sua identidade esta em jogo. A honestidade sobre em quais contextos especificos voce opera com mindset fixo e o ponto de partida real para mudanca.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-2">3. "Basta pregar o conceito"</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t6-p4">Organizacoes que apenas declaram "aqui valorizamos o mindset de crescimento" sem mudar praticas, incentivos e rituais estao fazendo exatamente o que Schein chamou de mudanca de artefato sem tocar nos pressupostos. Se o sistema de avaliacao ainda pune erros, o discurso sobre crescimento e ruido vazio — e ate contra-producente, pois gera desconfianca.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-2">4. "Fracasso e sempre bom"</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m1-4-t6-p5">A romantizacao do fracasso — "fail fast, fail often" sem criterio — e uma outra forma de superficialidade. Nem todo fracasso e inteligente. Um experimento mal desenhado, sem hipotese clara ou sem aprendizado extraido, nao e inovacao: e desperdicio de recursos. O que o mindset de crescimento defende e aprender com o fracasso, nao celebrar o fracasso em si.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid: Falso vs Autentico -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">False Growth Mindset</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Workshop de "mindset" sem mudanca de sistema de avaliacao</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>"Valorizamos o erro" mas o bonus cai quando piloto nao vira produto</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Elogiar esforco sem perguntar "o que voce aprendeu?"</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Declarar mindset de crescimento como valor no mural de valores</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">Mindset de Crescimento Autentico</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Metricas de inovacao incluem "experimentos rodados e documentados" como KPI</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Pilotos que falham mas geram insight sao reconhecidos em all-hands</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Feedback vincula esforco a aprendizado especifico: "o que voce mudaria na sua abordagem?"</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Lideranca modela vulnerabilidade e aprendizado publico de forma consistente</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Conceito Final -->
+      <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-3 flex items-center">
+          <span class="mr-2">🔑</span> O Teste de Autenticidade
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m1-4-t6-p6">A pergunta definitiva para saber se uma organizacao tem mindset de crescimento autentico ou falso: <em>"O ultimo profissional que teve um piloto cancelado por resultado negativo foi promovido, mantido ou demitido?"</em> A resposta a essa pergunta vale mais do que qualquer declaracao de valores. O sistema de incentivos e o verdadeiro DNA cultural — nao o que esta escrito no site.</p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- RESUMO DO MODULO -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Dois tipos de crenca sobre capacidade</strong>
+              <span class="text-neutral-400"> - Mindset fixo (capacidade inata e imutavel) vs mindset de crescimento (capacidade se desenvolve com esforco, estrategia e aprendizado). A neuroplasticidade confirma o segundo.</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Mindset fixo paralisa inovacao</strong>
+              <span class="text-neutral-400"> - Organizacoes com predominio de mindset fixo filtram ideias radicais, escondem fracassos e tornam a experimentacao psicologicamente insegura.</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">"Ainda nao" reencuadra o fracasso</strong>
+              <span class="text-neutral-400"> - Substituir "voce nao conseguiu" por "voce ainda nao conseguiu" move o enquadramento do julgamento para o processo, mantendo o caminho aberto.</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Nem todo erro e igual</strong>
+              <span class="text-neutral-400"> - Edmondson distingue falha por negligencia (evitar), falha por complexidade (aceitar) e falha inteligente (celebrar). Punir tudo igual destroi exatamente o tipo de falha mais valioso.</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Praticas criam o ambiente</strong>
+              <span class="text-neutral-400"> - Retrospectivas de aprendizado, hipoteses documentadas antes de executar, feedback orientado ao futuro e lideranca vulneravel sao as alavancas praticas para cultivar mindset de crescimento.</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">False growth mindset e pior que nenhum</strong>
+              <span class="text-neutral-400"> - Pregar crescimento sem mudar incentivos gera desconfianca. O teste real: o que acontece com quem tem um piloto cancelado?</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-emerald-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">1.5 - Papel da Lideranca</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-1-5.html" class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors">
+            1.5 - Papel da Lideranca &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Jobs To Be Done | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
+      <span>/</span>
+      <span class="text-blue-400">Modulo 2.5</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MODULO 2.5</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🎯 Jobs To Be Done</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">As pessoas nao compram produtos — elas "contratam" solucoes para resolver um job especifico em sua vida. Descubra o job real por tras da compra e projete inovacoes que ganham mercado pela logica da necessidade humana.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">50</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="2-5" data-inema-track="2">
+
+    <!-- TOPICO 1: A teoria do job e o caso do milkshake -->
+    <section id="topico-1" data-inema-topic="modulo-2-5#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🥤 A Teoria do Job e o Caso do Milkshake</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-5-t1-p1">
+        Em meados dos anos 1990, <strong class="text-blue-400">Clayton Christensen</strong> — professor de Harvard e autor de "O Dilema da Inovacao" — recebeu uma missao incomum: ajudar uma rede de fast food a vender mais milkshakes. A empresa tinha feito tudo certo: pesquisas de mercado, grupos focais, ajustes de sabor. As vendas continuavam estagnadas. O problema era a pergunta errada.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📖</span> A Descoberta de Christensen
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-5-t1-p2">
+          Em vez de perguntar "O que voce acha do milkshake?", a equipe de Christensen passou a perguntar: <strong class="text-blue-400">"Para qual job voce contratou esse milkshake hoje de manha?"</strong> O resultado foi revelador: a maioria dos compradores matinais estava sozinha, com pressa, e dirigia um longo trajeto ate o trabalho. Eles nao queriam um milkshake — eles queriam algo que ocupasse as duas maos, durasse o suficiente para acompanhar todo o trajeto, e que os deixasse satisfeitos sem precisar parar para comer.
+        </p>
+        <p class="text-neutral-400 text-sm">Clayton Christensen, "Competing Against Luck" (2016) — com Bob Moesta e outros</p>
+      </div>
+
+      <!-- SVG: Diagrama do Job vs Produto -->
+      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 900 280" class="w-full h-auto" role="img" aria-label="Diagrama JTBD: o cliente contrata o produto para resolver um job funcional, emocional e social">
+          <defs>
+            <linearGradient id="m2-5-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/>
+            </linearGradient>
+            <linearGradient id="m2-5-grad2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#0ea5e9"/>
+            </linearGradient>
+            <filter id="m2-5-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m2-5-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+              <circle cx="1.2" cy="1.2" r="1.2" fill="#3b82f6" opacity="0.12"/>
+            </pattern>
+            <marker id="m2-5-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"/></marker>
+            <marker id="m2-5-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
+          </defs>
+          <rect x="0" y="0" width="900" height="280" fill="url(#m2-5-grid)"/>
+
+          <!-- Cliente -->
+          <g filter="url(#m2-5-glow)">
+            <rect x="30" y="100" width="160" height="80" rx="14" fill="#0e1622" stroke="url(#m2-5-grad)" stroke-width="2"/>
+          </g>
+          <text x="110" y="133" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="15">👤 Cliente</text>
+          <text x="110" y="153" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">tem um job a fazer</text>
+          <text x="110" y="168" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">na vida dele</text>
+
+          <!-- Seta contratacao -->
+          <path d="M192,140 L298,140" fill="none" stroke="#60a5fa" stroke-width="2" marker-end="url(#m2-5-ah)"/>
+          <text x="245" y="130" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="11" opacity="0.8">"contrata"</text>
+
+          <!-- Produto -->
+          <rect x="300" y="90" width="160" height="100" rx="14" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+          <text x="380" y="128" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="15">📦 Produto</text>
+          <text x="380" y="148" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">ou servico</text>
+          <text x="380" y="165" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">para resolver</text>
+
+          <!-- Seta resolve -->
+          <path d="M462,140 L558,140" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#m2-5-ahc)"/>
+          <text x="510" y="130" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11" opacity="0.8">resolve</text>
+
+          <!-- Job box -->
+          <g filter="url(#m2-5-glow)">
+            <rect x="560" y="80" width="310" height="120" rx="14" fill="#0e1622" stroke="url(#m2-5-grad)" stroke-width="2"/>
+          </g>
+          <text x="715" y="108" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="14">O Job Real</text>
+          <!-- 3 dimensoes -->
+          <rect x="575" y="118" width="85" height="38" rx="8" fill="#1a2035" stroke="#60a5fa" stroke-width="1.5" opacity="0.9"/>
+          <text x="617" y="133" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="10" font-weight="600">Funcional</text>
+          <text x="617" y="148" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="9">tarefa concreta</text>
+
+          <rect x="672" y="118" width="85" height="38" rx="8" fill="#1a2035" stroke="#38bdf8" stroke-width="1.5" opacity="0.9"/>
+          <text x="714" y="133" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="10" font-weight="600">Emocional</text>
+          <text x="714" y="148" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="9">como quer sentir</text>
+
+          <rect x="769" y="118" width="88" height="38" rx="8" fill="#1a2035" stroke="#60a5fa" stroke-width="1.5" opacity="0.9"/>
+          <text x="813" y="133" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="10" font-weight="600">Social</text>
+          <text x="813" y="148" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="9">como quer ser visto</text>
+
+          <!-- Caso milkshake -->
+          <text x="110" y="220" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="10" opacity="0.7">ex.: motorista</text>
+          <text x="110" y="234" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="10" opacity="0.7">matutino</text>
+          <text x="380" y="225" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="10" opacity="0.7">milkshake</text>
+          <text x="715" y="225" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10" opacity="0.7">ocupar as maos, durar o trajeto, satisfazer sem parar</text>
+        </svg>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-5-t1-p3">
+        A conclusao de Christensen foi radical: o verdadeiro concorrente do milkshake matutino nao era outro milk shake — era a banana, o bagel, o donut. Qualquer coisa que o cliente pudesse "contratar" para o mesmo job. Isso mudou como a empresa deveria inovar: tornando o milkshake mais espesso (dura mais), mais conveniente de comprar (autoatendimento), e com menos culpa (versao menor para criancas no fim do dia — um job completamente diferente).
+      </p>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center">
+          <span class="mr-2">📊</span> Por que JTBD muda o jogo
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong class="text-blue-400">95%</strong> dos novos produtos falham segundo estudo de Harvard (Christensen, 2016) — em geral porque resolvem o produto errado, nao o job certo</li>
+          <li><strong class="text-blue-400">Airbnb</strong>: o job nao era "alugar quarto barato" — era "sentir-se em casa, conectado com a cultura local"</li>
+          <li><strong class="text-blue-400">Uber</strong>: o job nao era "taxi mais barato" — era "transporte confiavel sem incerteza de chegada"</li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Dimensoes do job -->
+    <section id="topico-2" data-inema-topic="modulo-2-5#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">🔺 Dimensoes do Job: Funcional, Emocional, Social</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-5-t2-p1">
+        Todo job tem tres camadas sobrepostas. A maioria das empresas enxerga apenas a dimensao funcional — a tarefa concreta que o usuario quer completar. Mas <strong class="text-blue-400">Bob Moesta</strong>, co-criador do framework JTBD junto com Christensen, demonstrou que as dimensoes emocional e social frequentemente sao mais determinantes na decisao de "contratar" ou "demitir" um produto.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-dark-800 rounded-xl border border-blue-500/30 p-6">
+          <div class="text-3xl mb-3">⚙️</div>
+          <h3 class="font-bold text-blue-400 mb-2">Funcional</h3>
+          <p class="text-sm text-neutral-400 mb-3">A tarefa concreta, objetiva, mensuravel</p>
+          <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t2-func">O que o usuario literalmente precisa fazer. "Preciso deslocar do ponto A ao ponto B." "Preciso armazenar meus arquivos." "Preciso comunicar com meu time." E o job mais facil de identificar e tambem o mais comoditizado — quando todos resolvem bem o funcional, as dimensoes emocional e social decidem quem ganha.</p>
+          <div class="mt-3 bg-blue-900/20 rounded-lg p-3">
+            <p class="text-xs text-blue-400">Exemplo: "pagar minhas contas sem sair de casa"</p>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-blue-500/30 p-6">
+          <div class="text-3xl mb-3">❤️</div>
+          <h3 class="font-bold text-blue-400 mb-2">Emocional</h3>
+          <p class="text-sm text-neutral-400 mb-3">Como o usuario quer se sentir ao usar</p>
+          <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t2-emoc">A dimensao interna, pessoal. "Quero me sentir organizado." "Quero sentir que estou no controle." "Quero nao ter medo de errar." Jobs emocionais sao poderosos porque criam lealdade. Quando um produto faz voce se sentir bem consigo mesmo, voce o "recontrata" mesmo quando alternativas mais baratas existem.</p>
+          <div class="mt-3 bg-blue-900/20 rounded-lg p-3">
+            <p class="text-xs text-blue-400">Exemplo: "sentir que sou um pai presente"</p>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-blue-500/30 p-6">
+          <div class="text-3xl mb-3">👥</div>
+          <h3 class="font-bold text-blue-400 mb-2">Social</h3>
+          <p class="text-sm text-neutral-400 mb-3">Como o usuario quer ser percebido pelos outros</p>
+          <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t2-soc">A dimensao externa, de status e identidade. "Quero parecer atualizado para meus colegas." "Quero que meus clientes me vejam como profissional." "Quero ser visto como alguem que se preocupa com o meio ambiente." Jobs sociais explicam por que pessoas pagam mais por marcas — a marca e o sinal social que o produto entrega.</p>
+          <div class="mt-3 bg-blue-900/20 rounded-lg p-3">
+            <p class="text-xs text-blue-400">Exemplo: "ser visto como um gestor moderno"</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🎓</span> Insight de Bob Moesta
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-5-t2-moesta">"Quando estudamos o que leva uma familia a comprar uma casa nova, a dimensao funcional — mais espaco — era o pretexto. A dimensao emocional — 'quero ter um quarto so meu' (da mae) — era o gatilho real. A dimensao social — 'nao quero que minha filha compartilhe quarto quando trouxer amigas' — era o bloqueador que impedia a compra ate que fosse resolvida."</p>
+        <p class="text-neutral-400 text-sm">Bob Moesta, "Demand-Side Sales 101" (2020)</p>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Dica Pratica
+        </h3>
+        <p class="text-neutral-300">Para todo produto que voce esta desenvolvendo, escreva as tres dimensoes explicitamente: "O usuario precisa [FUNCIONAL]. Ele quer sentir [EMOCIONAL]. Ele quer ser visto como [SOCIAL]." Se voce nao consegue preencher os tres campos, voce nao entende o job ainda.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Como descobrir jobs -->
+    <section id="topico-3" data-inema-topic="modulo-2-5#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🔍 Como Descobrir Jobs: Entrevistas, Switch Interview e Timeline</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-5-t3-p1">
+        Descobrir o job real nao e intuicao — e metodo. Bob Moesta desenvolveu tecnicas especificas de entrevista que funcionam porque exploram o <strong class="text-blue-400">comportamento passado</strong>, nao intenoes futuras. Pessoas mentem (involuntariamente) quando descrevem o que fariam. Quando descrevem o que fizeram, revelam a verdade.
+      </p>
+
+      <!-- Timeline da switch interview -->
+      <div class="space-y-6 mb-8">
+        <h3 class="text-lg font-semibold text-white mb-4">A Switch Interview — Metodo Moesta</h3>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Primeira ideia: o primeiro pensamento</h4>
+            <p class="text-sm text-neutral-400 mb-2">Quando voce primeiro pensou em mudar?</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t3-s1">Identifica o gatilho inicial — o momento em que o status quo deixou de ser aceitavel. Pode ter sido semanas ou meses antes da compra. Esse e o "primeiro empurrao" (first push): a insatisfacao que comecou a se acumular.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">2</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Momento da decisao: o evento catalisador</h4>
+            <p class="text-sm text-neutral-400 mb-2">O que aconteceu no dia em que voce decidiu buscar uma solucao?</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t3-s2">Revela o "evento passivo" — o momento especifico que transformou insatisfacao latente em acao. Quase sempre existe um evento concreto: a reuniao que deu errado, a conta que chegou maior do que o esperado, o amigo que mostrou o produto novo.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">A busca: como voce procurou</h4>
+            <p class="text-sm text-neutral-400 mb-2">Quais alternativas voce considerou?</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t3-s3">Mapeia o espaco de solucao que o cliente ve. Revela concorrentes reais (que frequentemente surpreendem a empresa). Inclui solucoes "nao comprar nada" e workarounds que o cliente ja usava.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">4</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">A compra: o dia D</h4>
+            <p class="text-sm text-neutral-400 mb-2">Me conta o dia em que voce comprou — do inicio ao fim</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t3-s4">Reconstituir a "cena da compra" em detalhes narrativos. Onde estava, com quem, o que levou ao checkout. Revela forcas de atraction (puxao para o novo) e resistencia (ansiedade sobre mudar). O diabo esta nos detalhes desta narrativa.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🎙️</span> Regras de Ouro da Entrevista JTBD
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
+            <p class="text-sm font-semibold text-blue-400 mb-1">Perguntas sobre o passado</p>
+            <p class="text-xs text-neutral-300">Nunca "o que voce faria se...". Sempre "o que voce fez quando...".</p>
+          </div>
+          <div class="bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
+            <p class="text-sm font-semibold text-blue-400 mb-1">Narrativa, nao lista</p>
+            <p class="text-xs text-neutral-300">Peca para o entrevistado contar uma historia, nao dar notas de 1 a 10.</p>
+          </div>
+          <div class="bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
+            <p class="text-sm font-semibold text-blue-400 mb-1">Silencio produtivo</p>
+            <p class="text-xs text-neutral-300">Apos uma resposta, espere 5 segundos antes de falar. As melhores respostas vem no silencio.</p>
+          </div>
+          <div class="bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
+            <p class="text-sm font-semibold text-blue-400 mb-1">Siga a emocao</p>
+            <p class="text-xs text-neutral-300">Quando o tom muda, aprofunde. "Voce pareceu hesitar ali — me conta mais."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Job Stories vs User Stories -->
+    <section id="topico-4" data-inema-topic="modulo-2-5#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">📝 Job Stories vs User Stories</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-5-t4-p1">
+        Alan Klement — um dos principais evangelizadores modernos do JTBD — popularizou o formato <strong class="text-blue-400">Job Story</strong> como alternativa as User Stories do desenvolvimento agil. A diferenca parece sutil mas muda completamente o foco da equipe de produto.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">User Story (tradicional)</h4>
+          <p class="text-xs text-neutral-400 mb-3">Formato: "Como [persona], eu quero [funcionalidade] para [beneficio]"</p>
+          <div class="bg-dark-800/60 rounded-lg p-4 mb-3 font-mono text-sm">
+            <p class="text-neutral-300">"Como <span class="text-red-400">Maria, gestora de RH</span>, eu quero <span class="text-red-400">ver relatorios de ponto</span> para <span class="text-red-400">controlar a frequencia</span>"</p>
+          </div>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Foca em quem e a persona (ficticia)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Ja pressupoe a solucao (relatorio)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Ignora o contexto situacional</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Nao captura o job emocional/social</span></li>
+          </ul>
+        </div>
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">Job Story (JTBD)</h4>
+          <p class="text-xs text-neutral-400 mb-3">Formato: "Quando [situacao], eu quero [motivacao], para que eu possa [resultado esperado]"</p>
+          <div class="bg-dark-800/60 rounded-lg p-4 mb-3 font-mono text-sm">
+            <p class="text-neutral-300">"Quando <span class="text-emerald-400">preciso justificar horas extras para a diretoria</span>, eu quero <span class="text-emerald-400">ter os dados consolidados em segundos</span>, para que eu possa <span class="text-emerald-400">focar na conversa e nao na planilha</span>"</p>
+          </div>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Foca no contexto situacional real</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Nao pressupoe a solucao</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Inclui motivacao e resultado</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Revela job emocional ("focar na conversa")</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🔑</span> A Estrutura da Job Story em Detalhe
+        </h3>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-3">
+            <div class="flex-shrink-0 px-2 py-1 bg-blue-500/20 rounded text-xs font-bold text-blue-400">QUANDO</div>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t4-q">Descreve a situacao — o contexto especifico que dispara o job. E o substituto da persona: em vez de "quem e o usuario", pergunta "em que situacao o usuario esta". Situacoes sao mais stabeis que personas ao longo do tempo.</p>
+          </div>
+          <div class="flex items-start space-x-3">
+            <div class="flex-shrink-0 px-2 py-1 bg-blue-500/20 rounded text-xs font-bold text-blue-400">EU QUERO</div>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t4-eq">Descreve a motivacao — o que o usuario esta tentando realizar. Deve ser uma acao ou estado, nao uma funcionalidade. "Ter confianca de que os dados estao corretos" e melhor que "ver um relatorio".</p>
+          </div>
+          <div class="flex items-start space-x-3">
+            <div class="flex-shrink-0 px-2 py-1 bg-blue-500/20 rounded text-xs font-bold text-blue-400">PARA QUE</div>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t4-pq">Descreve o resultado desejado — o job de nivel mais alto. Frequentemente revela o job emocional ou social subjacente. "Para que eu possa focar no que importa" e quase sempre o job real.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Outcome-Driven Innovation (Ulwick) -->
+    <section id="topico-5" data-inema-topic="modulo-2-5#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">📐 Outcome-Driven Innovation (Ulwick)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-5-t5-p1">
+        <strong class="text-blue-400">Tony Ulwick</strong> chegou a JTBD por um caminho diferente de Christensen. Enquanto Christensen vinha da sociologia e do comportamento, Ulwick era engenheiro e queria um processo repetivel e mensuravel. Ele criou o <strong class="text-blue-400">Outcome-Driven Innovation (ODI)</strong> — uma metodologia que transforma o JTBD em processo quantificavel, com mapeamento de "desired outcomes" priorizados por importancia e satisfacao atual.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📖</span> A Formula de Oportunidade de Ulwick
+        </h3>
+        <div class="bg-dark-800/60 rounded-2xl p-6 mb-4">
+          <p class="text-center text-xl font-bold text-blue-400 mb-2">Oportunidade = Importancia + max(Importancia - Satisfacao, 0)</p>
+          <p class="text-center text-sm text-neutral-400">Onde importancia e satisfacao sao medidas em escala de 0 a 10 pelos clientes</p>
+        </div>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-5-t5-form">Um outcome com importancia 9 e satisfacao 3 tem oportunidade = 9 + (9-3) = 15. Um outcome com importancia 5 e satisfacao 8 tem oportunidade = 5 + 0 = 5. A formula identifica onde o mercado esta suprido, superatendido ou com lacunas — mapeando o terreno de inovacao de forma objetiva.</p>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🗺️</span> Os 4 Quadrantes do Opportunity Landscape
+        </h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
+            <h4 class="text-sm font-bold text-blue-400 mb-2">Alta Importancia + Baixa Satisfacao</h4>
+            <p class="text-xs text-neutral-300">Oportunidade de inovacao prioritaria. O mercado nao esta servindo bem algo que importa muito. Aqui mora o disruption.</p>
+          </div>
+          <div class="bg-dark-700/40 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-bold text-neutral-400 mb-2">Alta Importancia + Alta Satisfacao</h4>
+            <p class="text-xs text-neutral-300">Mercado bem atendido. Melhorias incrementais aqui nao criam vantagem competitiva real.</p>
+          </div>
+          <div class="bg-dark-700/40 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-bold text-neutral-400 mb-2">Baixa Importancia + Baixa Satisfacao</h4>
+            <p class="text-xs text-neutral-300">Nao vale investir. Mesmo que voce resolva bem, nao importa para o cliente.</p>
+          </div>
+          <div class="bg-red-900/20 rounded-lg p-4 border border-red-500/30">
+            <h4 class="text-sm font-bold text-red-400 mb-2">Baixa Importancia + Alta Satisfacao</h4>
+            <p class="text-xs text-neutral-300">Superatendimento. Voce esta gastando recursos resolvendo algo que o cliente nao valoriza. Corte para simplificar e reduzir custo.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> ODI na Pratica
+        </h3>
+        <p class="text-neutral-300 mb-2" data-inema-block="m2-5-t5-odi">O processo ODI de Ulwick tem 5 passos: (1) Definir o job principal, (2) Identificar os outcomes desejados (geralmente 50-150 por job), (3) Pesquisar importancia e satisfacao com amostra representativa, (4) Calcular oportunidades, (5) Priorizar o roadmap pelo landscape. Empresas como Bosch, J&amp;J e Motorola usaram ODI para gerar inovacoes de alto crescimento com taxa de sucesso acima de 80% (vs. 5% media do mercado).</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Armadilhas e exemplos praticos -->
+    <section id="topico-6" data-inema-topic="modulo-2-5#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">⚠️ Armadilhas e Exemplos Praticos</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-5-t6-p1">
+        JTBD e um framework poderoso mas facilmente mal aplicado. As armadilhas mais comuns nao sao erro de conceito — sao erros de execucao que transformam o framework numa ferramenta de confirmacao do que a equipe ja acreditava. Veja os padroes de fracasso e como evita-los.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#9888; Armadilhas Classicas</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Job muito generico:</strong> "Quero ser mais produtivo" nao e um job acionavel. Jobs uteis sao especificos o suficiente para diferenciar solucoes.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Confundir job com solucao:</strong> "Quero um app de lembrete" e solucao, nao job. O job e "quero nao esquecer compromissos importantes".</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Entrevistar os mais entusiastas:</strong> seus maiores fas nao sao os mais informativos. Entreviste quem quase comprou mas nao comprou — ou quem deixou de usar.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Ignorar o job de nao-consumo:</strong> as vezes o concorrente e "fazer nada" ou "conviver com o problema". Nao subestime a inercia como alternativa.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Como Aplicar Bem</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Faca pelo menos <strong>8-12 switch interviews</strong> antes de concluir qualquer coisa sobre o job</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Grave as entrevistas e transcreva. Patterns emergem de palavras exatas, nao de resumos.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Separe o job do contexto: o mesmo job pode ser executado em varios contextos com solucoes diferentes.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Mapeie os <strong>quatro forcas</strong> de Moesta: push (o que empurra para fora), pull (o que atrai para a nova solucao), ansiedade (medos do novo), habito (conforto do atual).</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🏆</span> Exemplos Reais de JTBD bem aplicado
+        </h3>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-xl">🍎</div>
+            <div>
+              <h4 class="font-semibold text-white mb-1">iPod (Apple, 2001)</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m2-5-t6-ipod">O job nao era "carregar arquivos MP3". Era "ter minha biblioteca musical inteira no bolso, sem atrito". "1.000 musicas no bolso" e a descricao do job, nao da tecnologia. A concorrencia (Discman, MP3 players existentes) resolvia o funcional mal; o iPod resolveu o emocional (identidade, elegancia) e o social (ser visto com fones brancops era status).</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-xl">🏠</div>
+            <div>
+              <h4 class="font-semibold text-white mb-1">Airbnb (2008)</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m2-5-t6-airbnb">O job descoberto por Bob Moesta ao estudar os primeiros usuarios do Airbnb: "Quando viajo a lazer, quero sentir que estou vivendo no lugar, nao apenas passando, para que eu possa ter historias autenticas para contar." Hotel resolve o funcional (dormir). Airbnb resolveu o emocional e social — a narrativa de viagem que o hospede leva para casa.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-xl">📱</div>
+            <div>
+              <h4 class="font-semibold text-white mb-1">LinkedIn (para recrutadores)</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m2-5-t6-li">O job nao era "banco de curriculos". Era "quando preciso preencher uma vaga critica, quero encontrar candidatos que eu nao saberia como achar, para que eu possa fechar a vaga sem depender de que bons candidatos me encontrem". A diferenca e sutil mas gerou produto completamente diferente: LinkedIn Premium Recruiter e a solucao do job, nao um buscador de curriculos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> A Armadilha do Excesso de Teoria
+        </h3>
+        <p class="text-neutral-300" data-inema-block="m2-5-t6-armt">O maior erro com JTBD e usar o framework para criar documentos lindos em vez de mudar decisoes de produto. Christensen, Moesta e Ulwick concordam num ponto: JTBD so tem valor se a descoberta do job muda o que voce decide construir. Se voce fez 15 entrevistas, produziu um relatorio de 40 slides e o roadmap continuou identico — voce fez JTBD como ritualizacao, nao como ferramenta de decisao.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">As pessoas contratam produtos, nao compram</strong>
+              <span class="text-neutral-400"> — Christensen: o job e o que o produto resolve na vida do cliente, nao o produto em si</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Tres dimensoes: funcional, emocional, social</strong>
+              <span class="text-neutral-400"> — Moesta: o job emocional e social frequentemente domina a decisao de compra</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Switch Interview: passado, nao intencao</strong>
+              <span class="text-neutral-400"> — Reconstruir a narrativa de compra revela o job real que questionarios nao capturam</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Job Stories substituem User Stories</strong>
+              <span class="text-neutral-400"> — Quando [situacao], eu quero [motivacao], para que eu possa [resultado]</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">ODI de Ulwick quantifica oportunidades</strong>
+              <span class="text-neutral-400"> — Importancia vs. Satisfacao mapeia onde inovar com dados, nao intuicao</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">JTBD so tem valor se muda decisoes</strong>
+              <span class="text-neutral-400"> — Discovery sem mudanca de roadmap e ritualizacao, nao metodo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-blue-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">2.6 - OKRs para Inovacao: alinhar ambicao com execucao mensuravel</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-2-6.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">
+            2.6 - OKRs para Inovacao &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

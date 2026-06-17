@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>OKRs para Inovacao | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
+      <span>/</span>
+      <span class="text-blue-400">Modulo 2.6</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MODULO 2.6</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🧮 OKRs para Inovacao</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">De Andy Grove na Intel a John Doerr no Google: como Objectives and Key Results alinham ambicao e foco em inovacao sem engessar times que precisam de espaco para explorar o desconhecido.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">50</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="2-6" data-inema-track="2">
+
+    <h2 class="text-2xl font-bold mb-6">Conteudo detalhado</h2>
+
+    <!-- TOPICO 1: O que sao OKRs e de onde vem -->
+    <section id="topico-1" data-inema-topic="modulo-2-6#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">🏗️ O que sao OKRs e de onde vem</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-6-t1-p1">
+        OKR significa <strong class="text-blue-400">Objectives and Key Results</strong>. E um framework de definicao de metas que conecta o que voce quer conquistar (Objetivo) com como voce vai medir o progresso (Resultados-Chave). Simples na superficie, poderoso na pratica quando bem executado.
+      </p>
+
+      <!-- SVG: Linha do tempo OKR — Grove → Doerr → Google -->
+      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 900 220" class="w-full h-auto" role="img" aria-label="Linha do tempo da historia dos OKRs: Andy Grove na Intel nos anos 1970, John Doerr levando ao Google em 1999, adocao global nos anos 2010">
+          <defs>
+            <linearGradient id="m2-6-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#38bdf8"/>
+            </linearGradient>
+            <filter id="m2-6-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m2-6-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+              <circle cx="1.2" cy="1.2" r="1.2" fill="#3b82f6" opacity="0.10"/>
+            </pattern>
+            <marker id="m2-6-ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+              <path d="M0,0 L7,4 L0,8 L2,4 Z" fill="#60a5fa"/>
+            </marker>
+          </defs>
+          <rect x="0" y="0" width="900" height="220" fill="url(#m2-6-grid)"/>
+
+          <!-- Linha principal do tempo -->
+          <line x1="60" y1="110" x2="840" y2="110" stroke="url(#m2-6-grad)" stroke-width="2.5" opacity="0.6" marker-end="url(#m2-6-ah)"/>
+
+          <!-- Ponto 1: Andy Grove / Intel 1970s -->
+          <g filter="url(#m2-6-glow)" class="wf-a">
+            <circle cx="160" cy="110" r="16" fill="#0e1622" stroke="#60a5fa" stroke-width="2.2"/>
+          </g>
+          <text x="160" y="115" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="700" font-size="12">1</text>
+          <rect x="90" y="30" width="140" height="55" rx="10" fill="#0e1622" stroke="#60a5fa" stroke-width="1.5" opacity="0.85"/>
+          <text x="160" y="52" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="11">Andy Grove</text>
+          <text x="160" y="67" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">Intel — anos 1970</text>
+          <text x="160" y="80" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="9">iMBO → OKR</text>
+          <line x1="160" y1="85" x2="160" y2="94" stroke="#60a5fa" stroke-width="1.5" opacity="0.5"/>
+
+          <!-- Ponto 2: John Doerr / Google 1999 -->
+          <g filter="url(#m2-6-glow)" class="wf-a">
+            <circle cx="420" cy="110" r="16" fill="#0e1b26" stroke="#38bdf8" stroke-width="2.2"/>
+          </g>
+          <text x="420" y="115" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="700" font-size="12">2</text>
+          <rect x="350" y="135" width="140" height="55" rx="10" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.5" opacity="0.85"/>
+          <text x="420" y="157" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="11">John Doerr</text>
+          <text x="420" y="172" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">Google — 1999</text>
+          <text x="420" y="185" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="9">20 emp → escala global</text>
+          <line x1="420" y1="126" x2="420" y2="135" stroke="#38bdf8" stroke-width="1.5" opacity="0.5"/>
+
+          <!-- Ponto 3: Adocao global 2010s -->
+          <g filter="url(#m2-6-glow)" class="wf-a">
+            <circle cx="690" cy="110" r="16" fill="#0e1622" stroke="#60a5fa" stroke-width="2.2"/>
+          </g>
+          <text x="690" y="115" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="700" font-size="12">3</text>
+          <rect x="620" y="30" width="140" height="55" rx="10" fill="#0e1622" stroke="#60a5fa" stroke-width="1.5" opacity="0.85"/>
+          <text x="690" y="52" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="11">Measure What</text>
+          <text x="690" y="67" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="11">Matters</text>
+          <text x="690" y="80" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="9">Doerr, 2018</text>
+          <line x1="690" y1="85" x2="690" y2="94" stroke="#60a5fa" stroke-width="1.5" opacity="0.5"/>
+
+          <!-- Rotulo da linha -->
+          <text x="450" y="208" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="10" opacity="0.5">evolucao historica dos OKRs</text>
+        </svg>
+      </div>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📖</span> A Origem: Andy Grove na Intel
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-6-t1-grove">
+          Andy Grove, ex-CEO da Intel, criou o sistema nos anos 1970 como evolucao do MBO (Management by Objectives) de Peter Drucker. Grove percebeu que o MBO tradicional focava demais no "o que" e ignorava o "como medir". Sua inovacao: separar o Objetivo (inspiracional, qualitativo) dos Resultados-Chave (mensuraveis, verificaveis). O sistema foi descrito em detalhes em seu livro "High Output Management" (1983).
+        </p>
+        <p class="text-neutral-400 text-sm italic">"The key result has to be measurable. But at the end you can look, and without any arguments: did I do that or did I not do it? Yes? No? Simple. No judgments in it." — Andy Grove</p>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🚀</span> John Doerr e o Google
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-6-t1-doerr">
+          Em 1999, o venture capitalist John Doerr apresentou OKRs a Larry Page e Sergey Brin — quando o Google tinha apenas 20 funcionarios. O sistema foi adotado e tornou-se parte do DNA da empresa. Doerr codificou o metodo em "Measure What Matters" (2018), tornando OKR o framework de metas mais discutido no mundo corporativo. Hoje empresas como LinkedIn, Twitter, Uber, Airbnb e Amazon usam variacoes do sistema.
+        </p>
+        <div class="bg-blue-900/20 rounded-lg p-4 border border-blue-500/20">
+          <p class="text-sm text-blue-400 font-semibold mb-1">Dado de adocao</p>
+          <p class="text-sm text-neutral-300">Mais de <strong>65% das empresas Fortune 500</strong> usam OKRs ou framework equivalente (Gartner, 2023). No Vale do Silicio, a taxa chega a 80% entre startups Series B+.</p>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Objetivo vs Key Results -->
+    <section id="topico-2" data-inema-topic="modulo-2-6#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">⚖️ Objetivo (qualitativo) vs Key Results (mensuravel)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-6-t2-p1">
+        A distincao entre Objetivo e Resultado-Chave e o coracao do sistema. Confundir os dois e o erro mais comum — e o que transforma OKRs em mais uma lista de tarefas disfaracada de framework. Entender a diferenca muda como voce escreve, avalia e aprende com suas metas.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+          <h4 class="font-bold text-blue-400 mb-4 text-lg">O — Objetivo</h4>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#8226;</span>
+              <span><strong>Qualitativo e inspiracional</strong> — deve energizar o time</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#8226;</span>
+              <span><strong>Sem numero</strong> — nao e mensuravel em si</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#8226;</span>
+              <span><strong>Responde "para onde"</strong> — direcao estrategica</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#8226;</span>
+              <span><strong>Memoravel</strong> — deve caber em uma frase</span>
+            </li>
+          </ul>
+          <div class="mt-4 bg-dark-800/60 rounded-lg p-3">
+            <p class="text-xs text-neutral-500 mb-1">Exemplo:</p>
+            <p class="text-sm text-blue-400 italic">"Tornar nosso processo de inovacao o mais rapido do setor"</p>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h4 class="font-bold text-white mb-4 text-lg">KR — Key Result</h4>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#8226;</span>
+              <span><strong>Quantitativo e verificavel</strong> — sim ou nao, sem ambiguidade</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#8226;</span>
+              <span><strong>Tem numero</strong> — porcentagem, valor, prazo</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#8226;</span>
+              <span><strong>Responde "como medir"</strong> — evidencia de progresso</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#8226;</span>
+              <span><strong>Orientado a outcome</strong> — resultado, nao atividade</span>
+            </li>
+          </ul>
+          <div class="mt-4 bg-dark-700/50 rounded-lg p-3">
+            <p class="text-xs text-neutral-500 mb-1">Exemplo (3 KRs para o objetivo acima):</p>
+            <p class="text-sm text-neutral-300 italic">KR1: Reduzir ciclo idea-to-pilot de 90 para 30 dias<br>KR2: Lancar 5 experimentos validados no trimestre<br>KR3: NPS interno do processo de inovacao de 42 para 70</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🔬</span> O Teste de Doerr
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m2-6-t2-teste">
+          John Doerr usa um teste simples para verificar se um KR e valido: <strong class="text-blue-400">"Ao final do periodo, posso verificar de forma inequivoca se atingi ou nao?"</strong> Se a resposta depende de interpretacao, o KR e fraco. Se a resposta e um numero ou um estado binario verificavel, o KR e forte.
+        </p>
+        <div class="bg-dark-700/50 rounded-lg p-4 font-mono text-sm">
+          <p class="text-red-400 mb-1">// KR fraco (nao testavel):</p>
+          <p class="text-neutral-300 mb-3">"Melhorar a cultura de inovacao da empresa"</p>
+          <p class="text-blue-400 mb-1">// KR forte (testavel):</p>
+          <p class="text-neutral-300">"Aumentar o indice de psicologia segura no eNPS de 55 para 75 pontos"</p>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Regra pratica: 2-5 KRs por Objetivo
+        </h3>
+        <p class="text-neutral-300">Doerr recomenda de 3 a 5 KRs por Objetivo. Menos de 2 provavelmente deixa dimensoes importantes sem medir. Mais de 5 indica que o Objetivo e amplo demais ou que voce esta listando tarefas, nao resultados. O sweet spot e 3 KRs que cobrem dimensoes complementares: velocidade, qualidade e impacto, por exemplo.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: OKRs de aspiracao (moonshots) para inovacao -->
+    <section id="topico-3" data-inema-topic="modulo-2-6#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🌕 OKRs de Aspiracao (Moonshots) para Inovacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-6-t3-p1">
+        O Google popularizou dois tipos de OKR que precisam coexistir: os <strong class="text-blue-400">Rooftop OKRs</strong> (metas atingiveis, 70-100% de confianca) e os <strong class="text-blue-400">Moonshot OKRs</strong> (metas de aspiracao, 40-60% de confianca). A distincao e critica para inovacao: um time que so faz rooftops nunca vai alem do incremental.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="text-3xl mb-3">🏠</div>
+          <h4 class="font-bold text-white mb-3">Rooftop OKR</h4>
+          <p class="text-neutral-300 text-sm mb-4">Objetivos que o time acredita ser capaz de atingir com esforco normal. Confianca de 70-100%. Falhar e problema — indica execucao ruim.</p>
+          <ul class="space-y-2 text-sm text-neutral-400">
+            <li>&#8226; Inovacao incremental</li>
+            <li>&#8226; Melhoria de processos existentes</li>
+            <li>&#8226; Crescimento de metricas ja estabelecidas</li>
+          </ul>
+        </div>
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+          <div class="text-3xl mb-3">🌕</div>
+          <h4 class="font-bold text-blue-400 mb-3">Moonshot OKR</h4>
+          <p class="text-neutral-300 text-sm mb-4">Objetivos radicalmente ambiciosos. Confianca de 40-60%. Atingir 70% ja e sucesso. Falhar e dado de aprendizado, nao punivel.</p>
+          <ul class="space-y-2 text-sm text-neutral-400">
+            <li>&#8226; Inovacao disruptiva</li>
+            <li>&#8226; Novos mercados ou modelos</li>
+            <li>&#8226; Apostas de longo prazo</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🔑</span> A Regra dos 70% do Google
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m2-6-t3-google">
+          No Google, atingir 100% de um Moonshot OKR e sinal de que o objetivo era pequeno demais. O benchmark ideal e 60-70%. Isso cria um sistema contraintuitivo: voce define metas que provavelmente nao vai atingir completamente, e isso e proposital. A logica: se o time sempre atinge 100%, os OKRs nao estao puxando crescimento real.
+        </p>
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <p class="text-2xl font-bold text-red-400 mb-1">0-30%</p>
+            <p class="text-xs text-neutral-400">Falha — revisar estrategia</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <p class="text-2xl font-bold text-blue-400 mb-1">60-70%</p>
+            <p class="text-xs text-neutral-400">Ideal para moonshots</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <p class="text-2xl font-bold text-yellow-400 mb-1">100%</p>
+            <p class="text-xs text-neutral-400">Objetivo era pequeno?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> Cuidado com o contexto
+        </h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-6-t3-aviso">
+          A logica dos 70% funciona para times de inovacao com cultura psicologicamente segura e lideranca que genuinamente aceita falha como aprendizado. Em culturas punitivas, OKRs ambiciosos viram sandbagging (topico 6): as pessoas fixam metas baixas para garantir 100% e parecer bem. Antes de adotar moonshots, avalie o nivel de seguranca psicologica do time.
+        </p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Cadencia, check-ins e scoring -->
+    <section id="topico-4" data-inema-topic="modulo-2-6#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">🔁 Cadencia, Check-ins e Scoring</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-6-t4-p1">
+        OKRs sem cadencia sao decoracao. O que torna o sistema vivo e a <strong class="text-blue-400">ritmo regular de revisao</strong>: definicao no inicio do ciclo, check-ins semanais rapidos, revisao de meio de ciclo, retrospectiva e scoring ao final. Doerr chama isso de "CFR" — Conversations, Feedback, Recognition.
+      </p>
+
+      <!-- Timeline de cadencia -->
+      <div class="space-y-4 mb-8">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-xs">W1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Definicao (inicio do ciclo)</h4>
+            <p class="text-sm text-neutral-400 mb-2">1-2 semanas de planejamento</p>
+            <p class="text-neutral-300 text-sm">Escrita colaborativa dos OKRs. Times definem seus proprios OKRs alinhados aos objetivos da empresa. Lideranca valida alinhamento, nao dita conteudo. Essa autonomia e critica para o engajamento.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-xs">Sem</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Check-in Semanal (15 min)</h4>
+            <p class="text-sm text-neutral-400 mb-2">Ritmo semanal, nao mensal</p>
+            <p class="text-neutral-300 text-sm">Cada KR recebe um status: verde (no caminho), amarelo (em risco), vermelho (bloqueado). Nao e relatorio — e conversa. "O que mudou? Preciso de ajuda em algo?" Check-in longo e sinal de que os OKRs estao mal escritos.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-xs">Mid</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Revisao de Meio de Ciclo</h4>
+            <p class="text-sm text-neutral-400 mb-2">Ajuste ou descarte</p>
+            <p class="text-neutral-300 text-sm">OKRs podem ser abandonados se o contexto mudou radicalmente. Isso e feature, nao bug. Um OKR que perdeu relevancia deve ser descartado sem culpa — manter por obrigacao gera trabalho sem valor.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-xs">Fim</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Retrospectiva e Scoring</h4>
+            <p class="text-sm text-neutral-400 mb-2">Aprender, nao julgar</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-6-t4-retro">Score de 0.0 a 1.0 por KR. Media do Objetivo. Documentar: o que aprendemos? O que mudariamos? O score nao deve ser ligado a bonos ou avaliacao de performance — isso destroi o comportamento de aspiracao.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">⚠️</span> OKR ligado a bonus = desastre
+        </h3>
+        <p class="text-neutral-300 text-sm">Doerr e Grove sao unanimes: vincular OKRs a remuneracao variavel mata o sistema. As pessoas param de escrever metas ambiciosas e passam a escrever metas garantidas. O resultado e sandbagging sistematizado. OKRs sao para aprender e alinhar, nao para avaliar performance individual.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Aprendizado como Key Result -->
+    <section id="topico-5" data-inema-topic="modulo-2-6#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">📚 Aprendizado como Key Result (nao so output)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-6-t5-p1">
+        Um dos erros mais sutis em OKRs de inovacao e medir apenas <strong class="text-blue-400">outputs</strong> (o que foi entregue) em vez de <strong class="text-blue-400">outcomes</strong> (o que mudou no mundo) e <strong class="text-blue-400">learning milestones</strong> (o que aprendemos). Em inovacao, o aprendizado validado e frequentemente mais valioso do que a entrega em si.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🧪</span> Output vs Outcome vs Learning
+        </h3>
+        <div class="space-y-4">
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <p class="text-sm font-semibold text-red-400 mb-1">Output KR (fraco para inovacao)</p>
+            <p class="text-neutral-300 text-sm">"Lancar 3 novas features no produto ate o fim do trimestre"</p>
+            <p class="text-neutral-500 text-xs mt-1">Mede entrega. Nao mede valor. Voce pode entregar 3 features que ninguem usa.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <p class="text-sm font-semibold text-blue-400 mb-1">Outcome KR (melhor)</p>
+            <p class="text-neutral-300 text-sm">"Aumentar retencao D30 de 22% para 35% com as novas features"</p>
+            <p class="text-neutral-500 text-xs mt-1">Mede impacto real no comportamento do usuario.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <p class="text-sm font-semibold text-emerald-400 mb-1">Learning KR (ideal para inovacao)</p>
+            <p class="text-neutral-300 text-sm">"Validar ou falsificar a hipotese de que o usuario pagaria R$29/mes por feature X com 100 entrevistas e 1 teste de preco"</p>
+            <p class="text-neutral-500 text-xs mt-1">Mede aprendizado. Valido independente do resultado ser positivo ou negativo.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-6-t5-p2">
+        O conceito de Learning KR e especialmente poderoso nas fases iniciais de inovacao, quando voce ainda nao sabe se a direcao esta certa. Um OKR bem escrito para uma fase de discovery pode ser: <em class="text-blue-400">"Conduzir 50 entrevistas com clientes B2B e documentar os 5 principais Jobs to Be Done nao atendidos"</em>. O resultado bom ou ruim da entrevista e igualmente valioso.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">📊</span> Tipos de KR por fase de inovacao
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Discovery</h4>
+            <p class="text-xs text-neutral-300">KRs de aprendizado dominam. Hipoteses validadas, entrevistas realizadas, insights documentados.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Validacao</h4>
+            <p class="text-xs text-neutral-300">Mix de aprendizado e outcome. Taxa de conversao do MVP, retencao inicial, NPS do prototipo.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-400 mb-2">Escala</h4>
+            <p class="text-xs text-neutral-300">Outcomes dominam. Crescimento de receita, reducao de CAC, expansao de mercado.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">💡</span> Dica: documente o que nao funcionou
+        </h3>
+        <p class="text-neutral-300 text-sm">Um KR de aprendizado que retorna resultado negativo ("a hipotese foi falsificada") deve ser celebrado, nao enterrado. Documente o que nao funcionou com a mesma rigorosidade do que funcionou. Organizacoes que aprendem sistematicamente com fracassos inovam mais rapido do que as que so registram sucessos.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Erros comuns -->
+    <section id="topico-6" data-inema-topic="modulo-2-6#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">🚫 Erros Comuns em OKRs de Inovacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-6-t6-p1">
+        OKRs sao faceis de entender e dificeis de executar bem. Os tres erros mais destrutivos — KR virando lista de tarefas, sandbagging e excesso de OKRs — sao tambem os mais comuns. Identificar e corrigir cada um e o que separa times que evoluem com OKRs daqueles que os abandonam apos dois ciclos.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Erros a evitar</h4>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>KR e uma <strong>lista de tarefas</strong> ("realizar 3 workshops")</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Sandbagging</strong>: metas tao faceis que o resultado e 100% garantido</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>OKR demais</strong>: mais de 5 objetivos por time por ciclo</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Top-down puro</strong>: lideranca impoe OKRs sem participacao do time</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Set and forget</strong>: definir no inicio e esquecer ate o fim</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Como corrigir</h4>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Perguntar "isso mede resultado ou atividade?" — KR deve medir resultado</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Calibrar com "se atingirmos isso facilmente, o objetivo era grande o suficiente?"</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Regra de Grove: maximo 3-5 objetivos, 3-5 KRs cada. Foco e escassez intencional.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>60-70% dos OKRs vem de baixo para cima — time propoe, lideranca alinha</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Check-ins semanais de 15 minutos mantem vivos e relevantes</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Detalhe: KR como lista de tarefas -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🔎</span> Anatomia do Erro: KR como Lista de Tarefas
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m2-6-t6-tarefa">
+          O erro mais frequente: escrever atividades como se fossem resultados. A diferenca e sutil mas fundamental. Uma <strong class="text-blue-400">atividade</strong> descreve o que voce vai fazer. Um <strong class="text-blue-400">resultado</strong> descreve o que vai mudar no mundo por causa do que voce fez. Voce pode completar 100% das atividades e nao ter movido a agulha em nada.
+        </p>
+        <div class="bg-dark-700/50 rounded-lg p-4 font-mono text-sm mb-4">
+          <p class="text-red-400 mb-1">// Atividade (errado):</p>
+          <p class="text-neutral-300 mb-3">KR: "Implementar programa de ideias com caixa de sugestoes digital"</p>
+          <p class="text-blue-400 mb-1">// Resultado (correto):</p>
+          <p class="text-neutral-300">KR: "Aumentar submissao de ideias de 12 para 80/mes e taxa de implementacao de 2% para 15%"</p>
+        </div>
+        <p class="text-neutral-400 text-sm">Teste rapido: se o KR comeca com verbo de acao ("implementar", "criar", "lancar", "realizar"), provavelmente e tarefa. Se comeca com metrica atual e meta ("de X para Y"), provavelmente e resultado.</p>
+      </div>
+
+      <!-- Detalhe: Sandbagging -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">🎯</span> Sandbagging: O Veneno Silencioso
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-6-t6-sand">
+          Sandbagging e quando individuos ou times definem metas deliberadamente baixas para garantir que serao atingidas. Em culturas onde OKR esta ligado a performance e remuneracao, ou onde falhar e punido, sandbagging emerge naturalmente como comportamento de autoprote-cao. O resultado: a empresa inteira parece estar atingindo 100% dos OKRs, mas nao esta crescendo. O sistema virou teatro.
+        </p>
+        <div class="bg-primary/10 rounded-lg border border-primary/30 p-4">
+          <p class="text-sm text-primary font-semibold mb-1">💡 Como diagnosticar sandbagging</p>
+          <p class="text-sm text-neutral-300">Se um time atinge consistentemente 90-100% dos OKRs trimestre a trimestre, nao celebre — investigue. Pergunte: "Se vocessem mais confianca para tentar, que meta escreveriam?" A resposta revela o OKR real.</p>
+        </div>
+      </div>
+
+      <!-- Detalhe: OKR demais -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">📋</span> OKR Demais: Tudo e Prioridade = Nada e Prioridade
+        </h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-6-t6-excesso">
+          Grove foi explicito: o ponto dos OKRs e criar foco atraves da escassez. Quando um time tem 10 objetivos e 40 KRs, o framework perdeu sua funcao. A regra pratica de Doerr e Grove: <strong class="text-blue-400">maximo 3-5 objetivos por nivel (empresa, time, individuo) com 3-5 KRs cada</strong>. Se voce nao consegue listar seus OKRs de memoria, voce tem OKRs demais. A dificuldade de escolher o que cortar e onde o pensamento estrategico acontece de verdade.
+        </p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">OKRs nasceram na Intel com Andy Grove</strong>
+              <span class="text-neutral-400"> — John Doerr levou ao Google em 1999 e popularizou globalmente com "Measure What Matters"</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Objetivo e qualitativo e inspiracional; KR e mensuravel e verificavel</strong>
+              <span class="text-neutral-400"> — a distincao e o coracao do sistema</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Moonshot OKRs puxam inovacao real</strong>
+              <span class="text-neutral-400"> — atingir 60-70% de uma meta ambiciosa e sucesso, nao fracasso</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Cadencia semanal e o que torna OKRs vivos</strong>
+              <span class="text-neutral-400"> — check-ins rapidos, revisao de meio ciclo, retrospectiva com scoring</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Aprendizado validado e outcome de inovacao</strong>
+              <span class="text-neutral-400"> — KRs de discovery medem hipoteses, nao apenas entregas</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Evite: KR como tarefa, sandbagging e OKR demais</strong>
+              <span class="text-neutral-400"> — os tres erros que transformam OKR em burocracia sem impacto</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-blue-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">2.7 - Criatividade Sistematica: ferramentas para gerar inovacao de forma repetivel</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-2-7.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">
+            2.7 - Criatividade Sistematica &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

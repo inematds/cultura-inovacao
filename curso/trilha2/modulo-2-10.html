@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Rituais de Inovacao | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
+      <span>/</span>
+      <span class="text-blue-400">Modulo 2.10</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MODULO 2.10</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#128293; Rituais de Inovacao</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Os ritmos repetidos que mantem a inovacao viva no dia a dia. Cultura nao e o que voce declara — e o que voce pratica toda semana. Aprenda a desenhar, instalar e manter rituais que realmente pegam.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">50</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="2-10" data-inema-track="2">
+
+    <!-- TOPICO 1: Por que rituais -->
+    <section id="topico-1" data-inema-topic="modulo-2-10#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#129504; Por que Rituais — Cultura se Constroi por Repeticao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t1-p1">
+        Toda organizacao que sustenta inovacao ao longo do tempo compartilha um traco invisivel: ela tem <strong class="text-blue-400">rituais deliberados</strong>. Nao slogans em parede, nao valores em PDF, mas comportamentos repetidos que criam expectativas, reforcam normas e tornam a inovacao parte do tecido operacional. Sem ritmo, qualquer iniciativa de inovacao definha em semanas.
+      </p>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t1-p2">
+        O neurologista Antonio Damasio mostrou que decisoes e habitos sao inseparaveis: o cerebro codifica rotinas como economia cognitiva. Quando um time sabe que toda segunda-feira as 9h existe um momento dedicado a experimentos, ele para de tratar inovacao como extra e comeca a planejar para ela. O ritual cria <strong class="text-blue-400">expectativa estrutural</strong> — e expectativa estrutural vira cultura.
+      </p>
+
+      <!-- SVG: ciclo de rituais -->
+      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 900 260" class="w-full h-auto" role="img" aria-label="Diagrama ciclico mostrando como rituais de inovacao se reforcam: Repeticao leva a Habito, Habito a Expectativa, Expectativa a Cultura, Cultura a mais Repeticao">
+          <defs>
+            <linearGradient id="m2-10-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/>
+            </linearGradient>
+            <linearGradient id="m2-10-grad2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#0ea5e9"/>
+            </linearGradient>
+            <filter id="m2-10-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m2-10-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+              <circle cx="1.2" cy="1.2" r="1.2" fill="#3b82f6" opacity="0.10"/>
+            </pattern>
+            <marker id="m2-10-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"/></marker>
+          </defs>
+          <rect x="0" y="0" width="900" height="260" fill="url(#m2-10-grid)"/>
+
+          <!-- Nos do ciclo: 4 nos em arco -->
+          <!-- No 1: Repeticao (left) -->
+          <ellipse cx="130" cy="130" rx="90" ry="42" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5" filter="url(#m2-10-glow)" class="wf-a"/>
+          <text x="130" y="125" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="700">Repeticao</text>
+          <text x="130" y="143" text-anchor="middle" fill="#93c5fd" font-size="10">ritual semanal</text>
+
+          <!-- No 2: Habito (top) -->
+          <ellipse cx="340" cy="60" rx="90" ry="42" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5" filter="url(#m2-10-glow)" class="wf-a"/>
+          <text x="340" y="55" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="700">Habito</text>
+          <text x="340" y="73" text-anchor="middle" fill="#93c5fd" font-size="10">automatismo cognitivo</text>
+
+          <!-- No 3: Expectativa (right) -->
+          <ellipse cx="580" cy="130" rx="100" ry="42" fill="#164e63" stroke="#38bdf8" stroke-width="1.5" filter="url(#m2-10-glow)" class="wf-a"/>
+          <text x="580" y="125" text-anchor="middle" fill="#38bdf8" font-size="13" font-weight="700">Expectativa</text>
+          <text x="580" y="143" text-anchor="middle" fill="#7dd3fc" font-size="10">estrutural do time</text>
+
+          <!-- No 4: Cultura (bottom) -->
+          <ellipse cx="340" cy="200" rx="90" ry="42" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5" filter="url(#m2-10-glow)" class="wf-a"/>
+          <text x="340" y="195" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="700">Cultura</text>
+          <text x="340" y="213" text-anchor="middle" fill="#93c5fd" font-size="10">"e assim que fazemos"</text>
+
+          <!-- Centro: resultado -->
+          <ellipse cx="800" cy="130" rx="80" ry="38" fill="#0f2027" stroke="#38bdf8" stroke-width="2" filter="url(#m2-10-glow)"/>
+          <text x="800" y="125" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="700">Inovacao</text>
+          <text x="800" y="141" text-anchor="middle" fill="#7dd3fc" font-size="10">sustentavel</text>
+
+          <!-- Setas do ciclo -->
+          <path d="M218,95 Q280,55 250,65" stroke="#60a5fa" stroke-width="1.8" fill="none" marker-end="url(#m2-10-ah)"/>
+          <path d="M425,78 Q510,80 482,108" stroke="#60a5fa" stroke-width="1.8" fill="none" marker-end="url(#m2-10-ah)"/>
+          <path d="M482,152 Q510,180 425,190" stroke="#60a5fa" stroke-width="1.8" fill="none" marker-end="url(#m2-10-ah)"/>
+          <path d="M250,195 Q180,180 178,170" stroke="#60a5fa" stroke-width="1.8" fill="none" marker-end="url(#m2-10-ah)"/>
+          <!-- Seta cultura -> inovacao -->
+          <line x1="680" y1="130" x2="718" y2="130" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#m2-10-ah)" stroke-dasharray="4,3"/>
+
+          <!-- Labels das setas -->
+          <text x="272" y="58" text-anchor="middle" fill="#94a3b8" font-size="9">reforca</text>
+          <text x="510" y="95" text-anchor="middle" fill="#94a3b8" font-size="9">gera</text>
+          <text x="510" y="178" text-anchor="middle" fill="#94a3b8" font-size="9">consolida</text>
+          <text x="198" y="193" text-anchor="middle" fill="#94a3b8" font-size="9">demanda</text>
+        </svg>
+      </div>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">&#128202;</span> Por que a maioria falha sem rituais
+        </h3>
+        <ul class="space-y-2 text-neutral-300">
+          <li><strong>74%</strong> dos programas de inovacao corporativa nao sobrevivem ao segundo ano (BCG, 2023) — ausencia de cadencia ritualizada e o fator #1</li>
+          <li><strong>3x</strong> maior retencao de aprendizado quando praticas sao repetidas em cadencia semanal vs. treinamentos pontuais (MIT Sloan, 2022)</li>
+          <li><strong>Google, Amazon e Pixar</strong> nomeiam explicitamente seus rituais: "Weekly 1:1", "6-pager review", "Dailies" — nao sao coincidencias, sao infraestrutura cultural deliberada</li>
+        </ul>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">&#128336;</div>
+          <h4 class="font-semibold text-blue-400 text-sm mb-1">Cadencia</h4>
+          <p class="text-xs text-neutral-400">Frequencia previsivel que o cerebro possa antecipar</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">&#127919;</div>
+          <h4 class="font-semibold text-blue-400 text-sm mb-1">Intencao</h4>
+          <p class="text-xs text-neutral-400">Cada ritual serve a um proposito explicito e mensuravel</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-4 text-center">
+          <div class="text-2xl mb-2">&#128101;</div>
+          <h4 class="font-semibold text-blue-400 text-sm mb-1">Participacao</h4>
+          <p class="text-xs text-neutral-400">Rituais exigem presenca ativa, nao audiencia passiva</p>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Daily/weekly de inovacao -->
+    <section id="topico-2" data-inema-topic="modulo-2-10#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#128197; Daily e Weekly de Inovacao e Quadros Visiveis</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t2-p1">
+        O daily scrum do Agile foi concebido para sincronizacao — mas pode ser estendido para uma dimensao de exploracao. Empresas como <strong class="text-blue-400">Spotify e ING Bank</strong> introduziram um bloco semanal chamado "Innovation Stand-up": 15 minutos cada sexta onde qualquer membro do time compartilha uma observacao de usuario, um experimento tentado ou um aprendizado de falha. Nao e reuniao de status — e ritual de amplificacao de sinal fraco.
+      </p>
+
+      <!-- Timeline: estrutura do weekly de inovacao -->
+      <div class="space-y-4 mb-8">
+        <h3 class="text-lg font-semibold text-blue-400 mb-2 flex items-center"><span class="mr-2">&#128336;</span> Estrutura do Weekly de Inovacao (15 min)</h3>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-xs">0-3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Check-in de sinal</h4>
+            <p class="text-sm text-neutral-400">Cada pessoa responde: "Qual foi a observacao mais interessante que voce fez sobre um usuario ou processo esta semana?" Sem julgamento, sem debate ainda.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-xs">3-10</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Experimento da semana</h4>
+            <p class="text-sm text-neutral-400">Um voluntario apresenta em 5 min: hipotese testada, metodo, resultado (mesmo negativo). Quadro visivel atualizado ao vivo.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-xs">10-15</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Comprometimento de proxima acao</h4>
+            <p class="text-sm text-neutral-400">Cada pessoa nomeia UM micro-experimento ou aprendizado que vai perseguir na proxima semana. Fica no quadro.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t2-p2">
+        Os <strong class="text-blue-400">quadros visiveis</strong> — fisicos ou digitais — sao o segundo pilar. O Innovation Board da Toyota (parte do Toyota Kata) e um exemplo classico: um quadro com quatro colunas (Desafio atual, Condicao-alvo, Condicao atual, Obstaculos e experimentos em curso) visivel para toda a equipe. A visibilidade cria responsabilidade social sem hierarquia — as pessoas se cobram por ver o quadro parado.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5">
+          <h4 class="font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">&#10003;</span> Fazer no quadro visivel</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Hipoteses ativas com dono e data limite</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Resultados de experimentos (incluindo falhas)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Aprendizados acumulados por sprint</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Metricas de inovacao atualizadas semanalmente</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h4 class="font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">&#10007;</span> Evitar no quadro visivel</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Cartoes parados por mais de 2 semanas sem update</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Status de projeto operacional (confunde inovacao com entrega)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Quadro que so o lider atualiza</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Metricas lagging (vendas) sem metricas leading (experimentos)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Demo Days e Showcases -->
+    <section id="topico-3" data-inema-topic="modulo-2-10#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#127881; Demo Days e Showcases</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t3-p1">
+        O Demo Day — popularizado pela Y Combinator — e uma das ferramentas mais poderosas de ritualizacao de inovacao corporativa. Quando times sabem que a cada 6-8 semanas apresentarao o que construiram e aprenderam para uma audiencia real (pares, lideranca, usuarios), o trabalho ganha <strong class="text-blue-400">gravidade e proposito</strong>. Nao e apresentacao de PowerPoint — e demonstracao de prototipo funcionando, dados reais e aprendizado honesto.
+      </p>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">&#128161;</span> Anatomia de um Demo Day eficaz
+        </h3>
+        <ul class="space-y-3 text-neutral-300">
+          <li class="flex items-start space-x-2">
+            <span class="text-primary mt-1">&#8226;</span>
+            <span><strong class="text-primary">Formato fixo por time (5+3 min):</strong> 5 minutos de demo ao vivo + 3 de Q&A. Nenhum slide de contexto — voce comeca mostrando o produto/experimento funcionando.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-primary mt-1">&#8226;</span>
+            <span><strong class="text-primary">Metricas obrigatorias:</strong> qual era a hipotese, como foi testada, qual o resultado mensuravel e o que o time aprendeu. Sem esses quatro, a apresentacao nao e aceita.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-primary mt-1">&#8226;</span>
+            <span><strong class="text-primary">Audiencia mista:</strong> times de produto, engenharia, negocios e pelo menos um usuario real ou proxy (representante de CS ou vendas com relato direto).</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-primary mt-1">&#8226;</span>
+            <span><strong class="text-primary">Ritual pos-demo:</strong> "Decisao em 48h" — a lideranca comunica em ate 2 dias se o projeto recebe mais recursos, e pivotado ou descontinuado. Transparencia na decisao e parte do contrato cultural.</span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t3-p2">
+        Empresas como <strong class="text-blue-400">Intuit, Adobe e Nubank</strong> realizam Demo Days trimestrais abertos a toda a empresa. A Intuit relata que seu programa "Lean Start-In" — que culmina em demos internos — gerou mais de 150 produtos internos lancados, com taxa de adocao 4x maior que iniciativas tradicionais de P&D. O efeito secundario e igualmente valioso: visibilidade para talentos que de outra forma seriam invisiveis na hierarquia.
+      </p>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">&#9888;&#65039;</span> Armadilha: o Demo Day Vazio
+        </h3>
+        <p class="text-neutral-300">Se o Demo Day se torna um evento de marketing interno — bonito, sem tensao real, sem decisao — ele vira teatro. O sinal de alerta: todos os projetos sao celebrados igualmente, ninguem e descontinuado, nenhum recurso e realocado. Quando tudo e excelente, nada e excelente. O ritual so funciona se a decisao pos-demo tem consequencias reais.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Retrospectivas e post-mortems sem culpa -->
+    <section id="topico-4" data-inema-topic="modulo-2-10#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#128203; Retrospectivas e Post-Mortems Sem Culpa</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t4-p1">
+        A retrospectiva — herdada do Agile — e o ritual mais subestimado de inovacao. Quando bem executada, ela converte falha em capital organizacional. O problema e que a maioria das retrospectivas corporativas e um teatro de positividade ou uma sessao de reclamacao sem acao. O antidoto e o modelo <strong class="text-blue-400">blameless post-mortem</strong>, sistematizado pelo SRE (Site Reliability Engineering) do Google e adotado por organizacoes de alta performance como Netflix, Etsy e Basecamp.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">&#128196;</span> O Modelo Google SRE de Post-Mortem
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m2-10-t4-goog">O framework pressupoe que pessoas geralmente fazem o melhor que podem com as informacoes que tinham. Portanto, a analise mira em <strong class="text-blue-400">sistemas e processos</strong>, nao em individuos. O documento padrao do Google SRE tem 5 secoes obrigatorias:</p>
+        <div class="space-y-3">
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-bold">1</span>
+            <div><strong class="text-white">Linha do tempo:</strong> <span class="text-neutral-300">sequencia factual dos eventos, sem interpretacao moral.</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-bold">2</span>
+            <div><strong class="text-white">Causa raiz (5 Porques):</strong> <span class="text-neutral-300">investigacao sistematica ate a causa estrutural, nao o sintoma.</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-bold">3</span>
+            <div><strong class="text-white">O que foi bem:</strong> <span class="text-neutral-300">preservar o que funcionou — o post-mortem nao e so autopsia de falha.</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-bold">4</span>
+            <div><strong class="text-white">Acoes corretivas:</strong> <span class="text-neutral-300">cada acao tem dono, prazo e metrica de sucesso. Sem isso, e apenas reflexao.</span></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-bold">5</span>
+            <div><strong class="text-white">Publicacao interna:</strong> <span class="text-neutral-300">o documento e compartilhado amplamente — a vulnerabilidade publica cria confianca e acelera o aprendizado organizacional.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t4-p2">
+        A cadencia importa tanto quanto o conteudo. Times de alta performance fazem retrospectivas ao final de cada sprint (2 semanas) e post-mortems formais para qualquer evento significativo em ate 72h do ocorrido — quando a memoria ainda esta fresca. A Etsy publicou pesquisa mostrando que times que praticam post-mortems blameless tem <strong class="text-blue-400">26% menos incidentes recorrentes</strong> do que times que praticam analise de culpa (HBR, 2021).
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5">
+          <h4 class="font-semibold text-blue-400 mb-3">&#10003; Retro eficaz</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Facilitador neutro (idealmente rotativo)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Formato "Start / Stop / Continue" com votacao</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Maxima 3 acoes por retro — foco sobre volume</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Review das acoes da retro anterior como abertura</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h4 class="font-semibold text-red-400 mb-3">&#10007; Retro que falha</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Lider como facilitador (inibe honestidade)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>20 acoes sem dono ou prazo</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Sem revisao das acoes anteriores</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Cancelada quando o sprint foi "tranquilo"</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Hackathons e ship-it days bem feitos -->
+    <section id="topico-5" data-inema-topic="modulo-2-10#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#128293; Hackathons e Ship-It Days Bem Feitos</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t5-p1">
+        O hackathon mal executado e um dos rituais mais comuns e mais danosos para a cultura de inovacao. Ele gera empolgacao pontual, consome energia enorme, e raramente produz algo que vai para producao — o que envia a mensagem subliminar de que inovacao e divertida mas nao e para valer. O hackathon <strong class="text-blue-400">bem executado</strong> e o oposto: ele tem continuidade programada, criterios claros de avaliacao, e time dedicado para executar os melhores projetos.
+      </p>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-4 flex items-center">
+          <span class="mr-2">&#128161;</span> O modelo "20% Time" do Google e o Ship-It do Atlassian
+        </h3>
+        <p class="text-neutral-300 mb-4" data-inema-block="m2-10-t5-goo">O "20% Time" do Google (hoje reformulado) produziu Gmail, Google News e AdSense. O modelo nao era livre: existia um processo de pitch, criterios de alinhamento estrategico e, crucialmente, a expectativa de que o projeto seria "shippado" — colocado em producao ou descartado com aprendizado documentado.</p>
+        <p class="text-neutral-300" data-inema-block="m2-10-t5-atl">O <strong class="text-primary">ShipIt</strong> do Atlassian (antes chamado FedEx Day: "entregar algo em 24h") opera em cadencia trimestral. Regras: projeto deve resolver um problema real de usuario ou do time interno, time de 2-4 pessoas, 24h para construir algo demonstravel, pitch de 2 min na manha seguinte. Taxa de adocao em producao: mais de 35% dos projetos vira feature ou ferramenta interna dentro de 6 meses.</p>
+      </div>
+
+      <!-- Timeline: anatomia de um hackathon que funciona -->
+      <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center"><span class="mr-2">&#128336;</span> Antes / Durante / Depois — o que separa o bom do teatro</h3>
+      <div class="space-y-4 mb-8">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-xs">PRE</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Antes (2 semanas antes)</h4>
+            <ul class="space-y-1 text-sm text-neutral-400">
+              <li>&#8226; Definir problema-alvo ou espaco de oportunidade (nao "qualquer coisa")</li>
+              <li>&#8226; Criterios de avaliacao publicados: impacto no usuario, viabilidade tecnica, potencial de escala</li>
+              <li>&#8226; Times mistos pre-formados ou regra de formacao (ex: obrigatorio ter pelo menos 1 tecnico e 1 de negocio)</li>
+              <li>&#8226; Mentores confirmados com disponibilidade real durante o evento</li>
+            </ul>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-xs">DUR</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Durante (24-48h)</h4>
+            <ul class="space-y-1 text-sm text-neutral-400">
+              <li>&#8226; Check-in obrigatorio na metade: "o que voce aprendeu ate agora?" — forca pivotar cedo</li>
+              <li>&#8226; Nenhuma apresentacao de slide no pitch final — apenas demo funcionando</li>
+              <li>&#8226; Jurados incluem usuarios reais ou proxies, nao so lideranca interna</li>
+            </ul>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-xs">POS</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Depois (critico — a maioria falha aqui)</h4>
+            <ul class="space-y-1 text-sm text-neutral-400">
+              <li>&#8226; Top 3 projetos recebem "Innovation Budget" pre-aprovado para sprint de validacao (4 semanas)</li>
+              <li>&#8226; Time vencedor tem 10% do tempo liberado por 2 sprints para continuar o projeto</li>
+              <li>&#8226; Todos os outros projetos: aprendizados documentados e publicados na wiki interna</li>
+              <li>&#8226; Revisao em 6 meses: quantos chegaram a producao? Metrica publicada para o proximo hackathon.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Como instituir rituais que pegam -->
+    <section id="topico-6" data-inema-topic="modulo-2-10#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#127757; Como Instituir Rituais que Pegam — e Nao Viram Teatro</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t6-p1">
+        A diferenca entre um ritual que entra na cultura e um que morre em tres meses esta em quatro variaveis: <strong class="text-blue-400">clareza de proposito, baixo custo de entrada, reforco social imediato e consequencias reais</strong>. BJ Fogg (Stanford Persuasive Tech Lab) demonstrou no modelo de "tiny habits" que novos comportamentos so persistem quando sao ancoratos em rotinas existentes e tem recompensa imediata — nao adiada. O mesmo vale para rituais organizacionais.
+      </p>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">&#128200;</span> Framework HABIT para rituais corporativos
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+          <div class="bg-dark-800 rounded-lg p-3 text-center border border-dark-600">
+            <div class="text-xl font-bold text-blue-400 mb-1">H</div>
+            <div class="text-xs font-semibold text-white mb-1">Hook</div>
+            <p class="text-xs text-neutral-400">Ancora em rotina ja existente (standup, all-hands, sprint review)</p>
+          </div>
+          <div class="bg-dark-800 rounded-lg p-3 text-center border border-dark-600">
+            <div class="text-xl font-bold text-blue-400 mb-1">A</div>
+            <div class="text-xs font-semibold text-white mb-1">Action</div>
+            <p class="text-xs text-neutral-400">Acao minima executavel em menos de 15 min</p>
+          </div>
+          <div class="bg-dark-800 rounded-lg p-3 text-center border border-dark-600">
+            <div class="text-xl font-bold text-blue-400 mb-1">B</div>
+            <div class="text-xs font-semibold text-white mb-1">Badge</div>
+            <p class="text-xs text-neutral-400">Reconhecimento publico imediato para quem participa</p>
+          </div>
+          <div class="bg-dark-800 rounded-lg p-3 text-center border border-dark-600">
+            <div class="text-xl font-bold text-blue-400 mb-1">I</div>
+            <div class="text-xs font-semibold text-white mb-1">Impact</div>
+            <p class="text-xs text-neutral-400">Resultado visivel e mensuravel em ate 2 semanas</p>
+          </div>
+          <div class="bg-dark-800 rounded-lg p-3 text-center border border-dark-600">
+            <div class="text-xl font-bold text-blue-400 mb-1">T</div>
+            <div class="text-xs font-semibold text-white mb-1">Tenure</div>
+            <p class="text-xs text-neutral-400">90 dias de pratica antes de avaliar eficacia — resistir ao impulso de mudar cedo</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-10-t6-p2">
+        O erro mais comum ao instalar um ritual e comecar grande. Um programa de inovacao com 3 rituais simultaneos (weekly de inovacao + demo day + retro aprimorada) consume capacidade de atencao que a maioria dos times nao tem. A recomendacao baseada em pesquisa (Kotter, "Accelerate", 2014): comece com <strong class="text-blue-400">um unico ritual de baixo custo</strong>, pratique por 90 dias, meca o impacto, e so entao adicione o segundo. Rituais em pilha sem maturacao viram burocracia.
+      </p>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">&#128161;</span> O Teste dos 3 Meses
+        </h3>
+        <p class="text-neutral-300 mb-3">Apos 90 dias de um novo ritual, faca essas perguntas ao time:</p>
+        <ul class="space-y-2 text-neutral-300">
+          <li class="flex items-start space-x-2"><span class="text-primary mt-1">&#8226;</span><span>Se cancelassemos este ritual, alguem reclamaria? (teste de valor real)</span></li>
+          <li class="flex items-start space-x-2"><span class="text-primary mt-1">&#8226;</span><span>Conseguimos nomear 3 decisoes que mudaram por causa dele?</span></li>
+          <li class="flex items-start space-x-2"><span class="text-primary mt-1">&#8226;</span><span>O ritual ainda precisa do lider para acontecer, ou ja e autogerido?</span></li>
+          <li class="flex items-start space-x-2"><span class="text-primary mt-1">&#8226;</span><span>Pessoas fora do time original pediram para participar?</span></li>
+        </ul>
+        <p class="text-neutral-400 text-sm mt-3">Se a resposta for "nao" para a maioria, o ritual nao pegou — redesenhe antes de insistir. Persistir em ritual que nao funciona e pior do que nao ter ritual: ele imuniza a organizacao contra tentativas futuras.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5">
+          <h4 class="font-semibold text-blue-400 mb-3">&#10003; Rituais que pegam</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Comecam pequenos e crescem organicamente</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Tem "dono" no time, nao so na lideranca</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Geraram pelo menos uma decisao visivel</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Sao defendidos pelo time quando ameacados</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400">&#10003;</span><span>Evoluem com o time — nao sao congelados no formato inicial</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h4 class="font-semibold text-red-400 mb-3">&#10007; Rituais que viram teatro</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Lancados com fanfarra e deck de 30 slides</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Dependem do lider para acontecer</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Nenhuma decisao rastreavel decorreu deles</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Participacao obrigatoria por politica, nao por valor</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Formato imutavel desde o dia 1</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">&#9888;&#65039;</span> Erro Critico: Rituais sem Poder
+        </h3>
+        <p class="text-neutral-300">O ritual mais bem desenhado falha se as pessoas que participam nao tem poder para agir nas descobertas. Um weekly de inovacao onde o time identifica uma oportunidade e a lideranca nunca autoriza o experimento cria cinismo — o oposto de cultura de inovacao. Rituais devem vir acompanhados de <strong class="text-red-400">autonomia proporcional</strong>: se voce pede que o time identifique problemas, deve dar a eles o poder de testar solucoes com um orcamento minimo pre-aprovado.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">&#128203;</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Cultura se constroi por repeticao, nao por declaracao</strong>
+              <span class="text-neutral-400"> — rituais sao a infraestrutura invisivel da inovacao sustentavel</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Daily/weekly de inovacao + quadro visivel</strong>
+              <span class="text-neutral-400"> — cadencia curta e visibilidade publica criam responsabilidade sem hierarquia</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Demo Days exigem consequencias reais</strong>
+              <span class="text-neutral-400"> — celebrar tudo igualmente e a morte do ritual; decisao em 48h e o contrato cultural</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Post-mortems blameless convertem falha em capital</strong>
+              <span class="text-neutral-400"> — o modelo Google SRE: sistemas, nao pessoas; publicacao interna como norma</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Comece com um ritual, pratique 90 dias, meca e so entao escale</strong>
+              <span class="text-neutral-400"> — rituais em pilha sem maturacao viram burocracia e imunizam contra inovacao</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-blue-400 mb-2">Proximo Modulo — Trilha 3:</h3>
+          <p class="text-neutral-300">3.1 - Programa Corporativo: como estruturar um programa de inovacao de ponta a ponta dentro de uma grande organizacao</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="../../index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Inicio
+          </a>
+          <a href="../trilha3/modulo-3-1.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">
+            3.1 - Programa Corporativo &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

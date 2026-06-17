@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Feedback Loops | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
+      <span>/</span>
+      <span class="text-blue-400">Modulo 2.9</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MODULO 2.9</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#128257; Feedback Loops</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Encurtar o ciclo entre fazer e aprender e a alavanca mais poderosa da inovacao. Times que aprendem rapido vencem times que apenas executam rapido. Aqui voce aprende a projetar, medir e acelerar seus loops de aprendizado.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">40</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="2-9" data-inema-track="2">
+
+    <!-- TOPICO 1: O ciclo construir-medir-aprender -->
+    <section id="topico-1" data-inema-topic="modulo-2-9#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#9881; O ciclo construir-medir-aprender</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-9-t1-p1">
+        O ciclo <strong class="text-blue-400">Construir-Medir-Aprender</strong> e o nucleo do movimento Lean Startup, descrito por Eric Ries em 2011. A ideia fundamental e simples e radical ao mesmo tempo: em vez de planejar longamente antes de agir, voce constroi o menor experimento possivel, mede o que acontece e aprende com o resultado — repetindo o processo o mais rapido possivel. A velocidade do loop, nao a perfeicao de cada etapa, e o que diferencia empresas que inovam das que ficam paradas.
+      </p>
+
+      <!-- SVG futurista: ciclo CML -->
+      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-4 mb-8">
+        <svg viewBox="0 0 700 260" class="w-full h-auto" role="img" aria-label="Diagrama do ciclo Construir-Medir-Aprender com setas de feedback" font-family="Inter,sans-serif">
+          <defs>
+            <linearGradient id="m2-9-grad-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.7"/>
+            </linearGradient>
+            <linearGradient id="m2-9-grad-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.7"/>
+            </linearGradient>
+            <filter id="m2-9-glow">
+              <feGaussianBlur stdDeviation="1.8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m2-9-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+              <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#60a5fa" stroke-width="0.18" opacity="0.25"/>
+            </pattern>
+            <marker id="m2-9-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#38bdf8"/>
+            </marker>
+          </defs>
+          <!-- fundo grid -->
+          <rect width="700" height="260" fill="url(#m2-9-grid)" rx="12"/>
+          <rect width="700" height="260" fill="#0e1622" fill-opacity="0.55" rx="12"/>
+
+          <!-- nos do ciclo -->
+          <!-- CONSTRUIR -->
+          <rect x="40" y="90" width="160" height="80" rx="12" fill="#0e1622" stroke="url(#m2-9-grad-blue)" stroke-width="2" filter="url(#m2-9-glow)" class="wf-a"/>
+          <text x="120" y="122" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="600">CONSTRUIR</text>
+          <text x="120" y="142" text-anchor="middle" fill="#9ca3af" font-size="11">MVP / Prototipo</text>
+          <text x="120" y="158" text-anchor="middle" fill="#9ca3af" font-size="11">Experimento minimo</text>
+
+          <!-- MEDIR -->
+          <rect x="270" y="90" width="160" height="80" rx="12" fill="#0e1622" stroke="url(#m2-9-grad-cyan)" stroke-width="2" filter="url(#m2-9-glow)" class="wf-a"/>
+          <text x="350" y="122" text-anchor="middle" fill="#38bdf8" font-size="13" font-weight="600">MEDIR</text>
+          <text x="350" y="142" text-anchor="middle" fill="#9ca3af" font-size="11">Dados reais</text>
+          <text x="350" y="158" text-anchor="middle" fill="#9ca3af" font-size="11">Metricas acionaveis</text>
+
+          <!-- APRENDER -->
+          <rect x="500" y="90" width="160" height="80" rx="12" fill="#0e1622" stroke="url(#m2-9-grad-blue)" stroke-width="2" filter="url(#m2-9-glow)" class="wf-a"/>
+          <text x="580" y="122" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="600">APRENDER</text>
+          <text x="580" y="142" text-anchor="middle" fill="#9ca3af" font-size="11">Pivotar ou perseverar</text>
+          <text x="580" y="158" text-anchor="middle" fill="#9ca3af" font-size="11">Hipotese validada</text>
+
+          <!-- setas horizontais -->
+          <line x1="202" y1="130" x2="268" y2="130" stroke="#38bdf8" stroke-width="2" marker-end="url(#m2-9-arrow)"/>
+          <line x1="432" y1="130" x2="498" y2="130" stroke="#38bdf8" stroke-width="2" marker-end="url(#m2-9-arrow)"/>
+
+          <!-- seta de retorno (arco inferior) -->
+          <path d="M 580 172 Q 580 220 350 220 Q 120 220 120 172" fill="none" stroke="#60a5fa" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#m2-9-arrow)"/>
+          <text x="350" y="238" text-anchor="middle" fill="#60a5fa" font-size="11" font-weight="500">loop de aprendizado</text>
+
+          <!-- label velocidade -->
+          <text x="350" y="72" text-anchor="middle" fill="#e5e7eb" font-size="12" font-weight="600">Velocidade do loop = vantagem competitiva</text>
+        </svg>
+      </div>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">&#128161;</span> Por que o loop, nao a etapa isolada
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-9-t1-p2">
+          A maioria das empresas executa as tres etapas — constroem produtos, medem algo e extraem conclusoes. O problema e que fazem isso com ciclos de <strong class="text-blue-400">6 a 18 meses</strong>. Startups que vencem fazem o mesmo loop em dias ou semanas. Um estudo da McKinsey (2022) mostrou que empresas com ciclos de feedback inferiores a 2 semanas lancam features 4x mais rapido e tem 38% menos desperdicio em desenvolvimento. O loop nao e metodo — e cadencia.
+        </p>
+        <div class="grid grid-cols-3 gap-3 mt-4">
+          <div class="bg-dark-800/60 rounded-lg p-3 text-center">
+            <div class="text-2xl font-bold text-blue-400">4x</div>
+            <div class="text-xs text-neutral-400 mt-1">mais lancamentos com loops curtos</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-3 text-center">
+            <div class="text-2xl font-bold text-blue-400">38%</div>
+            <div class="text-xs text-neutral-400 mt-1">menos desperdicio (McKinsey 2022)</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-3 text-center">
+            <div class="text-2xl font-bold text-blue-400">&lt;2sem</div>
+            <div class="text-xs text-neutral-400 mt-1">ciclo alvo para times ageis</div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 2: Encurtar o loop -->
+    <section id="topico-2" data-inema-topic="modulo-2-9#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#9202; Encurtar o loop — reduzir lead time e tempo de ciclo</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-9-t2-p1">
+        <strong class="text-blue-400">Lead time</strong> e o tempo total desde a ideia ate o aprendizado validado. <strong class="text-blue-400">Tempo de ciclo</strong> e o tempo de execucao de uma unica etapa do loop. Ambos precisam ser reduzidos, mas por razoes diferentes: o lead time define quao rapido voce aprende algo novo; o tempo de ciclo define a capacidade de throughput do time. A disciplina de encurtar loops vem do Toyota Production System — o conceito de <em>kaizen</em> aplicado ao fluxo de informacao.
+      </p>
+
+      <!-- Timeline de reducao de lead time -->
+      <div class="mb-8">
+        <h3 class="text-base font-semibold text-blue-400 mb-4">Progressao tipica de maturidade em feedback</h3>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold">1</div>
+            <div class="bg-dark-800/50 rounded-xl border border-dark-600 p-4 flex-1">
+              <div class="font-semibold text-white mb-1">Nivel 0 — Ciclo anual</div>
+              <p class="text-sm text-neutral-400">Pesquisa de satisfacao uma vez por ano. Produto lancado sem feedback intermediario. Comum em empresas tradicionais.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold">2</div>
+            <div class="bg-dark-800/50 rounded-xl border border-dark-600 p-4 flex-1">
+              <div class="font-semibold text-white mb-1">Nivel 1 — Ciclo trimestral</div>
+              <p class="text-sm text-neutral-400">OKRs trimestrais com revisoes. Beta testing ao final de cada sprint. Ja elimina grande parte do desperdicio.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold">3</div>
+            <div class="bg-dark-800/50 rounded-xl border border-dark-600 p-4 flex-1">
+              <div class="font-semibold text-white mb-1">Nivel 2 — Ciclo semanal/bisemanal</div>
+              <p class="text-sm text-neutral-400">Sprints de 1-2 semanas com demo para usuarios reais. Metricas acompanhadas continuamente. Padrao de times de produto maduros.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold">4</div>
+            <div class="bg-dark-800/50 rounded-xl border border-dark-600 p-4 flex-1">
+              <div class="font-semibold text-white mb-1">Nivel 3 — Ciclo continuo (CD/CI)</div>
+              <p class="text-sm text-neutral-400">Deploys multiplos por dia. Observabilidade em tempo real. Feature flags para testes controlados. Referencia: Amazon (milhares de deploys/dia), Netflix.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-xl p-5 mb-6">
+        <h3 class="font-semibold text-primary mb-3">&#128161; Dica pratica — identifique o seu maior gargalo</h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-9-t2-p2">
+          Antes de tentar acelerar tudo, mapeie onde o tempo e perdido: aprovacoes? reunioes de alinhamento? espera por dados? Muitas empresas descobrem que <strong>80% do lead time</strong> fica em filas de espera — nao em trabalho ativo. Use um Value Stream Map simples: liste cada etapa do loop e anote o tempo de espera vs. tempo de execucao. Elimine filas antes de otimizar a execucao.
+        </p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 3: Feedback qualitativo vs quantitativo -->
+    <section id="topico-3" data-inema-topic="modulo-2-9#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#128202; Feedback qualitativo vs quantitativo</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-9-t3-p1">
+        Dados quantitativos dizem <strong class="text-blue-400">o que</strong> esta acontecendo; dados qualitativos dizem <strong class="text-blue-400">por que</strong>. Equipes que dependem apenas de metricas acabam otimizando para o numero errado — o fenomeno que Goodhart chamou de "quando uma medida vira alvo, ela deixa de ser uma boa medida". Times de produto de alto desempenho combinam as duas fontes de forma deliberada, usando quanti para detectar sinais e quali para interpretar causas.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+          <h4 class="font-bold text-blue-400 mb-4">&#128202; Feedback quantitativo</h4>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#10003;</span>
+              <span><strong>Escala:</strong> analisa milhoes de eventos simultaneamente</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#10003;</span>
+              <span><strong>Ferramentas:</strong> Mixpanel, Amplitude, Google Analytics, Metabase</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#10003;</span>
+              <span><strong>Ideal para:</strong> detectar anomalias, medir conversao, comparar variantes (A/B)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#10003;</span>
+              <span><strong>Limitacao:</strong> nao explica motivacao ou emocao por tras do comportamento</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-dark-800/50 rounded-xl border border-dark-600 p-6">
+          <h4 class="font-bold text-neutral-100 mb-4">&#128172; Feedback qualitativo</h4>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#10003;</span>
+              <span><strong>Profundidade:</strong> 5 entrevistas bem feitas valem mais que 500 respostas de survey</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#10003;</span>
+              <span><strong>Ferramentas:</strong> entrevistas, session recordings (Hotjar), testes de usabilidade</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#10003;</span>
+              <span><strong>Ideal para:</strong> entender o "por que", descobrir problemas nao previstos</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400 mt-0.5">&#10003;</span>
+              <span><strong>Limitacao:</strong> amostra pequena, sujeito a vies de selecao e entrevistador</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-xl p-5 mb-6">
+        <h3 class="font-semibold text-primary mb-3">&#128161; Framework QUANT + QUAL — sequencia recomendada</h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-9-t3-p2">
+          Use dados quantitativos para identificar <strong>onde</strong> ha um problema (ex.: abandono na etapa 3 do onboarding subiu 15%). Entao, faca 5-8 entrevistas ou session recordings para entender <strong>por que</strong> isso acontece. Com a hipotese de causa em maos, volte ao quanti para confirmar em escala. Esse ciclo "quanti-identifica / quali-explica / quanti-confirma" e o padrao usado por Spotify, Nubank e Airbnb em seus squads de produto.
+        </p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 4: A/B testing e experimentacao controlada -->
+    <section id="topico-4" data-inema-topic="modulo-2-9#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#128300; A/B testing e experimentacao controlada</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-9-t4-p1">
+        O teste A/B e a forma mais rigorosa de feedback quantitativo: voce divide o trafego em dois grupos, expoe cada um a uma variante diferente e mede qual produz o resultado desejado. A premissa fundamental e que <strong class="text-blue-400">correlacao nao e causalidade</strong> — o A/B test isola a variavel e permite inferencia causal. Amazon atribui parte relevante de seu crescimento de receita a uma cultura de testes: mais de 10.000 experimentos controlados rodaram so em 2023, segundo Jeff Wilke (ex-CEO Worldwide Consumer).
+      </p>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+          <h4 class="font-bold text-blue-400 mb-4">&#10003; Boas praticas de A/B testing</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400">&#10003;</span>
+              <span>Definir <strong>metrica primaria</strong> antes de rodar — nunca escolher apos ver os dados</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400">&#10003;</span>
+              <span>Calcular <strong>tamanho de amostra</strong> necessario antes de iniciar (80% de poder estatistico)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400">&#10003;</span>
+              <span>Rodar o teste por <strong>ciclos completos</strong> (ex.: semana inteira para capturar sazonalidade semanal)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400">&#10003;</span>
+              <span>Documentar <strong>hipotese, resultado e aprendizado</strong> em repositorio compartilhado</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Erros comuns que invalidam testes</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Peeking:</strong> parar o teste assim que ver resultado positivo antes do tempo previsto</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Multiplas variaveis:</strong> testar duas mudancas ao mesmo tempo sem controle multivariado</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>Amostra contaminada:</strong> usuarios que viram as duas variantes por bug de assignment</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span><strong>P-hacking:</strong> testar dezenas de metricas ate uma aparecer significativa por acaso</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800/50 rounded-xl border border-dark-600 p-5 mb-6">
+        <h3 class="text-base font-semibold text-blue-400 mb-3">Ferramentas e infraestrutura</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="bg-dark-700/60 rounded-lg p-3 text-center">
+            <div class="font-semibold text-white text-sm">Optimizely</div>
+            <div class="text-xs text-neutral-400 mt-1">Enterprise — full-stack experiments</div>
+          </div>
+          <div class="bg-dark-700/60 rounded-lg p-3 text-center">
+            <div class="font-semibold text-white text-sm">LaunchDarkly</div>
+            <div class="text-xs text-neutral-400 mt-1">Feature flags + gradual rollout</div>
+          </div>
+          <div class="bg-dark-700/60 rounded-lg p-3 text-center">
+            <div class="font-semibold text-white text-sm">GrowthBook</div>
+            <div class="text-xs text-neutral-400 mt-1">Open source, integra data warehouse</div>
+          </div>
+          <div class="bg-dark-700/60 rounded-lg p-3 text-center">
+            <div class="font-semibold text-white text-sm">Statsig</div>
+            <div class="text-xs text-neutral-400 mt-1">Startup-friendly, sequential testing</div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 5: Loops internos (retros) e externos (cliente) -->
+    <section id="topico-5" data-inema-topic="modulo-2-9#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#128101; Loops internos (retros) e externos (cliente)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-9-t5-p1">
+        Existem dois planos de feedback que precisam funcionar em paralelo: o <strong class="text-blue-400">loop interno</strong> — o time refletindo sobre seus proprios processos e entregas — e o <strong class="text-blue-400">loop externo</strong> — o mercado e o cliente respondendo ao produto. Negligenciar o loop interno leva a debito tecnico e burnout; negligenciar o loop externo leva a construir a coisa certa da forma errada, ou a coisa errada da forma certa. Times de alta performance cadenciam os dois de forma intencional.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Loop interno -->
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+          <h4 class="font-bold text-blue-400 mb-4">&#128101; Loop interno — o time melhora a si mesmo</h4>
+          <div class="space-y-4">
+            <div>
+              <div class="font-semibold text-white text-sm mb-1">Retrospectiva (Agile)</div>
+              <p class="text-neutral-400 text-sm">Ao fim de cada sprint: o que funcionou, o que nao funcionou, o que mudar. Formato Stop/Start/Continue ou 4Ls (Liked/Learned/Lacked/Longed For).</p>
+            </div>
+            <div>
+              <div class="font-semibold text-white text-sm mb-1">Pre-mortem</div>
+              <p class="text-neutral-400 text-sm">Antes do lancamento: "imaginem que fracassamos — o que deu errado?" Tecnica criada por Gary Klein, usada intensamente no Google.</p>
+            </div>
+            <div>
+              <div class="font-semibold text-white text-sm mb-1">Blameless post-mortem</div>
+              <p class="text-neutral-400 text-sm">Apos incidentes: analise de causa raiz sem culpar pessoas. Padrao da cultura SRE do Google e Etsy.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loop externo -->
+        <div class="bg-dark-800/50 rounded-xl border border-dark-600 p-6">
+          <h4 class="font-bold text-neutral-100 mb-4">&#127758; Loop externo — o mercado responde</h4>
+          <div class="space-y-4">
+            <div>
+              <div class="font-semibold text-white text-sm mb-1">NPS e CSAT continuos</div>
+              <p class="text-neutral-400 text-sm">Net Promoter Score e Customer Satisfaction medidos apos cada interacao chave, nao so anualmente. Benchmark SaaS B2B: NPS &gt; 40 e forte.</p>
+            </div>
+            <div>
+              <div class="font-semibold text-white text-sm mb-1">Painel de cliente / Customer Advisory Board</div>
+              <p class="text-neutral-400 text-sm">Grupo de 10-20 clientes estrategicos que dao feedback estruturado mensalmente. Usado por Salesforce e HubSpot para priorizar roadmap.</p>
+            </div>
+            <div>
+              <div class="font-semibold text-white text-sm mb-1">In-app feedback e co-criacao</div>
+              <p class="text-neutral-400 text-sm">Widgets de feedback contextual (Pendo, Hotjar), votacao de features (Canny, ProductBoard). O cliente participa do loop sem sair do produto.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 border border-primary/30 rounded-xl p-5 mb-6">
+        <h3 class="font-semibold text-primary mb-3">&#128161; Cadencia recomendada de loops</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
+          <div class="bg-dark-800/40 rounded-lg p-3 text-center">
+            <div class="font-bold text-white text-sm">Daily</div>
+            <div class="text-xs text-neutral-400 mt-1">Standup — impedimentos do dia</div>
+          </div>
+          <div class="bg-dark-800/40 rounded-lg p-3 text-center">
+            <div class="font-bold text-white text-sm">Semanal</div>
+            <div class="text-xs text-neutral-400 mt-1">Review de metricas + 1 entrevista cliente</div>
+          </div>
+          <div class="bg-dark-800/40 rounded-lg p-3 text-center">
+            <div class="font-bold text-white text-sm">Quinzenal</div>
+            <div class="text-xs text-neutral-400 mt-1">Sprint retro + demo para stakeholders</div>
+          </div>
+          <div class="bg-dark-800/40 rounded-lg p-3 text-center">
+            <div class="font-bold text-white text-sm">Trimestral</div>
+            <div class="text-xs text-neutral-400 mt-1">OKR review + Customer Advisory Board</div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- TOPICO 6: Vies de confirmacao e como evitar -->
+    <section id="topico-6" data-inema-topic="modulo-2-9#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#129504; Vies de confirmacao e como evitar</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-9-t6-p1">
+        O vies de confirmacao e a tendencia de buscar, interpretar e lembrar informacoes de forma que confirme crencas preexistentes. Em loops de feedback, ele e letal: voce cria um sistema sofisticado de coleta de dados e depois seleciona apenas os dados que validam o que ja acreditava. Daniel Kahneman descreve isso como o "Sistema 1" dominando a analise — a intuicao racionalizando resultados em vez de aprender com eles. Pesquisa da Harvard Business Review (2019) mostrou que <strong class="text-blue-400">68% dos times de produto</strong> descartam resultados negativos de testes A/B sem investigar as causas.
+      </p>
+
+      <!-- Alerta -->
+      <div class="bg-red-900/20 border border-red-500/30 rounded-xl p-5 mb-8">
+        <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+          <span class="mr-2">&#9888;</span> Armadilha — "Nossos usuarios adoram isso"
+        </h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-9-t6-p2">
+          O entrevistador ouve o que quer ouvir. O usuario que concorda e convidado a falar mais; o que discorda e interrompido ou reencaminhado. Times inteiros escolhem o segmento de usuario que ama o produto para validar decisoes — ignorando o segmento que nao usa porque encontra um problema fundamental. <strong>Cuidado especial:</strong> quanto mais tempo e dinheiro foram investidos na ideia, maior o vies de confirmacao para validar ela.
+        </p>
+      </div>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+          <h4 class="font-bold text-blue-400 mb-4">&#10003; Tecnicas para neutralizar o vies</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400">&#10003;</span>
+              <span><strong>Pre-registro de hipoteses:</strong> documente o que voce espera encontrar ANTES de coletar dados — como ensaios clinicos fazem</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400">&#10003;</span>
+              <span><strong>Red team:</strong> designar alguem para defender o resultado oposto ao esperado antes de decidir</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400">&#10003;</span>
+              <span><strong>Entrevistas por terceiros:</strong> usuario fala mais honestamente com alguem que nao criou o produto</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-blue-400">&#10003;</span>
+              <span><strong>Metricas de comportamento:</strong> prefira o que o usuario <em>faz</em> ao que ele <em>diz</em> — o comportamento nao mente</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Sinais de que voce esta com vies</h4>
+          <ul class="space-y-3 text-neutral-300">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Voce so entrevista usuarios que ja usam e gostam do produto</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Resultados negativos sao atribuidos a "falha metodologica" enquanto positivos sao aceitos como verdade</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>O time para o A/B test cedo quando a variante vencedora e a preferida do PM</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Ninguem consegue citar um experimento que <strong>mudou</strong> a direcao do produto nos ultimos 6 meses</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800/50 rounded-xl border border-dark-600 p-5 mb-6">
+        <h3 class="text-base font-semibold text-blue-400 mb-3">O teste da "falsificabilidade" (Popper)</h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-9-t6-p3">
+          Karl Popper ensinou que uma hipotese cientifica valida deve ser falsificavel — deve existir algum resultado que, se observado, a refutaria. Aplique isso ao seu loop: antes de cada experimento, pergunte ao time "que resultado nos levaria a desistir dessa ideia?". Se ninguem consegue responder, voce nao esta fazendo ciencia — esta fazendo confirmacao. O Nubank aplica versao desse principio em seus experimentos de produto: toda hipotese deve declarar antecipadamente a "condicao de matanca" (kill condition).
+        </p>
+      </div>
+
+      <button type="button" data-inema-read-toggle class="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors flex items-center space-x-2">
+        <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+        <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+        <span class="inema-label-todo">Marcar como lido</span>
+        <span class="inema-label-done">Lido</span>
+      </button>
+    </section>
+
+    <!-- RESUMO DO MODULO -->
+    <section class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-2xl border border-blue-500/30 p-8 mb-8">
+      <h2 class="text-2xl font-bold mb-6">&#128221; Resumo do modulo</h2>
+      <div class="space-y-3 mb-8">
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <span class="text-neutral-300">O ciclo <strong class="text-white">Construir-Medir-Aprender</strong> e a unidade basica de inovacao — a velocidade do loop define a vantagem competitiva, nao a perfeicao de cada etapa.</span>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <span class="text-neutral-300">Encurtar o loop exige identificar e eliminar <strong class="text-white">filas de espera</strong> (aprovacoes, reunioes, espera por dados), que geralmente consomem 80% do lead time.</span>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <span class="text-neutral-300">Dados <strong class="text-white">quantitativos</strong> detectam "onde"; dados <strong class="text-white">qualitativos</strong> explicam "por que" — use os dois em sequencia deliberada.</span>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <span class="text-neutral-300">Testes A/B rigorosos exigem hipotese previa, tamanho de amostra calculado e rodada completa — peeking e p-hacking invalidam os resultados.</span>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-blue-400 mt-1">&#10003;</span>
+          <span class="text-neutral-300">O <strong class="text-white">vies de confirmacao</strong> e o maior inimigo do aprendizado real — contra-medidas: pre-registro de hipoteses, red team e "condicao de matanca" pre-definida.</span>
+        </div>
+      </div>
+
+      <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+        <h3 class="font-semibold text-blue-400 mb-2">Proximo Modulo:</h3>
+        <p class="text-neutral-300">2.10 - Rituais de Inovacao: como transformar praticas de aprendizado em habitos organizacionais</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+          &#8592; Voltar para Trilha
+        </a>
+        <a href="modulo-2-10.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">
+          2.10 - Rituais de Inovacao &#8594;
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>SCAMPER e Brainstorming | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
+      <span>/</span>
+      <span class="text-blue-400">Modulo 2.4</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MODULO 2.4</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#128256; SCAMPER e Brainstorming</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Tecnicas de geracao divergente de ideias e como facilitar sessoes que realmente funcionam. De Alex Osborn a Bob Eberle: o arsenal sistematico para sair do pensamento incremental e chegar a solucoes criativas de verdade.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">50</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="2-4" data-inema-track="2">
+
+    <!-- TOPICO 1: Divergir vs Convergir -->
+    <section id="topico-1" data-inema-topic="modulo-2-4#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#128307; Divergir vs Convergir — o Duplo Diamante</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-4-t1-p1">
+        Toda sessao criativa de alta performance trabalha em dois modos distintos e incompativeis: <strong class="text-blue-400">divergencia</strong> (expandir o espaco de possibilidades, gerar volume, suspender o julgamento) e <strong class="text-blue-400">convergencia</strong> (filtrar, avaliar, selecionar). Misturar os dois no mesmo momento e a causa numero um de sessoes mediacres. O Design Council britanico formalizou isso no <strong class="text-blue-400">Duplo Diamante</strong> em 2005, um modelo que virou referencia global.
+      </p>
+
+      <!-- SVG: Duplo Diamante da Geracao de Ideias -->
+      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 960 280" class="w-full h-auto" role="img" aria-label="Diagrama do duplo diamante: divergencia e convergencia em duas fases, Problema e Solucao">
+          <defs>
+            <linearGradient id="m2-4-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#38bdf8"/>
+            </linearGradient>
+            <linearGradient id="m2-4-grad2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#3b82f6"/>
+            </linearGradient>
+            <filter id="m2-4-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="2.5" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m2-4-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+              <circle cx="1.2" cy="1.2" r="1.2" fill="#3b82f6" opacity="0.10"/>
+            </pattern>
+          </defs>
+          <rect x="0" y="0" width="960" height="280" fill="url(#m2-4-grid)"/>
+
+          <!-- Diamante 1: espaco do problema -->
+          <polygon points="80,140 280,40 480,140 280,240" fill="#0d1826" stroke="#3b82f6" stroke-width="1.8" opacity="0.5"/>
+          <!-- Diamante 2: espaco da solucao -->
+          <polygon points="480,140 680,40 880,140 680,240" fill="#0b1a24" stroke="#38bdf8" stroke-width="1.8" opacity="0.5"/>
+
+          <!-- Fase 1: Descoberta -->
+          <g filter="url(#m2-4-glow)" class="wf-a">
+            <rect x="100" y="108" width="130" height="64" rx="10" fill="#0e1e33" stroke="url(#m2-4-grad)" stroke-width="1.8"/>
+          </g>
+          <text x="165" y="137" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="700" font-size="13">Descoberta</text>
+          <text x="165" y="155" text-anchor="middle" fill="#7dd3fc" font-family="Inter,sans-serif" font-size="10">Pesquisa aberta</text>
+
+          <!-- Fase 2: Definicao -->
+          <g class="wf-a">
+            <rect x="330" y="108" width="130" height="64" rx="10" fill="#0e1e33" stroke="#3b82f6" stroke-width="1.8"/>
+          </g>
+          <text x="395" y="137" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="700" font-size="13">Definicao</text>
+          <text x="395" y="155" text-anchor="middle" fill="#7dd3fc" font-family="Inter,sans-serif" font-size="10">Sintese + HMW</text>
+
+          <!-- Fase 3: Desenvolvimento -->
+          <g filter="url(#m2-4-glow)" class="wf-a">
+            <rect x="530" y="108" width="130" height="64" rx="10" fill="#0b1a24" stroke="url(#m2-4-grad2)" stroke-width="1.8"/>
+          </g>
+          <text x="595" y="137" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="700" font-size="13">Desenvolvimento</text>
+          <text x="595" y="155" text-anchor="middle" fill="#7dd3fc" font-family="Inter,sans-serif" font-size="10">Ideacao + prototipo</text>
+
+          <!-- Fase 4: Entrega -->
+          <g class="wf-a">
+            <rect x="730" y="108" width="130" height="64" rx="10" fill="#0b1a24" stroke="#38bdf8" stroke-width="1.8"/>
+          </g>
+          <text x="795" y="137" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="700" font-size="13">Entrega</text>
+          <text x="795" y="155" text-anchor="middle" fill="#7dd3fc" font-family="Inter,sans-serif" font-size="10">Teste + lancamento</text>
+
+          <!-- Labels divergir/convergir -->
+          <text x="200" y="268" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="11" opacity="0.75">&#8592; DIVERGIR &#8594;</text>
+          <text x="360" y="268" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11" opacity="0.75">&#8592; CONVERGIR &#8594;</text>
+          <text x="600" y="268" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="11" opacity="0.75">&#8592; DIVERGIR &#8594;</text>
+          <text x="780" y="268" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11" opacity="0.75">&#8592; CONVERGIR &#8594;</text>
+
+          <!-- Ponto de virada -->
+          <circle cx="480" cy="140" r="8" fill="#1e3a5f" stroke="#38bdf8" stroke-width="2"/>
+          <circle cx="480" cy="140" r="3" fill="#38bdf8"/>
+
+          <!-- Labels dos espacos -->
+          <text x="280" y="22" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="12" font-weight="600" opacity="0.85">Espaco do Problema</text>
+          <text x="680" y="22" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="12" font-weight="600" opacity="0.85">Espaco da Solucao</text>
+        </svg>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-4-t1-p2">
+        O erro mais comum em workshops corporativos e entrar na sala com a solucao ja decidida e usar a sessao criativa apenas para validar. Isso e o oposto da divergencia. <strong class="text-blue-400">Divergir de verdade</strong> significa aceitar que a melhor ideia ainda nao existe, que ela vai surgir do volume e da combinacao improvaavel, e que o facilitador precisa proteger esse espaco contra o julgamento prematuro. Pesquisa da Stanford d.school com 2.200 participantes mostrou que equipes que respeitaram a separacao diverge/converge geraram <strong class="text-blue-400">3.4x mais ideias uteis</strong> do que grupos que misturaram os modos.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center">
+            <span class="mr-2">&#128307;</span> Modo Divergente
+          </h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#8226;</span><span>Quantidade acima de qualidade</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#8226;</span><span>Julgamento suspenso — NENHUMA critica</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#8226;</span><span>Ideias selvagens sao bem-vindas</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#8226;</span><span>Construir sobre ideias alheias (sim, and)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#8226;</span><span>Sem hierarquia — cargo nao conta aqui</span></li>
+          </ul>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold text-neutral-300 mb-3 flex items-center">
+            <span class="mr-2">&#127919;</span> Modo Convergente
+          </h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-neutral-400 mt-0.5">&#8226;</span><span>Criterios claros de avaliacao definidos antes</span></li>
+            <li class="flex items-start space-x-2"><span class="text-neutral-400 mt-0.5">&#8226;</span><span>Analise de impacto, viabilidade, alinhamento</span></li>
+            <li class="flex items-start space-x-2"><span class="text-neutral-400 mt-0.5">&#8226;</span><span>Reducao sistematica do espaco de opcoes</span></li>
+            <li class="flex items-start space-x-2"><span class="text-neutral-400 mt-0.5">&#8226;</span><span>Votacao, matriz, ranking</span></li>
+            <li class="flex items-start space-x-2"><span class="text-neutral-400 mt-0.5">&#8226;</span><span>Decisao coletiva documentada</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Regras de um bom Brainstorming -->
+    <section id="topico-2" data-inema-topic="modulo-2-4#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#129504; Regras de um Bom Brainstorming (Alex Osborn)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-4-t2-p1">
+        Alex Osborn, co-fundador da agencia de publicidade BBDO, inventou o termo <strong class="text-blue-400">brainstorming</strong> em 1939 e publicou as regras definitivas em "Applied Imagination" (1953). Seu insight central era que a criatividade em grupo e sistematicamente sabotada pelo julgamento prematuro. As 4 regras de Osborn nao sao sugestoes: sao restricoes deliberadas que recriam as condicoes cognitivas para a divergencia acontecer. Estudos do MIT Sloan confirmam que grupos que seguem as regras de Osborn rigorosamente geram <strong class="text-blue-400">62% mais ideias por hora</strong> do que grupos sem estrutura.
+      </p>
+
+      <!-- Timeline das 4 regras -->
+      <div class="space-y-5 mb-8">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold">1</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Adiar o julgamento</h4>
+            <p class="text-sm text-neutral-400 mb-2">Nenhuma critica durante a geracao</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-4-t2-r1">Esta e a regra mais dificil e a mais violada. O cerebro humano avalia automaticamente cada ideia em milissegundos. Verbalizar essa avaliacao — mesmo com um simples "sim, mas..." — interrompe o fluxo criativo dos outros participantes. A neurociencia explica: a amigdala ativa o modo de defesa social quando ha critica, suprimindo o cortex pre-frontal que gera associacoes livres. Facilitador deve ser rigoroso: sem "isso nao vai funcionar", sem linguagem corporal negativa, sem silencio constrangedor apos uma ideia.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold">2</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Buscar quantidade</h4>
+            <p class="text-sm text-neutral-400 mb-2">Volume e a estrategia, nao o atalho</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-4-t2-r2">Osborn dizia: "a quantidade gera qualidade". Dados confirmam. Linus Pauling, unico ganhador de dois Premios Nobel independentes, dizia: "a melhor forma de ter uma boa ideia e ter muitas ideias". Um estudo classico de Robert Weisberg (1999) mostrou que as melhores ideias tendem a aparecer no segundo e terceiro tercos de uma sessao, nao no inicio. A meta minima para um brainstorm de 60 min com 6 pessoas: 80 a 100 ideias. Menos do que isso, o grupo parou cedo demais.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold">3</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Encorajar ideias selvagens</h4>
+            <p class="text-sm text-neutral-400 mb-2">O impossivel hoje vira o normal amanha</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-4-t2-r3">Ideias que parecem absurdas tem duas funcoes criticas: (a) destroem o frame dominante, forcando o grupo a ver o problema de outro angulo; (b) inspiram versoes modificadas mais viaveis. A ideia de "pagar por musica com atencao, nao com dinheiro" era selvagem em 1999 — hoje e o modelo do Spotify. A IDEO usa o exercicio "Como a Disney resolveria isso?" ou "Como um astronauta faria?" para forcar frames radicalmente diferentes.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold">4</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600">
+            <h4 class="font-semibold text-white mb-2">Combinar e aprimorar ideias</h4>
+            <p class="text-sm text-neutral-400 mb-2">1 + 1 = 3 quando as ideias colidem</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-4-t2-r4">A combinacao de ideias e a fonte mais rica de inovacao. Arthur Koestler chamou isso de "bisociation" — a colisao de dois frames incompativeis que gera algo novo. O WhatsApp combinou SMS (comunicacao assincrona) com internet (gratuidade) e destruiu uma industria. O facilitador deve ativamente encorajar: "Alguem quer construir sobre essa ideia?" e "Como poderiamos combinar isso com aquilo?".</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">&#128161;</span> Papel do Facilitador
+        </h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-4-t2-fac">O facilitador em um brainstorming nao e participante — e guardiao das regras. Suas responsabilidades: definir o desafio de ideacao com clareza antes da sessao (uma boa pergunta "Como poderiamos...?" vale ouro); cronometrar sprints de 5-8 minutos; registrar todas as ideias visualmente (post-its, whiteboard); intervir quando alguem criticar; reenergia o grupo quando o ritmo cair com provocacoes ("E se isso fosse 10x maior?", "Como um concorrente faria?"). A Amazon usa "brainstorming silencioso" em todas as suas reunioes de inovacao: 15 minutos de escrita individual antes de qualquer discussao em grupo.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: SCAMPER - as 7 lentes -->
+    <section id="topico-3" data-inema-topic="modulo-2-4#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#128270; SCAMPER — as 7 Lentes da Criatividade</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-4-t3-p1">
+        SCAMPER e um checklist de perguntas criativas criado por Bob Eberle em 1971 com base no trabalho de Alex Osborn. O acronimo representa 7 verbos de acao que atuam como <strong class="text-blue-400">lentes cognitivas</strong> para forcar o cerebro a ver um produto, servico ou processo de angulos que nao explorou espontaneamente. Diferente do brainstorming livre, o SCAMPER e <strong class="text-blue-400">estruturado e sistematico</strong>: garante que voce explore dimensoes que normalmente ignora. Empresas como Google, 3M e Procter &#38; Gamble incorporaram SCAMPER nos seus processos de inovacao de produto com resultados documentados.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">&#128260;</div>
+          <h4 class="font-bold text-blue-400 mb-1">S — Substituir</h4>
+          <p class="text-xs text-neutral-300 mb-3">O que pode ser trocado? Componente, material, processo, pessoa, lugar, regra.</p>
+          <p class="text-xs text-neutral-400 italic">Ex.: Netflix substituiu DVD fisico por streaming digital</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">&#129309;</div>
+          <h4 class="font-bold text-blue-400 mb-1">C — Combinar</h4>
+          <p class="text-xs text-neutral-300 mb-3">O que pode ser unido? Funcoes, propositos, etapas, categorias de produto.</p>
+          <p class="text-xs text-neutral-400 italic">Ex.: Smartphone combinou telefone + camera + GPS + computador</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">&#128260;</div>
+          <h4 class="font-bold text-blue-400 mb-1">A — Adaptar</h4>
+          <p class="text-xs text-neutral-300 mb-3">O que pode ser copiado ou adaptado de outro contexto? Que analogias funcionam?</p>
+          <p class="text-xs text-neutral-400 italic">Ex.: Velcro adaptado do jeito que sementes grudavam em pelos de cao</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">&#128200;</div>
+          <h4 class="font-bold text-blue-400 mb-1">M — Modificar</h4>
+          <p class="text-xs text-neutral-300 mb-3">O que pode ser amplificado, reduzido, distorcido, exagerado? Forma, cor, som, frequencia.</p>
+          <p class="text-xs text-neutral-400 italic">Ex.: Red Bull modificou bebida energetica tailandesa para mercado ocidental</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">&#128260;</div>
+          <h4 class="font-bold text-blue-400 mb-1">P — Por em outro uso</h4>
+          <p class="text-xs text-neutral-300 mb-3">Que outros usos tem? Para quem mais isso seria util? Em outro mercado, contexto, segmento?</p>
+          <p class="text-xs text-neutral-400 italic">Ex.: WD-40 criado para foguetes — virou produto domestico de bilhoes</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">&#9940;</div>
+          <h4 class="font-bold text-blue-400 mb-1">E — Eliminar</h4>
+          <p class="text-xs text-neutral-300 mb-3">O que pode ser removido? Qual etapa e desnecessaria? O que acontece se simplificar radicalmente?</p>
+          <p class="text-xs text-neutral-400 italic">Ex.: Apple eliminou teclado fisico e criou iPhone touchscreen</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-5">
+          <div class="text-2xl mb-2">&#128257;</div>
+          <h4 class="font-bold text-blue-400 mb-1">R — Reverter</h4>
+          <p class="text-xs text-neutral-300 mb-3">O que acontece ao inverter a ordem? Reorganizar? Fazer ao contrario? Virar de cabeca para baixo?</p>
+          <p class="text-xs text-neutral-400 italic">Ex.: Amazon reverteu "cliente vai a loja" para "loja vai ao cliente" (Prime)</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 flex flex-col justify-center">
+          <p class="text-sm text-neutral-400 text-center">Cada letra = uma pergunta de aquecimento. Use todas as 7 antes de julgar qualquer resposta.</p>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">&#128196;</span> Como usar SCAMPER na pratica — Roteiro de Sessao
+        </h3>
+        <div class="space-y-3 text-sm text-neutral-300">
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">1</span>
+            <span><strong class="text-white">Definir o objeto</strong> — produto, servico ou processo especifico que sera analisado (ex.: "o processo de onboarding de novos clientes")</span>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">2</span>
+            <span><strong class="text-white">Sprints de 5 minutos</strong> — um verbo por sprint. Cronometro visivel. Time escreve individualmente (ver Topico 4: Brainwriting)</span>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">3</span>
+            <span><strong class="text-white">Compartilhar em voz alta</strong> — cada pessoa le suas respostas. Sem debate ainda. Facilitador registra tudo no quadro.</span>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">4</span>
+            <span><strong class="text-white">Convergencia depois</strong> — somente apos todas as 7 lentes, entrar em modo convergente (ver Topico 5)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Brainwriting e 6-3-5 -->
+    <section id="topico-4" data-inema-topic="modulo-2-4#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#128221; Brainwriting e 6-3-5 — Tecnicas Anti-Groupthink</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-4-t4-p1">
+        O brainstorming verbal classico tem um problema documentado: dominancia social. Quem fala mais alto, chega primeiro ou tem cargo maior domina a sessao. <strong class="text-blue-400">Brainwriting</strong> resolve isso: cada participante escreve suas ideias individualmente, em silencio, antes de qualquer discussao. A variacao mais famosa e poderosa e o <strong class="text-blue-400">6-3-5</strong> (tambem chamado 635 Brainwriting), desenvolvido por Bernd Rohrbach em 1969. Um estudo da Universidade de Indiana comparou grupos usando brainwriting vs. brainstorming verbal: o grupo de brainwriting gerou <strong class="text-blue-400">71% mais ideias unicas</strong> no mesmo intervalo de tempo.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-5 flex items-center">
+          <span class="mr-2">&#9881;</span> Como funciona o 6-3-5
+        </h3>
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="bg-dark-800/60 rounded-lg p-4 text-center border border-dark-600">
+            <div class="text-3xl font-bold text-blue-400 mb-1">6</div>
+            <div class="text-sm text-neutral-300 font-medium">participantes</div>
+            <div class="text-xs text-neutral-400 mt-1">ideal 4 a 8</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 text-center border border-dark-600">
+            <div class="text-3xl font-bold text-blue-400 mb-1">3</div>
+            <div class="text-sm text-neutral-300 font-medium">ideias por rodada</div>
+            <div class="text-xs text-neutral-400 mt-1">por pessoa</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 text-center border border-dark-600">
+            <div class="text-3xl font-bold text-blue-400 mb-1">5</div>
+            <div class="text-sm text-neutral-300 font-medium">rodadas (minutos)</div>
+            <div class="text-xs text-neutral-400 mt-1">cada uma</div>
+          </div>
+        </div>
+        <div class="space-y-3 text-sm text-neutral-300">
+          <p data-inema-block="m2-4-t4-mec"><strong class="text-white">Mecanica:</strong> Cada participante recebe uma folha com 3 colunas e 5 linhas. Nos primeiros 5 minutos, escreve 3 ideias na primeira linha. Ao sinal do facilitador, passa a folha para a direita. Nos proximos 5 minutos, le as ideias do vizinho e escreve 3 novas — que podem ser originais ou variacoes/combinacoes das que recebeu. Repete por 5 rodadas. Resultado: <strong class="text-blue-400">108 ideias em 30 minutos</strong> (6 x 3 x 6 — algumas repetidas, mas a densidade e impressionante).</p>
+          <p data-inema-block="m2-4-t4-dig"><strong class="text-white">Versao digital:</strong> Com times remotos, use o Miro ou o FigJam com colunas de post-its virtuais. Cada pessoa tem sua coluna. Timer compartilhado. A dinamica de "rotacao" vira "voce le a coluna da esquerda e adiciona na sua". O efeito anti-groupthink se mantem.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <h4 class="font-bold text-emerald-400 mb-4">&#10003; Vantagens do Brainwriting</h4>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Introvertidos contribuem igualmente — sem pressao de fala</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Cargo nao influencia — ideias aparecem anonimas</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Nao ha "ancora" — o grupo nao converge em torno da primeira ideia</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400">&#10003;</span>
+              <span>Ideias de outros inspiram cruzamentos inesperados</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h4 class="font-bold text-red-400 mb-4">&#10007; Quando NAO usar</h4>
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Times com baixa alfabetizacao escrita ou idioma diferente</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Problemas que exigem discussao rica antes da ideacao</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Grupos menores que 4 (perde o efeito de rotacao)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-red-400">&#10007;</span>
+              <span>Como unico metodo — use em combinacao com discussao</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Priorizar ideias -->
+    <section id="topico-5" data-inema-topic="modulo-2-4#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#127919; Priorizar Ideias — Matriz Impacto x Esforco e Dot Voting</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-4-t5-p1">
+        Depois de 100+ ideias geradas, o grupo precisa convergir. A escolha do metodo de priorizacao e tao critica quanto a geracao: um metodo ruim descarta ouro e seleciona o mediocre. Os dois frameworks mais comprovados sao a <strong class="text-blue-400">Matriz Impacto x Esforco</strong> (tambem chamada Eisenhower 2x2 de inovacao) e o <strong class="text-blue-400">Dot Voting</strong> (metodo de votacao democratica com pontos adesivos). A Google Ventures popularizou uma variante do dot voting chamada "Heatmap" nos seus Design Sprints de 5 dias.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+            <span class="mr-2">&#128200;</span> Matriz Impacto x Esforco
+          </h3>
+          <p class="text-sm text-neutral-300 mb-4" data-inema-block="m2-4-t5-mat">Desenhe um eixo 2x2: horizontal = Esforco (baixo a alto), vertical = Impacto (baixo a alto). Cole as ideias no quadrante correspondente. Os 4 quadrantes traduzem-se em estrategias:</p>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="bg-emerald-900/30 rounded-lg p-3 border border-emerald-500/30">
+              <div class="font-bold text-emerald-400 mb-1">Alto impacto + Baixo esforco</div>
+              <div class="text-neutral-300">&#9733; Quick wins — faca agora</div>
+            </div>
+            <div class="bg-blue-900/20 rounded-lg p-3 border border-blue-500/30">
+              <div class="font-bold text-blue-400 mb-1">Alto impacto + Alto esforco</div>
+              <div class="text-neutral-300">&#128198; Projetos estrategicos — planeje</div>
+            </div>
+            <div class="bg-dark-700/50 rounded-lg p-3 border border-dark-600">
+              <div class="font-bold text-neutral-400 mb-1">Baixo impacto + Baixo esforco</div>
+              <div class="text-neutral-300">&#8211; Fill-ins — se houver tempo</div>
+            </div>
+            <div class="bg-red-900/20 rounded-lg p-3 border border-red-500/30">
+              <div class="font-bold text-red-400 mb-1">Baixo impacto + Alto esforco</div>
+              <div class="text-neutral-300">&#10007; Money pit — evite</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+            <span class="mr-2">&#128310;</span> Dot Voting
+          </h3>
+          <p class="text-sm text-neutral-300 mb-4" data-inema-block="m2-4-t5-dot">Cada participante recebe N pontos (tipicamente 3 a 5, dependendo do volume de ideias). Em silencio, cada um distribui seus pontos entre as ideias que considera mais promissoras. Pode concentrar todos os pontos em uma ideia ou distribuir. Regra critica: a votacao e <strong>em silencio e simultanea</strong> — nao sequencial. Isso evita que as pessoas votem em quem votou antes (efeito de manada).</p>
+          <div class="space-y-2 text-sm text-neutral-300">
+            <div class="flex items-center space-x-3 bg-dark-700/50 rounded-lg p-3">
+              <span class="text-blue-400 font-bold text-xs w-20 flex-shrink-0">3-5 pontos</span>
+              <span>por participante — mais nao melhora a qualidade</span>
+            </div>
+            <div class="flex items-center space-x-3 bg-dark-700/50 rounded-lg p-3">
+              <span class="text-blue-400 font-bold text-xs w-20 flex-shrink-0">Silencio</span>
+              <span>durante a votacao — sem lobbying, sem discussao</span>
+            </div>
+            <div class="flex items-center space-x-3 bg-dark-700/50 rounded-lg p-3">
+              <span class="text-blue-400 font-bold text-xs w-20 flex-shrink-0">Top 3-5</span>
+              <span>ideias entram para a proxima fase de desenvolvimento</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">&#128161;</span> Dica: Separe criterios antes de votar
+        </h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-4-t5-crit">Antes de qualquer votacao, defina coletivamente os criterios de selecao (ex.: "Alinhamento com a estrategia", "Viabilidade em 3 meses", "Potencial de impacto no cliente"). Isso evita que a decisao seja baseada em preferencias pessoais ou familiaridade. A McKinsey recomenda no maximo 4 criterios — mais do que isso cria paralisia e conflito de peso.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Armadilhas -->
+    <section id="topico-6" data-inema-topic="modulo-2-4#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#128680; Armadilhas — Julgar Cedo, HiPPO e Ancoragem</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-4-t6-p1">
+        Conhecer as tecnicas nao e suficiente. As sessoes de ideacao falham principalmente por vieses cognitivos e dinamicas de grupo que se infiltram silenciosamente. Os tres mais perigosos e documentados sao: <strong class="text-blue-400">julgamento prematuro</strong> (matar ideias antes de desenvolve-las), o <strong class="text-blue-400">efeito HiPPO</strong> (Highest Paid Person's Opinion — a ideia do chefe vence por poder, nao merito) e <strong class="text-blue-400">ancoragem</strong> (todas as ideias gravitam em torno da primeira sugerida). Identificar e neutralizar esses tres patterns e o diferencial entre um facilitador mediano e um facilitador excelente.
+      </p>
+
+      <div class="space-y-6 mb-8">
+        <!-- Armadilha 1: Julgamento Prematuro -->
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+            <span class="mr-2">&#9888;&#65039;</span> Armadilha 1: Julgamento Prematuro
+          </h3>
+          <p class="text-neutral-300 text-sm mb-4" data-inema-block="m2-4-t6-a1">O julgamento prematuro nao aparece so como critica explodita ("isso nunca vai funcionar"). Ele se disfarca em formas mais sutis: silencio apos uma ideia (o grupo interpreta como desaprovacao), perguntas tecnicas ("Quanto isso custaria?"), comparacoes negativas ("A empresa X ja tentou isso") e linguagem de duvida ("Nao sei se..."). O facilitador precisa treinar o grupo a usar a formula <strong class="text-white">"Sim, E..."</strong> em vez de "Sim, mas..." — uma unica palavra muda completamente a dinamica. Estudos de improvisacao teatral (que usa a mesma tecnica) mostram que grupos treinados em "Sim, E" geram 40% mais ideias por sessao.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-red-900/30 rounded-lg p-4 border border-red-500/20">
+              <p class="text-xs font-bold text-red-400 mb-2">Linguagem que mata</p>
+              <ul class="text-xs text-neutral-300 space-y-1">
+                <li>&#10007; "Sim, mas isso nunca escalaria..."</li>
+                <li>&#10007; "Ja tentamos isso em 2018..."</li>
+                <li>&#10007; "O departamento juridico nunca aprovaria..."</li>
+                <li>&#10007; <em>(silencio + cara de duvida)</em></li>
+              </ul>
+            </div>
+            <div class="bg-emerald-900/20 rounded-lg p-4 border border-emerald-500/20">
+              <p class="text-xs font-bold text-emerald-400 mb-2">Linguagem que constroi</p>
+              <ul class="text-xs text-neutral-300 space-y-1">
+                <li>&#10003; "Sim, E tambem poderiamos..."</li>
+                <li>&#10003; "Interessante! E se fosse para outro segmento?"</li>
+                <li>&#10003; "Que parte disso nos parece mais promissora?"</li>
+                <li>&#10003; "Como poderiamos tornar isso viavel?"</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Armadilha 2: Efeito HiPPO -->
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+            <span class="mr-2">&#9888;&#65039;</span> Armadilha 2: Efeito HiPPO
+          </h3>
+          <p class="text-neutral-300 text-sm mb-4" data-inema-block="m2-4-t6-hippo">HiPPO = Highest Paid Person's Opinion. Quando o CEO, o VP ou o lider mais senior sugere uma ideia, o grupo inconscientemente converge para ela — mesmo sem dados, sem evidencias, sem teste. Um estudo da Harvard Business Review (2017) com 500 equipes corporativas mostrou que 74% das ideias selecionadas em sessoes de inovacao sem estrutura eram as ideias originalmente propostas pelo membro mais senior presente. O antidoto: o facilitador deve garantir que o lider senior <strong class="text-white">fale por ultimo</strong> (tecnicamente chamado de "fechar o loop"), e que votacoes sejam anonimas e simultaneas.</p>
+          <div class="bg-primary/10 rounded-lg border border-primary/30 p-4">
+            <p class="text-sm text-primary font-semibold mb-1">&#128161; Protocolo anti-HiPPO</p>
+            <p class="text-sm text-neutral-300">Antes da sessao, o facilitador pede ao lider senior para reservar suas ideias para o final e votar em silencio, junto com todos. O lider deve ser briefado sobre o motivo: "Seu peso de opiniao e valioso na fase de decisao, nao na fase de geracao. Ideias geradas em ambiente livre produzem 3x mais inovacao." A Pixar usa uma variante disso nas suas "Braintrust sessions" — o diretor do filme ouve, nao decide.</p>
+          </div>
+        </div>
+
+        <!-- Armadilha 3: Ancoragem -->
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center">
+            <span class="mr-2">&#9888;&#65039;</span> Armadilha 3: Ancoragem
+          </h3>
+          <p class="text-neutral-300 text-sm mb-4" data-inema-block="m2-4-t6-anc">Ancoragem e o vies cognitivo descrito por Kahneman e Tversky (Premio Nobel de Economia, 2002): a primeira informacao apresentada age como ancora e distorce todas as avaliacoes subsequentes. Em sessoes de ideacao, a primeira ideia dita em voz alta torna-se o ponto de referencia inconsciente de todo o grupo. As ideias subsequentes sao variantes dela, nao alternativas radicalmente diferentes. O resultado: convergencia prematura disfarcada de diversidade. <strong class="text-white">Antidoto operacional:</strong> use brainwriting para a primeira rodada (todos escrevem simultaneamente, sem ouvir o outro), revele todas as ideias ao mesmo tempo, e embaralhe antes de apresentar.</p>
+        </div>
+      </div>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">&#128203;</span> Checklist do Facilitador — Antes de Iniciar
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-neutral-300">
+          <label class="flex items-start space-x-2 cursor-pointer"><span class="text-blue-400 mt-0.5">&#9744;</span><span>Desafio de ideacao definido em formato "Como poderiamos...?"</span></label>
+          <label class="flex items-start space-x-2 cursor-pointer"><span class="text-blue-400 mt-0.5">&#9744;</span><span>Criterios de avaliacao definidos coletivamente ANTES da votacao</span></label>
+          <label class="flex items-start space-x-2 cursor-pointer"><span class="text-blue-400 mt-0.5">&#9744;</span><span>Lider senior briefado para falar por ultimo</span></label>
+          <label class="flex items-start space-x-2 cursor-pointer"><span class="text-blue-400 mt-0.5">&#9744;</span><span>Primeira rodada em brainwriting (sem fala)</span></label>
+          <label class="flex items-start space-x-2 cursor-pointer"><span class="text-blue-400 mt-0.5">&#9744;</span><span>Timer visivel para todos — transparencia de tempo</span></label>
+          <label class="flex items-start space-x-2 cursor-pointer"><span class="text-blue-400 mt-0.5">&#9744;</span><span>Votacao anonima e simultanea (nao sequencial)</span></label>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">&#128203;</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Divergir e convergir sao modos incompativeis</strong>
+              <span class="text-neutral-400"> — mistura-los e a causa numero um de sessoes criativamente fracas (Duplo Diamante, Design Council)</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">As 4 regras de Osborn sao restricoes deliberadas</strong>
+              <span class="text-neutral-400"> — adiar julgamento, buscar quantidade, encorajar o selvagem, combinar — geram 62% mais ideias por hora</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">SCAMPER e sistematico onde o brainstorming livre e aleatorio</strong>
+              <span class="text-neutral-400"> — 7 lentes (Substituir, Combinar, Adaptar, Modificar, Por em outro uso, Eliminar, Reverter) garantem cobertura de angulos ignorados</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Brainwriting 6-3-5 neutraliza dominancia social</strong>
+              <span class="text-neutral-400"> — 108 ideias em 30 minutos, introvertidos e extrovertidos contribuem igualmente</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">HiPPO, ancoragem e julgamento prematuro destroem sessoes</strong>
+              <span class="text-neutral-400"> — o facilitador e o guardiao ativo das regras, nao um participante passivo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-blue-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">2.5 - Jobs To Be Done: entender o que o cliente realmente contrata quando compra um produto</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-2-5.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">
+            2.5 - Jobs To Be Done &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

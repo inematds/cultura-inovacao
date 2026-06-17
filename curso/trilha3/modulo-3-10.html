@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Comunidade de Pratica | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha purple) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a>
+      <span>/</span>
+      <span class="text-purple-400">Modulo 3.10</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MODULO 3.10</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#128101; Comunidade de Pratica</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Como redes internas de aprendizado coletivo — as Comunidades de Pratica de Etienne Wenger — sustentam e amplificam a cultura de inovacao muito alem do que qualquer programa formal consegue sozinho.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">45</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Avancado</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Cultura</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="3-10" data-inema-track="3">
+
+    <!-- TOPICO 1: O que e uma CoP -->
+    <section id="topico-1" data-inema-topic="modulo-3-10#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#128218; O que e uma Comunidade de Pratica</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-10-t1-p1">
+        Em 1991, o pesquisador Jean Lave e o te&#243;rico social Etienne Wenger cunharam o conceito de <strong class="text-purple-400">Comunidade de Pratica (CoP)</strong> ao estudar como aprendizes aprendem de fato — nao em salas de aula, mas praticando ao lado de mestres. Wenger desenvolveu o conceito ao longo de decadas, formalizando-o em "Communities of Practice: Learning, Meaning, and Identity" (1998). A definicao e precisa: uma CoP e um grupo de pessoas que compartilham um interesse ou profissao e <em>aprendem a fazer melhor enquanto interagem regularmente</em>.
+      </p>
+
+      <!-- SVG: Estrutura de uma CoP (malha de nos conectados) -->
+      <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-4 mb-6">
+        <svg viewBox="0 0 700 320" class="w-full h-auto" role="img" aria-label="Diagrama da estrutura de uma Comunidade de Pratica: nucleo, comunidade ativa e periferia conectados em malha" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+          <defs>
+            <linearGradient id="m3-10-grad-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a855f7" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.4"/>
+            </linearGradient>
+            <linearGradient id="m3-10-grad-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.4"/>
+            </linearGradient>
+            <filter id="m3-10-glow">
+              <feGaussianBlur stdDeviation="1.8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m3-10-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+              <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#a855f7" stroke-width="0.3" stroke-opacity="0.2"/>
+            </pattern>
+          </defs>
+          <!-- Fundo grid -->
+          <rect width="700" height="320" fill="url(#m3-10-grid)" rx="12"/>
+          <!-- Circulos concentricos representando camadas -->
+          <circle cx="350" cy="160" r="120" fill="none" stroke="#a855f7" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="6 4"/>
+          <circle cx="350" cy="160" r="70" fill="none" stroke="#a855f7" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="4 3"/>
+          <!-- Nucleo -->
+          <circle cx="350" cy="160" r="32" fill="url(#m3-10-grad-purple)" stroke="#a855f7" stroke-width="2" filter="url(#m3-10-glow)"/>
+          <text x="350" y="155" text-anchor="middle" fill="#e9d5ff" font-size="10" font-weight="600">Nucleo</text>
+          <text x="350" y="169" text-anchor="middle" fill="#c4b5fd" font-size="9">Champions</text>
+          <!-- Nos da comunidade ativa -->
+          <circle cx="230" cy="100" r="20" fill="url(#m3-10-grad-purple)" stroke="#a855f7" stroke-width="1.5" class="wf-a"/>
+          <text x="230" y="105" text-anchor="middle" fill="#e9d5ff" font-size="9">Ativo</text>
+          <circle cx="470" cy="100" r="20" fill="url(#m3-10-grad-purple)" stroke="#a855f7" stroke-width="1.5" class="wf-a"/>
+          <text x="470" y="105" text-anchor="middle" fill="#e9d5ff" font-size="9">Ativo</text>
+          <circle cx="230" cy="220" r="20" fill="url(#m3-10-grad-purple)" stroke="#a855f7" stroke-width="1.5" class="wf-a"/>
+          <text x="230" y="225" text-anchor="middle" fill="#e9d5ff" font-size="9">Ativo</text>
+          <circle cx="470" cy="220" r="20" fill="url(#m3-10-grad-purple)" stroke="#a855f7" stroke-width="1.5" class="wf-a"/>
+          <text x="470" y="225" text-anchor="middle" fill="#e9d5ff" font-size="9">Ativo</text>
+          <!-- Nos da periferia -->
+          <circle cx="130" cy="80" r="13" fill="url(#m3-10-grad-cyan)" stroke="#38bdf8" stroke-width="1.5" class="wf-a"/>
+          <text x="130" y="84" text-anchor="middle" fill="#bae6fd" font-size="8">Periferia</text>
+          <circle cx="570" cy="80" r="13" fill="url(#m3-10-grad-cyan)" stroke="#38bdf8" stroke-width="1.5" class="wf-a"/>
+          <text x="570" y="84" text-anchor="middle" fill="#bae6fd" font-size="8">Periferia</text>
+          <circle cx="130" cy="240" r="13" fill="url(#m3-10-grad-cyan)" stroke="#38bdf8" stroke-width="1.5" class="wf-a"/>
+          <text x="130" y="244" text-anchor="middle" fill="#bae6fd" font-size="8">Periferia</text>
+          <circle cx="570" cy="240" r="13" fill="url(#m3-10-grad-cyan)" stroke="#38bdf8" stroke-width="1.5" class="wf-a"/>
+          <text x="570" y="244" text-anchor="middle" fill="#bae6fd" font-size="8">Periferia</text>
+          <!-- Linhas de conexao: nucleo -> ativos -->
+          <line x1="320" y1="140" x2="248" y2="112" stroke="#a855f7" stroke-width="1.5" stroke-opacity="0.6"/>
+          <line x1="380" y1="140" x2="452" y2="112" stroke="#a855f7" stroke-width="1.5" stroke-opacity="0.6"/>
+          <line x1="320" y1="180" x2="248" y2="208" stroke="#a855f7" stroke-width="1.5" stroke-opacity="0.6"/>
+          <line x1="380" y1="180" x2="452" y2="208" stroke="#a855f7" stroke-width="1.5" stroke-opacity="0.6"/>
+          <!-- Linhas: ativos -> periferia -->
+          <line x1="212" y1="92" x2="143" y2="82" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.5"/>
+          <line x1="452" y1="92" x2="557" y2="82" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.5"/>
+          <line x1="212" y1="228" x2="143" y2="238" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.5"/>
+          <line x1="452" y1="228" x2="557" y2="238" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.5"/>
+          <!-- Labels das camadas -->
+          <text x="350" y="296" text-anchor="middle" fill="#a855f7" font-size="10" font-weight="600">Comunidade Ativa</text>
+          <text x="100" y="296" text-anchor="middle" fill="#38bdf8" font-size="9">Periferia</text>
+          <text x="600" y="296" text-anchor="middle" fill="#38bdf8" font-size="9">Periferia</text>
+          <!-- Titulo -->
+          <text x="350" y="22" text-anchor="middle" fill="#d8b4fe" font-size="12" font-weight="600">Estrutura de uma Comunidade de Pratica</text>
+        </svg>
+      </div>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center">
+          <span class="mr-2">&#128221;</span> Os 3 Elementos Constitutivos de Wenger
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Domain (Dominio)</h4>
+            <p class="text-xs text-neutral-300">A area de conhecimento compartilhada que da identidade ao grupo. Ex: "inovacao em produto digital". Sem dominio claro, a CoP e apenas um grupo de chat.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Community (Comunidade)</h4>
+            <p class="text-xs text-neutral-300">As relacoes entre membros — quem ajuda quem, como se trocam experiencias, como se constroem confianca e reputacao ao longo do tempo.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">Practice (Pratica)</h4>
+            <p class="text-xs text-neutral-300">O repertorio compartilhado: ferramentas, frameworks, historias, casos, vocabulario e formas de resolver problemas que o grupo vai acumulando.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-3">&#128202; CoPs em numeros</h3>
+        <ul class="space-y-2 text-neutral-300 text-sm">
+          <li><strong class="text-purple-400">World Bank:</strong> reduziu em 40% o tempo de producao de relatorios apos implantar CoPs de conhecimento setorial (Wenger, McDermott &amp; Snyder, 2002).</li>
+          <li><strong class="text-purple-400">Schlumberger:</strong> economizou US$ 200 milhoes em 5 anos por reutilizacao de conhecimento via CoPs de engenharia (McKinsey Quarterly, 2003).</li>
+          <li><strong class="text-purple-400">Xerox:</strong> as "Eureka communities" de tecnicos de campo geraram mais de 5.000 dicas que economizaram US$ 100 milhoes em atendimentos redundantes.</li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Por que CoPs sustentam a cultura -->
+    <section id="topico-2" data-inema-topic="modulo-3-10#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#127758; Por que CoPs Sustentam a Cultura de Inovacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-10-t2-p1">
+        Programas formais de inovacao dependem de orcamento, sponsors e prioridade estrategica — tres coisas que mudam a cada ciclo de lideranca. CoPs sao diferentes: elas sobrevivem por <strong class="text-purple-400">legitimidade social, nao por mandato hierarquico</strong>. Quando um engenheiro aprende algo util em uma CoP e resolve um problema real no dia seguinte, a comunidade ganha credibilidade organica que nenhum programa top-down consegue comprar.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4">&#128279; Os 4 Mecanismos pelos quais CoPs cultivam inovacao</h3>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-3">
+            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 font-bold text-sm flex-shrink-0">1</span>
+            <div>
+              <strong class="text-white">Transferencia de conhecimento tacito</strong>
+              <p class="text-neutral-400 text-sm mt-1">Conhecimento tacito (como se navega a politica, como se consegre aprovacao rapida, quais atalhos funcionam) so se transfere por interacao social — nao por documentacao. CoPs sao o canal natural.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 font-bold text-sm flex-shrink-0">2</span>
+            <div>
+              <strong class="text-white">Psicologia de seguranca ampliada</strong>
+              <p class="text-neutral-400 text-sm mt-1">Dentro de uma CoP, membros experimentam e erram diante de pares que os respeitam — nao de chefes que os avaliam. Isso reduz o custo percebido do risco e aumenta a frequencia de experimentos.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 font-bold text-sm flex-shrink-0">3</span>
+            <div>
+              <strong class="text-white">Polinizacao cruzada</strong>
+              <p class="text-neutral-400 text-sm mt-1">Uma CoP de inovacao reune pessoas de areas distintas em torno de um dominio. Quando a equipe de TI e o comercial resolvem o mesmo problema juntos, surgem solucoes que nenhum dos dois teria sozinho.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 font-bold text-sm flex-shrink-0">4</span>
+            <div>
+              <strong class="text-white">Identidade de inovador</strong>
+              <p class="text-neutral-400 text-sm mt-1">Wenger argumenta que a participacao em comunidades molda <em>quem nos somos</em>, nao apenas o que sabemos. Ser membro ativo de uma CoP de inovacao faz a pessoa se identificar como inovadora — e isso muda comportamento.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-5">
+          <h4 class="text-sm font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">&#10003;</span> CoP que sustenta cultura</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">&#8226;</span><span>Agenda guiada pelos membros, nao pelo RH</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">&#8226;</span><span>Participacao voluntaria com valor intrinseco</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">&#8226;</span><span>Repertorio gerado pelos proprios membros</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">&#8226;</span><span>Sucesso medido por impacto no trabalho real</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h4 class="text-sm font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">&#10007;</span> CoP que vira burocracia</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span>Pauta ditada pelo gestor ou pelo programa</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span>Presenca obrigatoria e registrada em sistema</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span>Slides corporativos reciclados a cada reuniao</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span>KPI de quantidade (membros, encontros, posts)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Papeis -->
+    <section id="topico-3" data-inema-topic="modulo-3-10#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#127775; Papeis: Champions, Sponsors e Facilitadores</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-10-t3-p1">
+        Wenger e colegas identificaram que CoPs bem-sucedidas nao sao democraticas no sentido de ausencia de papeis — ao contrario, elas tem papeis claros, porem <strong class="text-purple-400">legitimados pela comunidade, nao pela hierarquia</strong>. A confusao entre papel organizacional e papel na CoP e uma das principais causas de mortalidade precoce.
+      </p>
+
+      <!-- Timeline de papeis -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5">&#127942; Os Tres Papeis Essenciais</h3>
+        <div class="space-y-5">
+          <div class="flex items-start space-x-4">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-400 font-bold text-sm flex-shrink-0">C</div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Champion (Lider de Comunidade)</h4>
+              <p class="text-sm text-neutral-300 mb-2">O motor da CoP. Conhece profundamente o dominio, cataloga o repertorio e e reconhecido como referencia pelos pares — <em>independente</em> do cargo formal. No modelo de Wenger, o champion e eleito pela pratica, nao pela designacao gerencial.</p>
+              <div class="text-xs text-neutral-400 bg-dark-700/50 rounded-lg p-2">
+                <strong>Dedicacao tipica:</strong> 20-30% do tempo. Exemplos: o engenheiro que todo mundo consulta antes de abrir incidente; o designer que organiza as retrospectivas mensais.
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-400 font-bold text-sm flex-shrink-0">S</div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Sponsor (Patrocinador Executivo)</h4>
+              <p class="text-sm text-neutral-300 mb-2">Alguem do middle ou senior management que remove barreiras operacionais — libera horas no calendario, garante orcamento para eventos presenciais, defende a CoP em reunioes de portfolio. O sponsor nao participa do dia a dia, mas <strong>protege o espaco</strong>.</p>
+              <div class="text-xs text-neutral-400 bg-dark-700/50 rounded-lg p-2">
+                <strong>Erro classico:</strong> o sponsor virar o "dono" da CoP e pautar as reunioes. Isso elimina a autonomia que gera engajamento genuino.
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-400 font-bold text-sm flex-shrink-0">F</div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Facilitador (Core Team)</h4>
+              <p class="text-sm text-neutral-300 mb-2">Um grupo pequeno (3-7 pessoas) que co-lidera a comunidade com o champion. Cuida de logistica, onboarding de novos membros, curadoria de conteudo e organizacao de rituais. Deve rodar o papel a cada 12-18 meses para evitar oligarquia.</p>
+              <div class="text-xs text-neutral-400 bg-dark-700/50 rounded-lg p-2">
+                <strong>Referencia:</strong> Wenger, McDermott &amp; Snyder (2002) chamam esse grupo de "core group" e recomendam tamanho maximo de 15% da comunidade ativa.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-sm font-semibold text-primary mb-2 flex items-center"><span class="mr-2">&#128161;</span> Dica pratica: separar hierarquia de papel</h3>
+        <p class="text-neutral-300 text-sm">Nunca designe o champion com base no cargo. Pergunte aos membros: "Quem voce procura quando tem uma duvida dificil sobre X?" A resposta coletiva identifica o champion natural. Formalize esse papel sem mudar a remuneracao — reconhecimento simbolico (visibilidade interna, convites para eventos externos) ja e suficiente na maioria das organizacoes.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Rituais, canais e cadencia -->
+    <section id="topico-4" data-inema-topic="modulo-3-10#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#128197; Rituais, Canais e Cadencia</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-10-t4-p1">
+        Wenger descreve o <strong class="text-purple-400">repertorio compartilhado</strong> como um dos tres pilares da CoP — e boa parte desse repertorio se constroi por meio de rituais. Rituais sao encontros recorrentes com formato reconhecivel que criam o senso de pertencimento e continuidade. Sem rituais, a comunidade e um grupo com boa intencao; com rituais, ela tem identidade e historia.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4">&#127381; Cadencia Recomendada</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <div class="text-purple-400 font-bold text-sm mb-1">Semanal</div>
+            <div class="text-xs text-neutral-300 mb-2">Canal assincrono (Slack/Teams)</div>
+            <ul class="text-xs text-neutral-400 space-y-1">
+              <li>&#8226; Post de insight / artigo da semana</li>
+              <li>&#8226; "O que aprendi essa semana"</li>
+              <li>&#8226; Pergunta aberta para a comunidade</li>
+            </ul>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <div class="text-purple-400 font-bold text-sm mb-1">Quinzenal / Mensal</div>
+            <div class="text-xs text-neutral-300 mb-2">Encontro sincrono (60-90 min)</div>
+            <ul class="text-xs text-neutral-400 space-y-1">
+              <li>&#8226; Case sharing: alguem apresenta um problema real</li>
+              <li>&#8226; Workshop pratico (ferramenta, framework)</li>
+              <li>&#8226; Convidado externo / pesquisador</li>
+            </ul>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <div class="text-purple-400 font-bold text-sm mb-1">Trimestral / Semestral</div>
+            <div class="text-xs text-neutral-300 mb-2">Evento presencial (half-day)</div>
+            <ul class="text-xs text-neutral-400 space-y-1">
+              <li>&#8226; Hackathon interno de dominio</li>
+              <li>&#8226; Revisao do repertorio compartilhado</li>
+              <li>&#8226; Cerimonia de reconhecimento</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4">&#128241; Stack de Canais</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="bg-dark-700/50 rounded-lg p-3">
+            <span class="text-purple-400 font-semibold text-xs block mb-1">Async (texto)</span>
+            <span class="text-neutral-300 text-xs">Canal Slack/Teams com topicos fixos: #duvidas, #casos, #recursos. Evite canal unico — a polissemia mata o sinal.</span>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-3">
+            <span class="text-purple-400 font-semibold text-xs block mb-1">Sync (video)</span>
+            <span class="text-neutral-300 text-xs">Zoom/Meet com gravacao e resumo publicado em 24h para quem nao participou.</span>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-3">
+            <span class="text-purple-400 font-semibold text-xs block mb-1">Repositorio</span>
+            <span class="text-neutral-300 text-xs">Notion/Confluence com casos, glossario vivo e templates. E o conhecimento que fica quando as pessoas saem.</span>
+          </div>
+          <div class="bg-dark-700/50 rounded-lg p-3">
+            <span class="text-purple-400 font-semibold text-xs block mb-1">Presencial</span>
+            <span class="text-neutral-300 text-xs">Minimo 1x/ano. Microsoft (2022): lacos fracos se degradam 25%/ano em ambientes 100% remotos.</span>
+          </div>
+        </div>
+        <p class="text-neutral-400 text-xs mt-3">&#9888; Armadilha: cadencia demais mata espontaneidade. A melhor cadencia e a <strong class="text-white">mais esparsa que ainda mantenha continuidade</strong> — se os membros chegam cansados, reduza a frequencia e aumente a qualidade.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Reconhecimento e gamificacao -->
+    <section id="topico-5" data-inema-topic="modulo-3-10#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#127942; Reconhecimento e Gamificacao</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-10-t5-p1">
+        O paradoxo do reconhecimento em CoPs: dinheiro mata motivacao intrinseca. Edward Deci e Richard Ryan (Teoria da Autodeterminacao, 1985-2000) demonstraram que recompensas extrinsecas reduzem o engajamento em atividades que as pessoas ja fazem por prazer. Isso nao significa ignorar reconhecimento — significa <strong class="text-purple-400">reconhecer de forma que amplifique a motivacao intrinseca</strong>, nao que a substitua.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4">&#127775; Sistema de Reconhecimento em 3 Camadas</h3>
+        <div class="space-y-4">
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="text-sm font-semibold text-purple-400">Camada 1: Visibilidade Interna</h4>
+              <span class="text-xs text-neutral-500">Custo zero</span>
+            </div>
+            <p class="text-xs text-neutral-300">Mencao publica em newsletter interna, post no canal geral da empresa, apresentacao de casos em all-hands. A visibilidade perante pares e superior como motivador ao bonus individual (Amabile &amp; Kramer, "The Progress Principle", 2011).</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="text-sm font-semibold text-purple-400">Camada 2: Acesso a Oportunidades</h4>
+              <span class="text-xs text-neutral-500">Baixo custo</span>
+            </div>
+            <p class="text-xs text-neutral-300">Membros ativos ganham prioridade para: representar a empresa em conferencias, participar de pilotos de novos projetos, acessar cursos externos, co-apresentar com o C-level em eventos. O reconhecimento e a porta para mais aprendizado — fecha o loop de motivacao intrinseca.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="text-sm font-semibold text-purple-400">Camada 3: Gamificacao Leve</h4>
+              <span class="text-xs text-neutral-500">Use com cuidado</span>
+            </div>
+            <p class="text-xs text-neutral-300">Badges, leaderboards e pontos funcionam bem para <em>novos membros</em> que ainda nao internalizaram o valor da comunidade. Para veteranos, gamificacao pesada e patronizante. Regra: gamifique onboarding, nao participacao de longo prazo.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid Fazer vs Evitar -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-5">
+          <h4 class="text-sm font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">&#10003;</span> Reconhecimento que funciona</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">&#8226;</span><span>Especifico: "Seu caso sobre X ajudou Y pessoas"</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">&#8226;</span><span>Imediato: publicado logo apos a contribuicao</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">&#8226;</span><span>Por pares: validado pela comunidade, nao so pelo gestor</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-0.5">&#8226;</span><span>Vinculado a impacto no negocio</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h4 class="text-sm font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">&#10007;</span> Reconhecimento que distorce</h4>
+          <ul class="space-y-2 text-sm text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span>Bonus por participacao — cria presenca passiva</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span>Ranking individual — gera competicao, nao colaboracao</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span>Premiacao so em evento anual — ciclo longo demais</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span>Vinculado a avaliacao de performance formal</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-sm font-semibold text-primary mb-2 flex items-center"><span class="mr-2">&#128161;</span> Referencia: o modelo da Toyota</h3>
+        <p class="text-neutral-300 text-sm">As CoPs de engenharia da Toyota (obeya e jishuken) nao usam pontos nem badges. O reconhecimento e a responsabilidade por um kaizen real que gera resultado visivel na linha de producao. O trabalho e o premio — e e o motivo pelo qual o Toyota Production System sobreviveu a 70 anos de rotatividade gerencial.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Como comecar e manter viva -->
+    <section id="topico-6" data-inema-topic="modulo-3-10#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#128640; Como Comecar e Manter a Comunidade Viva</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-10-t6-p1">
+        Wenger alertou: <em>"CoPs nao se criam — elas se cultivam."</em> A metafora do jardim e mais precisa que a da engenharia. Voce nao constroi uma CoP como se constroi um processo; voce prepara o solo, planta sementes, remove obstaculos e espera que organismos vivos se desenvolvam no seu proprio ritmo. O papel do gestor e criar condicoes, nao controlar resultados.
+      </p>
+
+      <!-- Timeline de lancamento -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5">&#128197; Roadmap de Lancamento (0-6 meses)</h3>
+        <div class="space-y-3">
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 font-bold text-xs flex-shrink-0">M1</div>
+            <div><strong class="text-white text-sm">Meses 1-2: Encontrar os entusiastas</strong>
+            <p class="text-neutral-400 text-xs mt-1">Identifique 5-8 pessoas que ja praticam informalmente. Entrevistas individuais: "O que voce gostaria de aprender? O que voce poderia ensinar?" Nao anuncie ainda — evite adesao por status.</p></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 font-bold text-xs flex-shrink-0">M2</div>
+            <div><strong class="text-white text-sm">Meses 2-3: Encontro fundador</strong>
+            <p class="text-neutral-400 text-xs mt-1">Reuniao de 2h para co-criar o dominio, definir o core team e combinar o primeiro ritual. O encontro nao e de apresentacao — e de trabalho real em um problema real.</p></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 font-bold text-xs flex-shrink-0">M3</div>
+            <div><strong class="text-white text-sm">Meses 3-4: Abertura controlada</strong>
+            <p class="text-neutral-400 text-xs mt-1">Convide 15-20 pessoas por indicacao dos fundadores. Abra o canal, publique o primeiro case. Indicacao garante densidade de interesse antes da escala.</p></div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 font-bold text-xs flex-shrink-0">M4</div>
+            <div><strong class="text-white text-sm">Meses 4-6: Primeiro resultado tangivel</strong>
+            <p class="text-neutral-400 text-xs mt-1">A CoP precisa de um "resultado de vitrina" — problema resolvido, framework gerado, economia documentada. Esse resultado legitima a existencia perante sponsors e membros perifericos indecisos.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4">&#127807; Sinais de Saude da CoP</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <h4 class="text-xs font-semibold text-purple-400 mb-2 uppercase tracking-wide">Saudavel</h4>
+            <ul class="space-y-2 text-sm text-neutral-300">
+              <li class="flex items-start space-x-2"><span class="text-purple-400">&#10003;</span><span>Novos membros chegam por indicacao de quem ja esta</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">&#10003;</span><span>Perguntas surgem espontaneamente no canal</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">&#10003;</span><span>Membros se ajudam sem mediacao do champion</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">&#10003;</span><span>O repertorio cresce sem forcas externas</span></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xs font-semibold text-red-400 mb-2 uppercase tracking-wide">Em risco</h4>
+            <ul class="space-y-2 text-sm text-neutral-300">
+              <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Somente o champion publica no canal</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Presenca cai quando o champion esta ausente</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Discussoes ficam superficiais, sem discordancia</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Nenhum membro novo em mais de 3 meses</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-sm font-semibold text-primary mb-2 flex items-center"><span class="mr-2">&#128161;</span> A regra de Wenger para longevidade</h3>
+        <p class="text-neutral-300 text-sm">Em entrevista a Harvard Business Review (2000), Wenger disse: <em>"A CoP mais duradoura e aquela que aprende a se reinventar. Quando o dominio original se resolve, a comunidade precisa encontrar o proximo problema relevante — ou se dissolver com dignidade."</em> Uma CoP que cumpriu seu proposito e deve ser encerrada e sinal de sucesso, nao fracasso.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">&#128203;</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">CoP = dominio + comunidade + pratica (Wenger)</strong>
+              <span class="text-neutral-400"> — sem os tres elementos, e apenas um grupo de interesse</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">CoPs sobrevivem por legitimidade social, nao por mandato</strong>
+              <span class="text-neutral-400"> — por isso resistem a trocas de lideranca que matam programas formais</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Papeis claros sem hierarquia: champion, sponsor, facilitadores</strong>
+              <span class="text-neutral-400"> — o champion e eleito pela pratica, nao pelo cargo</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Rituais criam identidade; cadencia esparsa mantem qualidade</strong>
+              <span class="text-neutral-400"> — async semanal + sync mensal + presencial semestral e o padrao testado</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Reconhecimento intrinseco supera bonus; gamificacao so no onboarding</strong>
+              <span class="text-neutral-400"> — 0-6 meses: cultivar entusiastas reais, nao recrutar por status</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-purple-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">3.11 - Futuro da Inovacao</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-3-11.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">
+            3.11 - Futuro da Inovacao &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

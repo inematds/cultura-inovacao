@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Trilha 3 - Avancado | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha purple) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+    <nav class="text-sm text-neutral-500" aria-label="Navegacao estrutural">
+      <a href="../../index.html" class="hover:text-neutral-300 transition-colors">Inicio</a>
+      <span class="mx-2">/</span>
+      <span class="text-purple-400 font-medium">Trilha 3</span>
+    </nav>
+  </div>
+
+  <!-- HEADER HERO -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4 uppercase tracking-wide">
+        TRILHA 3
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#128640; Avancado — Construindo Solucoes</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl mb-8">
+        Da teoria a execucao: programe inovacao corporativa, escale resultados, prove ROI e prepare a empresa para o futuro. Aqui voce converte cultura em sistema que funciona sem voce na sala.
+      </p>
+
+      <!-- Hero SVG futurista -->
+      <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-4 mb-8 max-w-3xl">
+        <svg viewBox="0 0 700 220" class="w-full h-auto" role="img" aria-label="Diagrama futurista: jornada de inovacao avancada da ideia ao impacto corporativo" font-family="Inter,sans-serif">
+          <defs>
+            <linearGradient id="t3-grad-purple" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#a855f7" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.9"/>
+            </linearGradient>
+            <linearGradient id="t3-grad-cyan" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#a855f7" stop-opacity="0.7"/>
+            </linearGradient>
+            <filter id="t3-glow">
+              <feGaussianBlur stdDeviation="1.8" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <pattern id="t3-grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+              <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#a855f7" stroke-width="0.3" stroke-opacity="0.18"/>
+            </pattern>
+          </defs>
+          <!-- Grid de fundo -->
+          <rect width="700" height="220" fill="url(#t3-grid)" rx="12"/>
+          <!-- Linha principal de fluxo -->
+          <line x1="60" y1="110" x2="640" y2="110" stroke="url(#t3-grad-purple)" stroke-width="2" stroke-dasharray="6 3" opacity="0.5"/>
+          <!-- Nos da jornada -->
+          <!-- No 1: Programa -->
+          <g class="wf-a" filter="url(#t3-glow)">
+            <rect x="20" y="78" width="82" height="64" rx="10" fill="#1f1035" stroke="#a855f7" stroke-width="2"/>
+            <text x="61" y="105" text-anchor="middle" fill="#a855f7" font-size="18">&#127968;</text>
+            <text x="61" y="122" text-anchor="middle" fill="#e2e8f0" font-size="9" font-weight="600">Programa</text>
+            <text x="61" y="134" text-anchor="middle" fill="#94a3b8" font-size="8">Corporativo</text>
+          </g>
+          <!-- Seta 1->2 -->
+          <path d="M102 110 L118 110" stroke="#a855f7" stroke-width="1.5" marker-end="url(#t3-arrow)"/>
+          <!-- No 2: Intraempreend -->
+          <g class="wf-a" filter="url(#t3-glow)">
+            <rect x="118" y="78" width="82" height="64" rx="10" fill="#0f1a2e" stroke="#7c3aed" stroke-width="2"/>
+            <text x="159" y="105" text-anchor="middle" fill="#a855f7" font-size="18">&#129470;</text>
+            <text x="159" y="122" text-anchor="middle" fill="#e2e8f0" font-size="9" font-weight="600">Intraempreend.</text>
+            <text x="159" y="134" text-anchor="middle" fill="#94a3b8" font-size="8">Autonomia</text>
+          </g>
+          <!-- Seta 2->3 -->
+          <path d="M200 110 L216 110" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#t3-arrow2)"/>
+          <!-- No 3: Inovacao Aberta -->
+          <g class="wf-a" filter="url(#t3-glow)">
+            <rect x="216" y="78" width="82" height="64" rx="10" fill="#0a1a20" stroke="#38bdf8" stroke-width="2"/>
+            <text x="257" y="105" text-anchor="middle" fill="#38bdf8" font-size="18">&#127760;</text>
+            <text x="257" y="122" text-anchor="middle" fill="#e2e8f0" font-size="9" font-weight="600">Inovacao</text>
+            <text x="257" y="134" text-anchor="middle" fill="#94a3b8" font-size="8">Aberta</text>
+          </g>
+          <!-- Seta 3->4 -->
+          <path d="M298 110 L314 110" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#t3-arrow3)"/>
+          <!-- No 4: Ambidestria -->
+          <g class="wf-a" filter="url(#t3-glow)">
+            <rect x="314" y="78" width="82" height="64" rx="10" fill="#1a1010" stroke="#a855f7" stroke-width="2"/>
+            <text x="355" y="105" text-anchor="middle" fill="#a855f7" font-size="18">&#9878;&#65039;</text>
+            <text x="355" y="122" text-anchor="middle" fill="#e2e8f0" font-size="9" font-weight="600">Ambidestria</text>
+            <text x="355" y="134" text-anchor="middle" fill="#94a3b8" font-size="8">Equilibrio</text>
+          </g>
+          <!-- Seta 4->5 -->
+          <path d="M396 110 L412 110" stroke="#a855f7" stroke-width="1.5" marker-end="url(#t3-arrow4)"/>
+          <!-- No 5: IA Acelerador -->
+          <g class="wf-a" filter="url(#t3-glow)">
+            <rect x="412" y="78" width="82" height="64" rx="10" fill="#0a1a20" stroke="#38bdf8" stroke-width="2"/>
+            <text x="453" y="105" text-anchor="middle" fill="#38bdf8" font-size="18">&#129302;</text>
+            <text x="453" y="122" text-anchor="middle" fill="#e2e8f0" font-size="9" font-weight="600">IA como</text>
+            <text x="453" y="134" text-anchor="middle" fill="#94a3b8" font-size="8">Acelerador</text>
+          </g>
+          <!-- Seta 5->6 -->
+          <path d="M494 110 L510 110" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#t3-arrow5)"/>
+          <!-- No 6: Impacto -->
+          <g class="wf-a" filter="url(#t3-glow)">
+            <rect x="510" y="62" width="168" height="96" rx="12" fill="#150e28" stroke="url(#t3-grad-purple)" stroke-width="2.5"/>
+            <text x="594" y="95" text-anchor="middle" fill="#a855f7" font-size="20">&#127941;</text>
+            <text x="594" y="115" text-anchor="middle" fill="#e2e8f0" font-size="10" font-weight="600">Impacto</text>
+            <text x="594" y="129" text-anchor="middle" fill="#38bdf8" font-size="9">ROI &#8226; Escala &#8226; Futuro</text>
+            <text x="594" y="143" text-anchor="middle" fill="#94a3b8" font-size="8">Governanca &#8226; Comunidade</text>
+          </g>
+          <!-- Marcadores de seta -->
+          <defs>
+            <marker id="t3-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#a855f7"/>
+            </marker>
+            <marker id="t3-arrow2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#7c3aed"/>
+            </marker>
+            <marker id="t3-arrow3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#38bdf8"/>
+            </marker>
+            <marker id="t3-arrow4" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#a855f7"/>
+            </marker>
+            <marker id="t3-arrow5" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#38bdf8"/>
+            </marker>
+          </defs>
+          <!-- Label inferior -->
+          <text x="350" y="200" text-anchor="middle" fill="#64748b" font-size="9">Jornada Avancada: do programa ao impacto sistemico</text>
+        </svg>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-4 gap-4 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">11</div>
+          <div class="text-xs text-neutral-400">Modulos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">66</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">~5h</div>
+          <div class="text-xs text-neutral-400">Duracao</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Avancado</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+      </div>
+
+      <!-- Barra de progresso da trilha -->
+      <div class="mt-6 max-w-2xl">
+        <div data-inema-meter="trilha:3" class="flex items-center space-x-3">
+          <div class="flex-1 bg-dark-700 rounded-full h-2">
+            <div class="bg-purple-500 h-2 rounded-full" style="width:0%"></div>
+          </div>
+          <span class="text-xs text-neutral-500 whitespace-nowrap">0 de 66</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- MAPA DA TRILHA -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Mapa da trilha</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <a href="#modulo-3-1" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.1</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#127968; Programa Corporativo</h3>
+          <p class="text-xs text-neutral-400">Estrutura que entrega resultado</p>
+        </a>
+
+        <a href="#modulo-3-2" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.2</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#129470; Intraempreendedorismo</h3>
+          <p class="text-xs text-neutral-400">Autonomia com guarda-corpos</p>
+        </a>
+
+        <a href="#modulo-3-3" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.3</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#127760; Inovacao Aberta</h3>
+          <p class="text-xs text-neutral-400">Ecossistema como vantagem</p>
+        </a>
+
+        <a href="#modulo-3-4" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.4</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#9878;&#65039; Ambidestria Organizacional</h3>
+          <p class="text-xs text-neutral-400">Explorar sem largar o core</p>
+        </a>
+
+        <a href="#modulo-3-5" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.5</span>
+            <span class="text-xs text-neutral-500">~40 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#129302; IA como Acelerador</h3>
+          <p class="text-xs text-neutral-400">IA que multiplica o sistema</p>
+        </a>
+
+        <a href="#modulo-3-6" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.6</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#127942; Casos Reais</h3>
+          <p class="text-xs text-neutral-400">Certo e errado na pratica</p>
+        </a>
+
+        <a href="#modulo-3-7" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.7</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#128176; ROI de Inovacao</h3>
+          <p class="text-xs text-neutral-400">Provar valor sem matar a aposta</p>
+        </a>
+
+        <a href="#modulo-3-8" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.8</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#128200; Escalando Inovacao</h3>
+          <p class="text-xs text-neutral-400">Do piloto ao impacto total</p>
+        </a>
+
+        <a href="#modulo-3-9" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.9</span>
+            <span class="text-xs text-neutral-500">~30 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#129520; Governanca de Inovacao</h3>
+          <p class="text-xs text-neutral-400">Decidir matar ou continuar</p>
+        </a>
+
+        <a href="#modulo-3-10" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.10</span>
+            <span class="text-xs text-neutral-500">~30 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#128101; Comunidade de Pratica</h3>
+          <p class="text-xs text-neutral-400">Redes que sustentam cultura</p>
+        </a>
+
+        <a href="#modulo-3-11" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-purple-400 font-bold text-sm">3.11</span>
+            <span class="text-xs text-neutral-500">~35 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">&#128302; Futuro da Inovacao</h3>
+          <p class="text-xs text-neutral-400">Tendencias que ja chegaram</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- CONTEUDO DETALHADO -->
+    <h2 class="text-2xl font-bold mb-6">Conteudo detalhado</h2>
+
+    <!-- MODULO 3-1 -->
+    <div id="modulo-3-1" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.1</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#127968; Programa de Inovacao Corporativa</h3>
+        <p class="text-neutral-400 text-sm">Estruture um programa de inovacao que entrega resultados reais, nao apenas workshops bonitos.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <!-- Topico 1 -->
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-1-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#127919; Por que a maioria dos programas falha em 18 meses</span>
+          </button>
+          <div id="t3-1-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Diagnostico dos erros estruturais que condenam programas corporativos de inovacao antes de entregarem valor mensuravel.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Evitar os mesmos erros economiza 12-18 meses de trabalho perdido e preserva a credibilidade interna do programa.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> patrocinio sem comprometimento, KPI de vaidade, isolamento da operacao, falta de mandato formal, ausencia de portfolio diversificado.</p>
+          </div>
+        </div>
+        <!-- Topico 2 -->
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-1-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#127968; Modelo H1-H2-H3 na pratica corporativa</span>
+          </button>
+          <div id="t3-1-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> O framework McKinsey de tres horizontes aplicado ao portfolio de inovacao corporativa: defender o core (H1), expandir adjacencias (H2), criar o futuro (H3).</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Sem esse modelo o programa fica preso em H1, nunca cria diferenciacao competitiva real.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> distribuicao 70/20/10 de investimento, metricas diferentes por horizonte, portfolio balanceado, separacao de equipes H1 vs H3.</p>
+          </div>
+        </div>
+        <!-- Topico 3 -->
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-1-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#127381; Estrutura minima viavel de um programa</span>
+          </button>
+          <div id="t3-1-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Os 5 elementos sem os quais nenhum programa sobrevive: patrocinio C-level, mandato claro, time dedicado, budget protegido e processo de stage-gate.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Lancar um programa sem esses elementos e garantir fracasso. Saber o minimo necessario permite negociar o que importa.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> charter do programa, comite de inovacao, budget de exploracao separado, time parcial vs dedicado, espaco fisico/virtual de inovacao.</p>
+          </div>
+        </div>
+        <!-- Topico 4 -->
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-1-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128202; Stage-gate adaptado para inovacao</span>
+          </button>
+          <div id="t3-1-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Adaptacao do processo stage-gate classico para projetos de inovacao, com criterios de avanco baseados em validacao de hipoteses em vez de business case completo.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> O stage-gate rigido mata H3. A versao adaptada permite avanco com incerteza controlada e investe so no que aprende.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> gates de decisao (kill/pivot/continue), metricas de aprendizado, investment tickets escalonados, criterios por horizonte.</p>
+          </div>
+        </div>
+        <!-- Topico 5 -->
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-1-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#9889; Quick wins: o combustivel politico do programa</span>
+          </button>
+          <div id="t3-1-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Estrategia dos primeiros 90 dias: escolher e entregar resultados visiveis que constroem credibilidade para iniciativas maiores e mais longas.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Sem quick wins os primeiros 6 meses parecem "nao fazer nada" e o programa e cancelado antes de amadurecer.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> criterios de selecao (impacto visivel, complexidade baixa, velocidade alta), plano 30-60-90 dias, comunicacao de resultados ao C-level.</p>
+          </div>
+        </div>
+        <!-- Topico 6 -->
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-1-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#128200; Metricas que provam valor do programa</span>
+          </button>
+          <div id="t3-1-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Sistema de metricas em tres camadas — atividade (input), aprendizado (processo) e valor (output) — que provam o impacto do programa para diferentes stakeholders.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Medir so atividade (numero de workshops) nao convence financeiro. Medir so resultado final nao captura o progresso intermediario.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> innovation accounting, metricas de funil de inovacao, NPS de inovadores, receita de novos negocios como % do total, velocidade de validacao.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-1.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- MODULO 3-2 -->
+    <div id="modulo-3-2" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.2</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#129470; Intraempreendedorismo</h3>
+        <p class="text-neutral-400 text-sm">Como criar empreendedores internos que inovam com a seguranca e recursos da empresa grande.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-2-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#129470; O que diferencia intraempreendedor de funcionario inovador</span>
+          </button>
+          <div id="t3-2-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Perfil, motivacao e comportamentos que definem o intraempreendedor real versus o colaborador criativo ou o "intrapreneur de papel".</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Identificar e cultivar as pessoas certas e mais eficiente do que tentar transformar todos em intraempreendedores.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> tolerancia a ambiguidade, orientacao a resultado, ability to sell internally, rede interna de influencia, autonomia responsavel.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-2-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#128526; Programas de identificacao e desenvolvimento</span>
+          </button>
+          <div id="t3-2-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como mapear potenciais intraempreendedores, criar programas de aceleracao interna e desenvolver o perfil empreendedor dentro da corporacao.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Sem um processo ativo de identificacao, os melhores perfis ficam escondidos ou frustrados e partem para startups externas.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> bootcamps de inovacao, hackathon como filtro, pitch interno, mentorias com fundadores externos, rotacoes em startups parceiras.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-2-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#127869; Dar autonomia sem perder o controle</span>
+          </button>
+          <div id="t3-2-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Mecanismos que permitem autonomia real para times de inovacao sem expor a empresa a riscos juridicos, financeiros ou reputacionais desnecessarios.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Autonomia sem guardrails gera caos; guardrails excessivos sufocam inovacao. O equilibrio e possivel e necessario.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> sandbox de inovacao, pre-aprovacoes por categoria de risco, acordos de confidencialidade simplificados, relatorio de progresso vs auditoria.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-2-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128081; Incentivos e reconhecimento para intraempreendedores</span>
+          </button>
+          <div id="t3-2-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Modelos de incentivo financeiro e nao-financeiro que motivam e reteem intraempreendedores, incluindo equity virtual, bonus por resultado e reconhecimento publico.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Intraempreendedores tem opcao de sair. Sem incentivos adequados a empresa treina talentos para os concorrentes e startups.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> phantom equity, bonus por milestone, carreira de inovacao (IC track), visibilidade para lideranca senior, reconhecimento publico.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-2-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#128101; Times de inovacao: composicao ideal</span>
+          </button>
+          <div id="t3-2-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como montar times multidisciplinares para projetos de inovacao, equilibrando skills tecnicos, de negocio, de design e de execucao.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Times homogeneos geram pontos cegos. A diversidade de perspectiva e o principal acelerador de inovacao, segundo Harvard Business Review.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> time de 2 pizzas (Amazon), T-shaped professionals, papel de broker de conhecimento, diversidade cognitiva vs demografica, anti-groupthink.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-2-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#128683; Armadilhas comuns do intraempreendedorismo</span>
+          </button>
+          <div id="t3-2-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Os erros mais frequentes que destroem iniciativas de intraempreendedorismo: apoio de fachada, volta ao core no primeiro obstaculo, politica interna como bloqueador.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Conhecer as armadilhas antecipa conflitos e permite criar mecanismos de protecao antes que o problema apareca.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> antibodies organizacionais, inovadores como ameaca percebida, middle management como bloqueador, falta de air cover do patrocinador.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-2.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- MODULO 3-3 -->
+    <div id="modulo-3-3" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.3</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#127760; Inovacao Aberta</h3>
+        <p class="text-neutral-400 text-sm">Inovar com startups, universidades e ecossistema externo como vantagem competitiva.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-3-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#128218; O paradigma Chesbrough: do fechado ao aberto</span>
+          </button>
+          <div id="t3-3-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> O modelo de Henry Chesbrough que define inovacao aberta como o uso intencional de fluxos de conhecimento externos e internos para acelerar a inovacao propria.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Entender o fundamento teorico ajuda a defender a estrategia internamente e a escolher os mecanismos certos de abertura.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> outside-in vs inside-out, coupled model, licenciamento de IP, spinoffs, joint ventures de P&amp;D.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-3-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#128640; Programas de aceleracao corporativa</span>
+          </button>
+          <div id="t3-3-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como estruturar e operar programas de aceleracao de startups para corporacoes: selecao, mentoria, PoC e potencial de investimento ou aquisicao.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Aceleradoras corporativas bem feitas entregam accesso a tecnologias emergentes 3-5 anos antes da concorrencia.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> corporate accelerator, PoC (proof of concept) com budget real, criterios de selecao, gestao de expectativa startup vs corporacao, corporate venture.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-3-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#127979; Parcerias com universidades e centros de P&amp;D</span>
+          </button>
+          <div id="t3-3-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Modelos de parceria empresa-universidade para pesquisa aplicada, teses de mestrado/doutorado orientadas por problema de negocio e transferencia tecnologica.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Parcerias universitarias dao acesso a pesquisa de ponta a custo marginal, com possibilidade de exclusividade de resultados.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> propriedade intelectual compartilhada, NDA academico, EMBRAPII, pesquisa encomendada, researcher in residence.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-3-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128640; Corporate venture capital (CVC)</span>
+          </button>
+          <div id="t3-3-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Estrutura e operacao de um bra&#231;o de venture capital corporativo: quando faz sentido, como estruturar o fundo, criterios de tese e gestao do portfolio.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> CVC e um dos instrumentos mais poderosos de inovacao aberta, mas requer governanca e mandato claros para nao virar "investimento estrategico sem estrategia".</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> strategic vs financial return, deal flow, portfolio diversity, follow-on investment, right of first refusal em M&amp;A.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-3-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#129309; Gestao de parceria startup-corporacao</span>
+          </button>
+          <div id="t3-3-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como gerenciar o choque cultural entre velocidade de startup e processos corporativos, protegendo a startup de ser sufocada pela burocracia.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> A maioria dos PoCs falha nao por falta de tecnologia mas por incapacidade de navegar os processos internos da corporacao.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> sponsor interno dedicado, fast track de procurement, NDA simplificado, definicao clara de success criteria antes do PoC.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-3-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#127759; Ecossistemas de inovacao e hubs regionais</span>
+          </button>
+          <div id="t3-3-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como se posicionar e extrair valor dos ecossistemas de inovacao regionais (como Porto Digital, Cubo, CESAR, Tecnosinos) e internacionais (Silicon Valley, Tel Aviv, Berlim).</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Fazer parte de um ecossistema ativo multiplica o acesso a talento, startups, capital e tendencias antes da curva.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> anchor company, hub de inovacao, presenca em eventos-chave, patrocinio estrategico de comunidades, programa de residencia corporativa.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-3.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- MODULO 3-4 -->
+    <div id="modulo-3-4" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.4</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#9878;&#65039; Ambidestria Organizacional</h3>
+        <p class="text-neutral-400 text-sm">Como explorar o futuro sem abandonar o que sustenta o presente — o desafio mais dificil da gestao de inovacao.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-4-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#128214; O conceito de March: exploration vs exploitation</span>
+          </button>
+          <div id="t3-4-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> O framework seminal de James March (1991) sobre a tensao entre explorar novos conhecimentos (exploration) e aprofundar o que ja se sabe fazer bem (exploitation).</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Empresas que so exploram morrem de ineficiencia; as que so exploitam morrem de irrelevancia. O equilibrio e a competencia central.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> competency trap, success trap, organizational learning, dynamic capabilities, adaptive capacity.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-4-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#127968; Ambidestria estrutural: unidades separadas</span>
+          </button>
+          <div id="t3-4-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Modelo de separar fisicamente as unidades de exploracao e exploitation com metricas, processos, culturas e lideran&#231;as diferentes, integrados no topo.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Quando a cultura de exploration e exploitation coexistem no mesmo time, a exploitation sempre vence — e mais urgente e mais facil de medir.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> spinoff interno, lab separado, P&amp;L independente, integracao pelo C-level, metricas de sucesso diferentes por unidade.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-4-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#128736; Ambidestria contextual: alocacao de tempo</span>
+          </button>
+          <div id="t3-4-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Modelo alternativo onde as mesmas pessoas alternam entre exploitation e exploration em funcao do contexto, sem separacao estrutural rigida.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Para empresas menores ou que nao podem criar unidades separadas, a ambidestria contextual e o caminho pratico para inovar sem paralisar o core.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> 20% time (Google), regras de alternancia, context switching cost, "day job + inovacao", design de agenda do lider.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-4-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128081; O papel da lideranca na ambidestria</span>
+          </button>
+          <div id="t3-4-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como CEO e C-level gerenciam a tensao entre exploration e exploitation: alocacao de agenda, sinalizacao de prioridades e arbitragem de conflitos.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Sem lideranca ambidestra o mais urgente sempre mata o importante. O CEO e o unico que pode proteger exploration do curto prazo.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> CEO como chief ambidexter, alocacao de agenda (onde vai o tempo do CEO?), portfolio de discussao no board, storytelling da inovacao para Wall Street.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-4-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#128200; Metricas separadas: dois sistemas de gestao</span>
+          </button>
+          <div id="t3-4-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como criar dois sistemas de metricas coexistentes — um para o negocio atual (resultado) e outro para o novo negocio (aprendizado e hipoteses validadas).</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Aplicar metricas de negocio maduro em exploracao e fatal. Um startup interno nao pode ser avaliado por EBITDA no ano 1.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> dual dashboard, leading vs lagging indicators, innovation accounting (Ries), metricas de discovery vs delivery.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-4-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#127775; Cases: quem conseguiu ser ambidestro</span>
+          </button>
+          <div id="t3-4-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Analise de cases reais de ambidestria bem-sucedida: Amazon (AWS como exploracao), Apple (iPhone enquanto vendia iPod), Natura (inovacao aberta com o core de cosmeticos).</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Casos concretos traduzem o conceito abstrato em decisoes praticas replicaveis.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> modelo Amazon de novas iniciativas (Working Backwards), Apple como empresa de plataforma, Natura Startups, Magazine Luiza e ecossistema digital.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-4.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- MODULO 3-5 -->
+    <div id="modulo-3-5" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.5</span>
+          <span class="text-xs text-neutral-500">~40 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#129302; IA como Acelerador de Inovacao</h3>
+        <p class="text-neutral-400 text-sm">Onde e como a Inteligencia Artificial multiplica cada etapa do sistema de inovacao corporativa.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-5-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#128269; IA na pesquisa e geracao de insights</span>
+          </button>
+          <div id="t3-5-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como usar IA generativa e analitica para acelerar a pesquisa de tendencias, analise de concorrentes, mapeamento de sinais fracos e geracao de insights de mercado.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Pesquisa manual que levava semanas agora leva horas. Inovadores que usam IA nessa etapa tem vantagem estrutural de velocidade.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> horizon scanning com IA, trend clustering, signal vs noise, patent analysis automatizado, synthetic research participants.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-5-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#128161; IA na geracao e enriquecimento de ideias</span>
+          </button>
+          <div id="t3-5-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Tecnicas de uso de LLMs como parceiro de brainstorming, expansao de ideias, identificacao de contradicoes, critica construtiva e analogias cross-industry.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> IA nao substitui criatividade humana mas elimina o blank page problem e expande o espaco de solucoes explorado.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> prompts de expansao, diverge-converge com IA, SCAMPER+LLM, critica de steelman, analogia morfologica automatizada.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-5-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#128736; IA na prototipagem e validacao rapida</span>
+          </button>
+          <div id="t3-5-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como IA reduz o ciclo de prototipagem: geracao de mockups, simulacao de personas, testes sinteticos de hipoteses e analise rapida de feedback de usuarios.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Prototipagem que levava dias agora e questao de horas. Quem valida mais rapido aprende mais e investe menos em direcoes erradas.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> AI-generated wireframes, synthetic user testing, hipotese vs dado real (quando IA nao basta), pair testing com IA + usuario real.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-5-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128640; IA na operacao de programas de inovacao</span>
+          </button>
+          <div id="t3-5-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como usar IA para automatizar tarefas de gestao do programa: triagem de propostas, relatorios de progresso, matching de mentores, analise de portfolio.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Um gestor de inovacao que usa IA nas tarefas operacionais libera 30-40% do tempo para o que realmente importa: facilitar e decidir.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> AI-assisted proposal scoring, automated progress reports, mentor-project matching, portfolio dashboard automatizado.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-5-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#9888;&#65039; Riscos e limites da IA em inovacao</span>
+          </button>
+          <div id="t3-5-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Os riscos reais de usar IA em processos de inovacao: vis de confirmacao amplificado, homogeneizacao de ideias, dependencia de dados historicos, questoes de IP e privacidade.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Usar IA sem compreender os limites leva a falsa sensacao de seguranca e a decisoes baseadas em outputs que parecem confiaveis mas nao sao.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> AI confirmation bias, idea homogeneization, hallucination em contexto critico, propriedade intelectual de outputs, soberania de dados.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-5-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#128202; Construindo competencia de IA no time de inovacao</span>
+          </button>
+          <div id="t3-5-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como desenvolver fluencia em IA no time de inovacao: trilha de aprendizado, ferramentas essenciais, cultura de experimentacao e medicao de adocao.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Nao basta ter acesso as ferramentas — o time precisa saber quando e como usa-las para extrair valor real, nao apenas novelty.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> AI fluency ladder, ferramentas por etapa do processo, "AI office hours", medicao de adocao e impacto, comunidade de pratica de IA.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-5.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- MODULO 3-6 -->
+    <div id="modulo-3-6" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.6</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#127942; Casos Reais de Inovacao</h3>
+        <p class="text-neutral-400 text-sm">O que diferencia os programas que funcionam dos que viram case de fracasso — e o que aprender de ambos.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-6-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#127919; Amazon: inovacao como sistema operacional</span>
+          </button>
+          <div id="t3-6-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Analise do sistema de inovacao da Amazon — Working Backwards, mecanismos de duas pizzas, 6-pagers, Leadership Principles — como um conjunto coerente de praticas.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Amazon e o case mais estudado de inovacao sistematica. Entender o sistema inteiro e mais util do que copiar practicas isoladas.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> Press Release Interno, Two Pizza Teams, 6-pager, Day 1 culture, customer obsession como principio operacional.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-6-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#127975; Nubank e Magazine Luiza: inovacao no Brasil</span>
+          </button>
+          <div id="t3-6-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Comparacao de dois cases brasileiros: Nubank (startup que virou incumbente inovador) e Magazine Luiza (incumbente que se transformou em empresa de tecnologia).</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Cases brasileiros mostram o que funciona no contexto cultural, regulatorio e economico local — mais aplicavel do que cases americanos direto.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> platform shift (Magalu), customer obsession tropicalizada, Nubank engineering culture, escala com custo marginal baixo.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-6-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#128683; Casos de fracasso: o que deu errado</span>
+          </button>
+          <div id="t3-6-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Analise de fracassos emblematicos — Kodak, Nokia, GE Digital — e os padroes comuns que levaram cada um a perder oportunidades obvias de inovacao.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Aprender com fracasso alheio e mais barato do que aprender com o proprio. Os padroes se repetem e sao evitaveis.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> innovator's dilemma (Christensen), organizational inertia, incumbency trap, protecting existing business at the cost of the future.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-6-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128736; Transformacao digital como caso de inovacao</span>
+          </button>
+          <div id="t3-6-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como grandes incumbentes conduziram transformacoes digitais bem-sucedidas: DBS Bank (bancario), Haier (industrial), Natura (FMCG).</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Transformacao digital sem cultura de inovacao falha. Esses cases mostram como cultura e tecnologia precisam mudar juntas.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> digital first vs digital only, culture change antes de tech change, micro-enterprise model (Haier), plataforma vs produto.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-6-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#128196; Como fazer um case study de inovacao</span>
+          </button>
+          <div id="t3-6-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Metodologia para documentar e aprender sistematicamente com projetos de inovacao internos — tanto sucessos quanto fracassos.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Sem documentacao estruturada o aprendizado fica na cabeca das pessoas e sai quando elas saem. O case study converte experiencia em capital organizacional.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> template de case interno, after-action review, blameless postmortem, biblioteca de inovacao, storytelling para disseminacao interna.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-6-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#128270; Padroes comuns dos cases de sucesso</span>
+          </button>
+          <div id="t3-6-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Sintese dos elementos que aparecem consistentemente nos programas de inovacao que dao certo: patrocinio, mandato, iteracao, aprendizado de falha, escala seletiva.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Identificar os invariantes ajuda a replicar o que importa e nao perder tempo copiando o que e acidental ao contexto do case.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> pattern matching vs cargo culting, principios vs praticas, o que adaptar vs o que preservar, diagnostico de maturidade de inovacao.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-6.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- MODULO 3-7 -->
+    <div id="modulo-3-7" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.7</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#128176; ROI de Inovacao</h3>
+        <p class="text-neutral-400 text-sm">Como provar o valor financeiro e estrategico da inovacao sem matar as apostas de longo prazo com metricas de curto prazo.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-7-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#128201; Por que ROI de inovacao e diferente de ROI normal</span>
+          </button>
+          <div id="t3-7-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> A diferenca fundamental entre avaliar projetos de otimizacao (ROI classico) e projetos de inovacao onde o valor e incerto, o tempo de retorno e longo e o risco e assimetrico.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Aplicar ROI classico em inovacao mata H2 e H3 antes de terem chance. Entender a diferenca e pre-requisito para defender o portfolio.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> valor de opcao real, uncertainty vs risk, expected value com distribuicao fat-tail, custo de nao inovar.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-7-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#128297; Innovation accounting (Eric Ries)</span>
+          </button>
+          <div id="t3-7-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> O framework de Eric Ries para medir progresso em startups e inovacao: definir baseline, tune the engine, e pivotar ou perseverar com base em metricas de aprendizado.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Innovation accounting da linguagem financeira para conversas sobre inovacao incerta, permitindo defende-la com rigor sem usar o ROI errado.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> learning milestones, actionable vs vanity metrics, cohort analysis, baseline de hipotese, metricas de unit economics em fases early.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-7-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#128202; Metricas de portfolio: tres horizontes</span>
+          </button>
+          <div id="t3-7-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como estruturar um dashboard de portfolio de inovacao com metricas diferentes por horizonte: H1 (resultado financeiro), H2 (traction e growth), H3 (aprendizado e hipoteses).</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Um dashboard unico com metricas de H1 mata H3. Stakeholders precisam de visibilidade adequada a cada tipo de iniciativa.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> portfolio dashboard, stage-appropriate metrics, funil de inovacao (ideias → conceitos → pilotos → escala), reporting para board.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-7-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128176; Valor estrategico vs valor financeiro</span>
+          </button>
+          <div id="t3-7-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como quantificar e comunicar o valor estrategico da inovacao (posicionamento futuro, reducao de risco de disrupcao, attracao de talento) alem do valor financeiro direto.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Inovacao que nao cabe no ROI financeiro ainda pode ter valor estrategico enorme. Saber articula-lo e essencial para defender o portfolio.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> strategic option value, risk-adjusted value creation, competitive moat building, talent attraction premium, opcao de call sobre o futuro.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-7-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#128081; Como apresentar ROI de inovacao para o CFO</span>
+          </button>
+          <div id="t3-7-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Tecnicas de narrativa financeira para apresentar o valor do programa de inovacao a audiencias financeiras que pensam em payback period e EBITDA.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> A linguagem do financeiro e diferente da linguagem do inovador. Traduzir corretamente e o que garante budget para o proximo ciclo.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> analogia com P&amp;D (% da receita), benchmark de mercado, custo de oportunidade de nao inovar, payback em fases (opcoes reais), projecao de TAM.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-7-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#128270; Auditoria de portfolio: o que matar e o que nutrir</span>
+          </button>
+          <div id="t3-7-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Processo sistematico para revisar o portfolio de inovacao e decidir quais iniciativas devem ser encerradas, aceleradas, pivotadas ou mantidas em ritmo atual.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Portfolio que nunca mata nada vira cemiterio de projetos zumbis que consomem recursos e atencao sem entregar valor.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> portfolio review trimestral, criterios de kill (nao aprendizado), criterios de aceleracao, zombie project, concentration vs diversificacao de portfolio.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-7.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- MODULO 3-8 -->
+    <div id="modulo-3-8" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.8</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#128200; Escalando Inovacao</h3>
+        <p class="text-neutral-400 text-sm">Como transformar pilotos promissores em impacto real em toda a organizacao sem perder o que os tornou bem-sucedidos.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-8-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#127919; O que e escalar (e o que nao e)</span>
+          </button>
+          <div id="t3-8-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Definicao precisa de escala em inovacao: aumentar impacto mantendo a essencia do modelo validado, versus mera expansao geografica ou de volume sem aprendizado.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Muitas iniciativas escalam antes de validar o modelo, consumindo recursos enormes para descobrir problemas que um piloto menor teria revelado.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> premature scaling (causa #1 de morte de startups), product-market fit pre-escala, unit economics saudaveis, growth vs scaling.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-8-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#128736; Piloto → escala: o framework de transicao</span>
+          </button>
+          <div id="t3-8-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Processo estruturado de transicao de piloto para escala: criterios de go/no-go, plano de escala por fases, gestao de riscos de transicao, integracao com o core business.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> A transicao piloto → escala mata mais iniciativas do que o proprio piloto. E a fase mais negligenciada dos programas de inovacao.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> scale-up criteria, phased rollout, change management integrado, handover para operacao, preservation of the DNA que funcionou.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-8-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#128101; Gestao de mudanca em escala</span>
+          </button>
+          <div id="t3-8-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como gerenciar a resistencia e a adocao quando uma inovacao se expande da equipe pioneira para toda a organizacao.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Inovacoes tecnicas escalam facilmente; inovacoes organizacionais encontram resistencia cultural. Sem gestao de mudanca o rollout fracassa.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> curva de adocao de inovacao (Rogers), early majority como meta real de escala, change champions, comunicacao de "o que muda para mim?", resistencia como dado.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-8-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128200; Infraestrutura para escalar inovacao</span>
+          </button>
+          <div id="t3-8-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Os habilitadores organizacionais necessarios para escalar: tecnologia, processos, pessoas, estrutura e governanca que suportam crescimento acelerado sem colapso.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Escalar sem infraestrutura e como construir sobre areia — a iniciativa cresce ate o ponto onde a estrutura fratura.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> technical debt management, process standardization sem burocratizacao, hiring plan de escala, API-first para integracao, modularidade arquitetural.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-8-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#128737; Preservando a cultura enquanto escala</span>
+          </button>
+          <div id="t3-8-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como manter os valores e comportamentos que fizeram a iniciativa funcionar enquanto o time cresce de 5 para 50 para 500 pessoas.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Culture dilution e o maior risco de escala. O que funcionou com 10 pessoas frequentemente se perde com 100 sem gestao ativa.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> culture carriers, contratacao como gate de cultura, rituais que escalam, documentar o "por que" nao so o "como", lideranca como exemplo de cultura.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-8-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#128270; Metricas de escala: o que monitorar</span>
+          </button>
+          <div id="t3-8-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Quais metricas acompanhar durante o processo de escala para identificar gargalos, problemas de adocao e desvios do modelo original antes que se tornem irreversiveis.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Escala sem monitoramento e dirigir no escuro. Problemas detectados cedo custam 10x menos para corrigir do que depois de virar norma.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> adoption rate por segmento, NPS de inovadores, time-to-value no rollout, defection rate (quem volta ao modo antigo), impacto em KPIs de negocio.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-8.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- MODULO 3-9 -->
+    <div id="modulo-3-9" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.9</span>
+          <span class="text-xs text-neutral-500">~30 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#129520; Governanca de Inovacao</h3>
+        <p class="text-neutral-400 text-sm">Como tomar decisoes de matar, pivotar ou acelerar iniciativas com criterio, velocidade e transparencia.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-9-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#127963; Comite de inovacao: estrutura e cadencia</span>
+          </button>
+          <div id="t3-9-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como estruturar o comite de inovacao: composicao, frequencia de reunioes, pauta-padrao, criterios de decisao e poderes formais do comite.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Comite mal estruturado vira burocracia que atrasa tudo. Comite bem estruturado e o principal acelerador de portfolio.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> composicao ideal (CEO, CFO, CHRO, innovation lead), reuniao mensal vs trimestral, pauta de portfolio review, poder de kill/fund, minuta de decisao.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-9-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#128683; Criterios de kill: quando encerrar uma iniciativa</span>
+          </button>
+          <div id="t3-9-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Framework de criterios objetivos para decidir quando encerrar uma iniciativa de inovacao, separando projeto genuinamente morto de projeto que precisa de mais tempo.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Matar iniciativas cedo e uma das competencias mais valiosas — libera recursos para iniciativas melhores e evita o custo emocional e financeiro de projetos zumbis.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> kill criteria vs success criteria, sunk cost fallacy, hipotese falsificada vs nao-testada, pivot como alternativa ao kill, como comunicar o encerramento.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-9-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#128736; Funil de inovacao: da ideia ao produto</span>
+          </button>
+          <div id="t3-9-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Estrutura do funil de inovacao com stages claros — ideia, conceito, MVP, piloto, escala — e os gates de transicao entre cada fase com criterios e recursos necessarios.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Sem funil visivel o portfolio parece caixa preta para stakeholders. Funil claro cria expectativa realista e permite gestao proativa.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> taxa de conversao por stage, tempo medio por etapa, investment escalation por phase, funil como instrumento de comunicacao com board.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-9-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128196; Politicas e regras de inovacao</span>
+          </button>
+          <div id="t3-9-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Conjunto minimo de politicas que habilitam inovacao sem criar burocracia: politica de propriedade intelectual, uso de budget de exploracao, regras de confidencialidade, politica de falha.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Falta de politicas claras cria medo de agir. Politicas excessivas criam paralisia. O minimo necessario e o sweet spot.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> "politica de falha celebrada" (vs tolerada), IP ownership framework, expense policy simplificada, NDA interno, autonomia com accountability.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-9-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#128101; Papeis e responsabilidades na governanca</span>
+          </button>
+          <div id="t3-9-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Mapeamento dos papeis na governanca de inovacao: Innovation Lead, Portfolio Manager, Project Sponsor, Comite e como cada um se relaciona com os outros.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Sobreposicao de papeis gera conflito e lentidao. Lacunas geram iniciativas sem dono. Clareza de papel e pre-requisito de velocidade.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> RACI de inovacao, separation of powers (quem propoe vs quem aprova), escalonamento de decisao, accountability vs responsabilidade.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-9-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#128270; Transparencia e comunicacao de portfolio</span>
+          </button>
+          <div id="t3-9-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como criar transparencia sobre o portfolio de inovacao para diferentes audiencias — equipes, middle management, C-level, board — sem expor informacoes sensiveis de forma prematura.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Transparencia gera engajamento. Opacidade gera desconfianca. O nivel certo de abertura e diferente para cada audiencia.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> portfolio page (uma pagina com status de tudo), comunicado mensal de inovacao, narrative dos projetos encerrados, show-and-tell de learnings.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-9.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- MODULO 3-10 -->
+    <div id="modulo-3-10" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.10</span>
+          <span class="text-xs text-neutral-500">~30 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#128101; Comunidade de Pratica</h3>
+        <p class="text-neutral-400 text-sm">Como criar redes internas que propagam e sustentam a cultura de inovacao de forma organica, sem depender so do programa formal.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-10-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#127843; O que e uma comunidade de pratica (Wenger)</span>
+          </button>
+          <div id="t3-10-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> O conceito de Etienne Wenger de comunidade de pratica: grupo de pessoas que compartilham interesse em uma area e aprofundam conhecimento por interacao continua.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Comunidades de pratica propagam cultura de inovacao de forma viral e organica, muito mais rapido do que treinamentos formais.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> tres elementos (dominio, comunidade, pratica), participacao periferica legitima, know-how tacito compartilhado, comunidade vs time vs rede.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-10-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#127963; Como lancar e nutrir uma CoP interna</span>
+          </button>
+          <div id="t3-10-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> O passo a passo para criar uma comunidade de pratica de inovacao interna: identificar o nucleo inicial, definir o dominio, criar rituais de encontro e gerar valor para os membros.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> CoPs que nao entregam valor para membros morrem em 3 meses. CoPs bem nutridas duram anos e se tornam o backbone da cultura.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> nucleo vs periferia, encontros regulares (cadencia certa), valor para membro vs valor para empresa, curadoria de conteudo, lideranca distribuida.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-10-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#128202; Rituais que fortalecem a comunidade</span>
+          </button>
+          <div id="t3-10-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Catalogo de rituais comprovados para comunidades de inovacao: demo days, lightning talks, kill-a-project workshops, failure friday, innovation newsletter.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Rituais criam pertencimento e criam o contexto para aprendizado informal, que e mais poderoso do que treinamento formal segundo pesquisas de L&amp;D.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> cadencia certa por tipo de ritual, participacao voluntaria vs mandatoria, o que nao fazer (reuniao obrigatoria sem valor), cultura de generosidade intelectual.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-10-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128161; Gestao do conhecimento na comunidade</span>
+          </button>
+          <div id="t3-10-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como capturar e disseminar o conhecimento gerado pela comunidade: wiki interna, biblioteca de casos, newsletter, canal de mensagens e sistema de onboarding de novos membros.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Conhecimento que fica na cabeca das pessoas some quando elas saem. Gestao ativa converte capital humano em capital organizacional permanente.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> tacit vs explicit knowledge, knowledge base interna, onboarding de novos membros, curador de conhecimento, "bus factor" de uma CoP.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-10-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#127775; Embaixadores de inovacao como multiplicadores</span>
+          </button>
+          <div id="t3-10-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como identificar, treinar e apoiar embaixadores de inovacao em diferentes areas da empresa que propagam a cultura e servem de ponto de contato local para o programa central.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Um programa central nao chega em toda a empresa. Embaixadores sao o "ultimo metro" da inovacao — levam a mensagem onde o programa nao chega.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> criterios de selecao (influencia informal, nao cargo), kit do embaixador, rede de embaixadores, reconhecimento e suporte, rotacao para renovar.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-10-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#128200; Medindo o impacto da comunidade</span>
+          </button>
+          <div id="t3-10-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como medir o impacto real de uma comunidade de pratica: engajamento, propagacao de praticas, tempo-ate-adocao de novos conceitos, NPS dos membros, influencia no portfolio.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Comunidades sao difusas por natureza. Sem medicao e impossivel defender o investimento e identificar o que esta funcionando.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> metricas de saude da comunidade, social network analysis (quem fala com quem), difusao de praticas medida por adocao, NPS trimestral dos membros.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-10.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- MODULO 3-11 -->
+    <div id="modulo-3-11" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-purple-400 font-bold">3.11</span>
+          <span class="text-xs text-neutral-500">~35 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">&#128302; Futuro da Inovacao</h3>
+        <p class="text-neutral-400 text-sm">Tendencias emergentes que ja estao redesenhando o que significa inovar — e como se preparar para elas agora.</p>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-11-exp-1">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">1</span>
+            <span class="font-medium text-sm text-left">&#129302; IA generativa como infraestrutura de inovacao</span>
+          </button>
+          <div id="t3-11-exp-1" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como IA generativa esta se tornando infraestrutura basica de inovacao — nao uma ferramenta especifica mas um layer que habilita todas as outras ferramentas e processos.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Empresas que tratam IA como ferramenta de produtividade perdem para as que a usam como motor de reinvencao de seu modelo de negocio.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> AI-native company, foundation models como plataforma, custo marginal de experimentacao tendendo a zero, democratizacao do acesso a capacidade de inovar.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-11-exp-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">2</span>
+            <span class="font-medium text-sm text-left">&#127760; Inovacao distribuida e descentralizada</span>
+          </button>
+          <div id="t3-11-exp-2" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> A tendencia de mover inovacao de centros centralizados para toda a organizacao, habilitada por ferramentas low-code, IA e metodologias acessiveis a nao-especialistas.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Inovacao distribuida multiplica a capacidade de inovar sem crescer o time central — cada pessoa com acesso a ferramentas certas pode ser inovador.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> citizen innovator, low-code innovation, embedded innovation vs central lab, federation model, o papel do time central muda de fazer para habilitar.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-11-exp-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">3</span>
+            <span class="font-medium text-sm text-left">&#127758; Inovacao para sustentabilidade e impacto</span>
+          </button>
+          <div id="t3-11-exp-3" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como a agenda de ESG e impacto positivo esta se tornando driver de inovacao — nao apenas constrangimento regulatorio mas fonte de novos modelos de negocio e vantagem competitiva.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Empresas que inovam para sustentabilidade estao criando os modelos de negocio do proximo decennio. As que ignoram estao criando passivo estrategico.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> innovation for good, circular economy models, inovacao social corporativa, B impact assessment, sustainability as product feature vs compliance.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-11-exp-4">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">4</span>
+            <span class="font-medium text-sm text-left">&#128736; Velocidade como vantagem competitiva</span>
+          </button>
+          <div id="t3-11-exp-4" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como o ciclo de inovacao esta acelerando estruturalmente — e o que as empresas precisam mudar em estrutura, processo e cultura para competir na nova velocidade.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> Vantagem competitiva antes durava decadas. Hoje dura anos ou meses. Quem nao aprende a aprender rapido perde para quem aprende.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> time-to-learn como metrica central, organizational clock speed, compressao do ciclo de validacao, continuous discovery como pratica permanente.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-11-exp-5">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">5</span>
+            <span class="font-medium text-sm text-left">&#128101; O futuro do profissional de inovacao</span>
+          </button>
+          <div id="t3-11-exp-5" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Como o perfil do profissional de inovacao esta evoluindo: de facilitador de workshops para arquiteto de sistemas de inovacao, integrador de IA e gestor de portfolio.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> O mercado vai pagar cada vez mais por profissionais que entregam resultado sistematico, nao apenas entusiasmo com inovacao.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> innovation architect, T-shaped + AI fluency, portfolio thinking, influencia sem autoridade, capacidade de transitar entre estrategia e execucao.</p>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" class="w-full p-4 flex items-center justify-start space-x-3 hover:bg-dark-700/50 transition-colors" aria-expanded="false" aria-controls="t3-11-exp-6">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex-shrink-0">6</span>
+            <span class="font-medium text-sm text-left">&#128161; Construindo sua agenda pessoal de inovacao</span>
+          </button>
+          <div id="t3-11-exp-6" class="topic-explanation px-4 pb-4 text-sm text-neutral-400">
+            <p class="mb-2"><strong class="text-neutral-200">O que e:</strong> Framework para construir uma agenda pessoal de inovacao: o que aprender a seguir, como manter-se atualizado, como construir sua reputacao no ecossistema e como planejar os proximos movimentos de carreira.</p>
+            <p class="mb-2"><strong class="text-neutral-200">Por que aprender:</strong> O curso termina mas a jornada continua. Quem tem agenda de aprendizado continuo se distancia dos que so aplicam o que aprenderam ontem.</p>
+            <p><strong class="text-neutral-200">Conceitos-chave:</strong> learning agenda pessoal, comunidades para participar, como escrever e compartilhar o que aprende, mentoria reversa, proximos passos praticos.</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-3-11.html" class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
+          Ver Completo
+        </a>
+      </div>
+    </div>
+
+    <!-- NAVEGACAO ENTRE TRILHAS -->
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-12 pt-8 border-t border-dark-600">
+      <a href="../trilha2/index.html" class="flex items-center space-x-2 px-5 py-3 bg-dark-800 hover:bg-dark-700 border border-dark-600 rounded-xl transition-colors text-neutral-300 hover:text-white">
+        <span>&#8592;</span>
+        <span>Trilha 2: Tecnicas e Ferramentas</span>
+      </a>
+      <a href="../../index.html" class="flex items-center space-x-2 px-5 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl transition-colors font-medium">
+        <span>&#127968;</span>
+        <span>Voltar ao Inicio do Curso</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+      button.setAttribute('aria-expanded', explanation.classList.contains('active') ? 'true' : 'false');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

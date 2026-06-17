@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Criatividade Sistematica | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha blue) */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">💡</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
+      <span>/</span>
+      <span class="text-blue-400">Modulo 2.7</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MODULO 2.7</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🔭 Criatividade Sistematica</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Criatividade nao e dom — e processo. Aprenda a gerar ideias de valor sob demanda usando metodos comprovados: TRIZ, biomimetica, pensamento analogico e ambientes que tornam a criatividade inevitavel.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">50</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Medio</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-blue-400">Pratica</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="2-7" data-inema-track="2">
+
+    <!-- TOPICO 1: Criatividade sob demanda e o mito do insight repentino -->
+    <section id="topico-1" data-inema-topic="modulo-2-7#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">💡 Criatividade sob Demanda e o Mito do Insight Repentino</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-7-t1-p1">
+        A narrativa popular da criatividade e sedutora: Newton sob a macieira, Arquimedes na banheira, Einstein em um sonho. Esses momentos existem, mas sao o resultado — nao a causa — de trabalho sistematico anterior. O <strong class="text-blue-400">mito do insight repentino</strong> e perigoso porque cria a crenca de que criatividade e um dom inato que aparece quando bem entende, tornando-a inacessivel para quem nao se considera "criativo".
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🔬</span> O que a neurociencia diz
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-7-t1-neuro">Estudos de neuroimagem mostram que o famoso "aha moment" — aquela sensacao de iluminacao subita — e precedido por um longo periodo de processamento inconsciente. O cerebro trabalha no problema em background, e o momento de insight nao e criacao do zero, mas <strong class="text-blue-400">reconexao de padroes ja armazenados</strong> de maneira nova. Quanto mais padroes voce tem (conhecimento, experiencias, exposicao a dominios diversos), maior a probabilidade de conexoes inesperadas.</p>
+        <p class="text-neutral-300" data-inema-block="m2-7-t1-neuro2">O neurologista Mark Jung-Beeman mapeou o momento exato do insight no cerebro: ha uma explosao de atividade no lobulo temporal anterior direito — a mesma regiao associada a metaforas e conexoes remotas. Mas esse disparo so acontece depois de <strong class="text-blue-400">minutos ou horas de preparacao consciente</strong>.</p>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-7-t1-p2">
+        A criatividade sistematica parte de uma premissa diferente: <strong class="text-blue-400">ideias de valor podem ser geradas por processo, nao por sorte</strong>. Isso nao elimina a criatividade espontanea — ela continua acontecendo. Mas permite que qualquer time, em qualquer dia, produza solucoes originais sem depender de inspiracao divina. E a diferenca entre uma empresa que inova por acidente e uma que inova por design.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5">
+          <h4 class="font-bold text-blue-400 mb-3">Criatividade como dom</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Espera o momento certo</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Depende de pessoas "criativas"</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Nao e replicavel ou escalavel</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Produz inovacao esporadica</span></li>
+          </ul>
+        </div>
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-5">
+          <h4 class="font-bold text-emerald-400 mb-3">Criatividade como processo</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Ativada sob demanda</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Qualquer time pode praticar</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Replicavel e mensuravel</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Gera inovacao consistente</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> Dica Pratica</h3>
+        <p class="text-neutral-300 text-sm">Antes de qualquer sessao criativa, dedique 15 minutos para "carregar o contexto": leia 3 artigos de dominios diferentes, olhe imagens nao relacionadas ao problema, converse com alguem de outra area. Voce esta alimentando o processamento inconsciente que vai gerar conexoes melhores nas proximas horas.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: TRIZ e os principios de inventividade -->
+    <section id="topico-2" data-inema-topic="modulo-2-7#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">⚙️ TRIZ e os Principios de Inventividade (Altshuller)</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-7-t2-p1">
+        Em 1946, o engenheiro sovietico Genrich Altshuller tinha uma hipotese radical: <strong class="text-blue-400">se inovacoes sao solucoes para contradicoes, e se contradicoes se repetem em diferentes dominios, entao existem principios universais de inventividade</strong>. Para provar isso, ele e seus colaboradores analisaram mais de 400.000 patentes de todo o mundo durante decadas. O resultado foi o TRIZ — Teoriya Resheniya Izobretatelskikh Zadach, ou Teoria da Solucao Inventiva de Problemas.
+      </p>
+
+      <!-- SVG FUTURISTA: TRIZ fan-out de contradicao para solucao -->
+      <svg viewBox="0 0 700 280" class="w-full h-auto rounded-xl mb-6" role="img" aria-label="Diagrama TRIZ: contradicao tecnica se ramifica em 40 principios de inventividade que convergem para a solucao ideal" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="m2-7-grad-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1e3a5f;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#0e1622;stop-opacity:1"/>
+          </linearGradient>
+          <linearGradient id="m2-7-grad-node" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1d4ed8;stop-opacity:0.6"/>
+            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.4"/>
+          </linearGradient>
+          <filter id="m2-7-glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
+          <pattern id="m2-7-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+            <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#1e3a5f" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <!-- fundo -->
+        <rect width="700" height="280" fill="url(#m2-7-grad-blue)" rx="12"/>
+        <rect width="700" height="280" fill="url(#m2-7-grid)" rx="12" opacity="0.5"/>
+        <!-- no central: CONTRADICAO -->
+        <rect x="20" y="100" width="140" height="80" rx="8" fill="url(#m2-7-grad-node)" stroke="#3b82f6" stroke-width="1.5" filter="url(#m2-7-glow)"/>
+        <text x="90" y="132" text-anchor="middle" fill="#60a5fa" font-size="10" font-family="Inter,sans-serif" font-weight="700">CONTRADICAO</text>
+        <text x="90" y="148" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="Inter,sans-serif">Tecnica ou Fisica</text>
+        <text x="90" y="163" text-anchor="middle" fill="#bfdbfe" font-size="8" font-family="Inter,sans-serif">ex: resistencia vs peso</text>
+        <!-- linhas fan-out para principios -->
+        <line x1="160" y1="120" x2="270" y2="70" stroke="#38bdf8" stroke-width="1" opacity="0.7" class="wf-a"/>
+        <line x1="160" y1="130" x2="270" y2="110" stroke="#38bdf8" stroke-width="1" opacity="0.7" class="wf-a"/>
+        <line x1="160" y1="140" x2="270" y2="150" stroke="#38bdf8" stroke-width="1" opacity="0.7" class="wf-a"/>
+        <line x1="160" y1="150" x2="270" y2="190" stroke="#38bdf8" stroke-width="1" opacity="0.7" class="wf-a"/>
+        <!-- nos de principios (ciano) -->
+        <rect x="270" y="48" width="130" height="38" rx="6" fill="#0e1b26" stroke="#38bdf8" stroke-width="1"/>
+        <text x="335" y="65" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="Inter,sans-serif" font-weight="600">Segmentacao (P1)</text>
+        <text x="335" y="79" text-anchor="middle" fill="#9ad6ff" font-size="8" font-family="Inter,sans-serif">dividir em partes independentes</text>
+        <rect x="270" y="92" width="130" height="38" rx="6" fill="#0e1b26" stroke="#38bdf8" stroke-width="1"/>
+        <text x="335" y="109" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="Inter,sans-serif" font-weight="600">Dinamismo (P15)</text>
+        <text x="335" y="123" text-anchor="middle" fill="#9ad6ff" font-size="8" font-family="Inter,sans-serif">tornar flexivel ou adaptavel</text>
+        <rect x="270" y="136" width="130" height="38" rx="6" fill="#0e1b26" stroke="#38bdf8" stroke-width="1"/>
+        <text x="335" y="153" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="Inter,sans-serif" font-weight="600">Composito (P40)</text>
+        <text x="335" y="167" text-anchor="middle" fill="#9ad6ff" font-size="8" font-family="Inter,sans-serif">materiais compostos</text>
+        <rect x="270" y="180" width="130" height="38" rx="6" fill="#0e1b26" stroke="#38bdf8" stroke-width="1"/>
+        <text x="335" y="197" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="Inter,sans-serif" font-weight="600">Inversao (P13)</text>
+        <text x="335" y="211" text-anchor="middle" fill="#9ad6ff" font-size="8" font-family="Inter,sans-serif">inverter a acao</text>
+        <!-- seta para solucao -->
+        <line x1="400" y1="140" x2="500" y2="140" stroke="#60a5fa" stroke-width="2" marker-end="url(#m2-7-arr)" class="wf-a"/>
+        <defs>
+          <marker id="m2-7-arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#60a5fa"/>
+          </marker>
+        </defs>
+        <!-- no final: SOLUCAO IDEAL -->
+        <rect x="500" y="100" width="170" height="80" rx="8" fill="url(#m2-7-grad-node)" stroke="#3b82f6" stroke-width="1.5" filter="url(#m2-7-glow)"/>
+        <text x="585" y="132" text-anchor="middle" fill="#60a5fa" font-size="10" font-family="Inter,sans-serif" font-weight="700">SOLUCAO IDEAL</text>
+        <text x="585" y="148" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="Inter,sans-serif">Resultado Final Ideal (IFR)</text>
+        <text x="585" y="163" text-anchor="middle" fill="#bfdbfe" font-size="8" font-family="Inter,sans-serif">sem custos ou efeitos colaterais</text>
+        <!-- label 40 principios -->
+        <text x="335" y="245" text-anchor="middle" fill="#475569" font-size="9" font-family="Inter,sans-serif">40 principios inventivos + Matriz de Contradicoes (39x39)</text>
+      </svg>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">📐</span> Os dois tipos de contradicao do TRIZ
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <h4 class="font-semibold text-white mb-2">Contradicao Tecnica</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-7-t2-ct">Melhorar um parametro piora outro. Exemplo classico: aumentar a resistencia do aco aumenta o peso. O TRIZ resolve isso sem ceder nenhum dos dois lados — ele busca o <em>principio inventivo</em> que elimina a contradicao.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-2">Contradicao Fisica</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-7-t2-cf">Um mesmo elemento precisa ter duas propriedades opostas ao mesmo tempo. Exemplo: um avio precisa de asas rigidas (estabilidade) e flexiveis (suportar turbulencias). A solucao: asas que sao rigidas em baixas frequencias e flexiveis em altas.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-neutral-300 mb-4 leading-relaxed" data-inema-block="m2-7-t2-p2">
+        A <strong class="text-blue-400">Matriz de Contradicoes</strong> e a ferramenta central do TRIZ: uma tabela 39x39 onde as linhas sao parametros que voce quer melhorar e as colunas sao os parametros que pioram como consequencia. Cada celula indica quais dos 40 principios inventivos historicamente resolveram esse tipo de contradicao em outros dominios. Voce nao precisa ser inventivo — o sistema te aponta os caminhos que ja funcionaram.
+      </p>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5 mb-6">
+        <h3 class="text-base font-semibold text-red-400 mb-2 flex items-center"><span class="mr-2">⚠️</span> Armadilha Comum</h3>
+        <p class="text-neutral-300 text-sm">Muitas empresas tentam aprender os 40 principios de memoria. Nao funciona assim. TRIZ e uma ferramenta de consulta, nao de decoreba. Tenha a matriz acessivel, treine o time a identificar a contradicao corretamente — esse e o passo mais dificil e mais valioso.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Pensamento analogico e biomimetica -->
+    <section id="topico-3" data-inema-topic="modulo-2-7#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">🌿 Pensamento Analogico e Biomimetica</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-7-t3-p1">
+        A natureza e o maior laboratorio de inovacao do planeta. Com 3,8 bilhoes de anos de pesquisa e desenvolvimento, a evolucao ja testou e descartou trilhoes de solucoes ruins, mantendo apenas as que funcionam com eficiencia maxima. A <strong class="text-blue-400">biomimetica</strong> — ou biomimicry — e a pratica de estudar esses designs naturais e aplicar seus principios a desafios humanos. Mas antes de chegar la, precisamos entender o mecanismo cognitivo subjacente: o pensamento analogico.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🧩</span> Como o pensamento analogico funciona
+        </h3>
+        <p class="text-neutral-300 mb-3" data-inema-block="m2-7-t3-analogia">Uma analogia e uma <strong class="text-blue-400">estrutura relacional compartilhada entre dois dominios diferentes</strong>. Quando voce diz "o atomo e como um sistema solar", nao esta dizendo que eletrons sao planetas — esta mapeando a relacao "orbita em torno de um centro". Esse mapeamento de estruturas relacionais e o que gera insight criativo.</p>
+        <p class="text-neutral-300" data-inema-block="m2-7-t3-analogia2">O processo tem 4 etapas: (1) definir o problema em termos abstratos ("como transferir informacao com minima perda?"); (2) buscar analogias em outros dominios ("como o DNA faz isso? Como nervos fazem isso?"); (3) mapear a estrutura relacional de volta ao problema; (4) adaptar e testar a solucao inspirada.</p>
+      </div>
+
+      <h3 class="text-lg font-semibold text-white mb-4">Casos classicos de biomimetica</h3>
+      <div class="space-y-4 mb-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">01</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Shinkansen (trem-bala japones)</h4>
+            <p class="text-xs text-neutral-500 mb-2">Problema: explosao sonora ao sair de tuneis</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-7-t3-shin">O engenheiro Eiji Nakatsu, observador de passaros, remodelou o bico do trem com base no bico do martim-pescador — aves que mergulham do ar para a agua (mudanca drastica de densidade) sem respingo. O resultado: 15% mais rapido, 10% menos energia, e o problema sonoro eliminado.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">02</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Velcro (George de Mestral)</h4>
+            <p class="text-xs text-neutral-500 mb-2">Inspiracao: carrapichos presos no pelo do cachorro</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-7-t3-velcro">Ao examinar os ganchos microscopicos dos carrapichos no microscopio, de Mestral viu o mecanismo de fixacao e perguntou: "como posso replicar isso em tecido?" Sete anos de desenvolvimento depois: o Velcro. A chave foi olhar com curiosidade estrutural, nao apenas funcional.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <span class="text-blue-400 font-bold text-sm">03</span>
+          </div>
+          <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+            <h4 class="font-semibold text-white mb-1">Ventilacao de edificios (Eastgate Centre, Zimbabwe)</h4>
+            <p class="text-xs text-neutral-500 mb-2">Inspiracao: termiteiros que se autorregulam</p>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-7-t3-eastgate">O arquiteto Mick Pearce estudou como termiteiros africanos mantem temperatura constante de 31°C em ambientes que variam de 3°C a 42°C. Reproduziu o sistema de ventilacao passiva na estrutura do edificio: sem ar-condicionado central, consume 10% da energia de predios similares.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> Como praticar analogias no time</h3>
+        <p class="text-neutral-300 text-sm">Use a pergunta "Como a natureza resolve isso?" em qualquer brainstorm. Reformule o problema removendo o contexto tecnico (nao "como melhorar a bateria do carro eletrico" mas "como armazenar energia com alta densidade?") e entao busque analogias biologicas em AskNature.org — base de dados biomimetica com 1.800 estrategias catalogadas.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Restricoes como combustivel criativo -->
+    <section id="topico-4" data-inema-topic="modulo-2-7#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">🔒 Restricoes como Combustivel Criativo</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-7-t4-p1">
+        A intuicao diz que criatividade floresce com liberdade total. A pesquisa diz o oposto. Patricia Stokes, ao estudar a trajetoria de artistas como Monet e Picasso, concluiu que as fases mais inovadoras da carreira deles coincidiam com os momentos de <strong class="text-blue-400">restricoes mais severas</strong> — autopimpostas ou externas. Monet pintou as mesmas pontes e nenufaros centenas de vezes, com restricoes progressivas de paleta e tecnica, forcando-se a encontrar solucoes cada vez mais originais dentro do mesmo tema.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4">Por que restricoes funcionam?</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="text-2xl mb-2">🎯</div>
+            <h4 class="font-semibold text-white text-sm mb-2">Focam a atencao</h4>
+            <p class="text-neutral-400 text-xs">Com opcoes infinitas, o cerebro vai para o lugar-comum. Restricoes bloqueiam o caminho obvio e forcam exploracao de territorios nao-mapeados.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="text-2xl mb-2">⚡</div>
+            <h4 class="font-semibold text-white text-sm mb-2">Ativam pensamento lateral</h4>
+            <p class="text-neutral-400 text-xs">Quando a solucao direta e impossivel (sem orcamento, sem tempo, sem recursos), o cerebro e forcado a buscar rotas alternativas — exatamente onde inovacao mora.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4">
+            <div class="text-2xl mb-2">🔄</div>
+            <h4 class="font-semibold text-white text-sm mb-2">Criam terreno comum</h4>
+            <p class="text-neutral-400 text-xs">Times com restricoes claras colaboram melhor porque todos partem do mesmo campo de possibilidades delimitado. Menos debate sobre escopo, mais foco em solucao.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="text-lg font-semibold text-white mb-4">Tecnicas de restricao deliberada</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5">
+          <h4 class="font-bold text-blue-400 mb-3">&#10003; Restricoes que funcionam</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#8226;</span><span><strong>Remove um recurso:</strong> "resolva sem codigo" / "resolva sem reunioes"</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#8226;</span><span><strong>Imponha tempo extremo:</strong> "resolvam em 8 minutos" (urgencia real)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#8226;</span><span><strong>Force o oposto:</strong> "como fariamos se custasse 10x menos?"</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">&#8226;</span><span><strong>Mude a escala:</strong> "e se fosse para 1 bilhao de usuarios?"</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h4 class="font-bold text-red-400 mb-3">&#10007; Restricoes que bloqueiam</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span><strong>Restricoes de proceso:</strong> "tem que seguir este formulario"</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span><strong>Restricoes de aprovacao:</strong> "precisa de sign-off de 3 diretorias"</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span><strong>Restricoes de visibilidade:</strong> "nao mostre para o CEO ainda"</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#8226;</span><span><strong>Restricoes de julgamento:</strong> "nada muito fora da caixa"</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-700 rounded-xl p-5 mb-6 border border-dark-600">
+        <h4 class="font-semibold text-white mb-3">Caso: Twitter e o limite de 140 caracteres</h4>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-7-t4-twitter">Jack Dorsey nao estava sendo minimalista por filosofia. O limite era tecnico: mensagens SMS tinham 160 caracteres, e 20 eram reservados para o nome do usuario. A restricao criou um novo formato de comunicacao, uma nova linguagem ("@", "#"), uma nova cultura. A restricao que parecia limitante tornou-se o produto. Quando o Twitter considerou remover o limite em 2017, o backlash foi tamanho que eles mantiveram — a comunidade havia construido identidade em torno da restricao.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Combinacao e recombinacao de ideias -->
+    <section id="topico-5" data-inema-topic="modulo-2-7#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">🔀 Combinacao e Recombinacao de Ideias</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-7-t5-p1">
+        "A criatividade e apenas conectar pontos." A frase e de Steve Jobs, mas a ideia nao e nova. O economista Joseph Schumpeter chamou de <strong class="text-blue-400">"destruicao criativa"</strong> o processo em que novas combinacoes de recursos existentes criam valor ao mesmo tempo que tornam obsoletos os arranjos anteriores. Brian Arthur, no livro "The Nature of Technology", demonstra que virtualmente toda tecnologia nova e uma combinacao de tecnologias existentes. O iPhone nao inventou o touchscreen, o smartphone, o MP3 player ou o GPS — combinou-os de uma forma que nenhum competidor havia percebido que era possivel.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center">
+          <span class="mr-2">🗺️</span> Metodos de combinacao sistematica
+        </h3>
+        <div class="space-y-4">
+          <div>
+            <h4 class="font-semibold text-white mb-1">Morfologia de Zwicky</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-7-t5-zwicky">Criado pelo astrofisico Fritz Zwicky nos anos 1940, o metodo constroi uma tabela onde as colunas sao dimensoes do problema e as linhas sao opcoes para cada dimensao. Ao combinar sistematicamente uma opcao de cada coluna, voce explora o espaco de solucoes de forma exaustiva. Uma tabela 5x4 gera 1.024 combinacoes potenciais. A maioria sera descartada rapidamente, mas algumas serao nao-obvias e altamente promissoras.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-1">SCAMPER aplicado a combinacoes</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-7-t5-scamper">O acronimo SCAMPER (Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse) e uma checklist de operacoes criativas. O "C" de Combine e especialmente poderoso: force-se a combinar dois produtos, servicos ou ideias aparentemente nao relacionados. Ex: "e se combinassemos Uber + assinatura mensal?" = Uber One. "E se combinassemos LinkedIn + jogos?" = Duolingo for Business.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-1">Random Input (Edward de Bono)</h4>
+            <p class="text-neutral-300 text-sm" data-inema-block="m2-7-t5-random">Abra um dicionario em pagina aleatoria, escolha a primeira palavra concreta, e force conexoes com o seu problema. O estimulo aleatorio interrompe o padrao de pensamento habitual e ativa associacoes que nao surgiriam de outra forma. Parece absurdo. Funciona.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-4">
+        <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> Exercicio: Combinacao forcada</h3>
+        <p class="text-neutral-300 text-sm mb-2">Liste 5 produtos ou servicos completamente alheios ao seu mercado. Para cada um, pergunte: "O que esse produto sabe fazer que meu produto nao sabe? Como eu poderia importar esse mecanismo?" Faca isso em 20 minutos. Voce vai gerar pelo menos 2-3 ideias que nao existem no mercado.</p>
+      </div>
+
+      <div class="bg-dark-700 rounded-xl p-5 mb-6 border border-dark-600">
+        <h4 class="font-semibold text-blue-400 mb-3">Dados: o valor das redes densas de conhecimento</h4>
+        <p class="text-neutral-300 text-sm" data-inema-block="m2-7-t5-dados">Pesquisa de Brian Uzzi (Northwestern) analisou 17,9 milhoes de artigos cientificos. Papers com as citacoes mais "remotas" — combinando referencias de campos distantes — tinham probabilidade 3x maior de se tornar grandes hits citados por outros campos. A inovacao mais relevante nao vem da profundidade em um unico dominio, mas da amplitude que permite combinacoes nao-obvias.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Rotinas e ambientes que geram criatividade -->
+    <section id="topico-6" data-inema-topic="modulo-2-7#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">🏛️ Rotinas e Ambientes que Geram Criatividade</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-7-t6-p1">
+        Nao basta ter os metodos certos. A criatividade sistematica precisa de <strong class="text-blue-400">condicoes operacionais</strong> — rotinas individuais e ambientes organizacionais que tornem a producao de ideias originais uma consequencia natural do trabalho diario, nao um evento especial que acontece em workshops anuais.
+      </p>
+
+      <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-400 mb-4">Rotinas dos profissionais mais criativos</h3>
+        <p class="text-neutral-300 mb-4 text-sm" data-inema-block="m2-7-t6-rotinas">Mason Currey documentou as rotinas de 161 artistas, escritores, cientistas e compositores criativos em "Daily Rituals". O padrao emergente: criatividade de alto nivel nao vem de maratonas esporadicas, mas de <strong class="text-blue-400">blocos curtos e consistentes de trabalho profundo</strong>, geralmente pela manha, combinados com caminhadas, leitura variada e periodos deliberados de nao-trabalho (onde o processamento inconsciente acontece).</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-dark-800/60 rounded-lg p-3 text-center">
+            <div class="text-xl font-bold text-blue-400 mb-1">3-4h</div>
+            <div class="text-xs text-neutral-400">Tempo medio de trabalho criativo profundo por dia (Tchaikovsky, Darwin, Dickens)</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-3 text-center">
+            <div class="text-xl font-bold text-blue-400 mb-1">AM</div>
+            <div class="text-xs text-neutral-400">72% dos criativos documentados trabalhavam nas primeiras horas do dia</div>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-3 text-center">
+            <div class="text-xl font-bold text-blue-400 mb-1">Walk</div>
+            <div class="text-xs text-neutral-400">Caminhada diaria aparece em quase todos: Beethoven, Nietzsche, Jobs, Freud</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="text-lg font-semibold text-white mb-4">Design de ambientes criativos</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-5">
+          <h4 class="font-bold text-emerald-400 mb-3">&#10003; Ambientes que estimulam</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Psicologicamente seguros (erros = aprendizado)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Diversidade cognitiva no time</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Tempo protegido para exploracao (ex: 20% Google)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Exposicao a estimulos externos variados</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-0.5">&#10003;</span><span>Ruido ambiental moderado (65-70 dB — nivel de cafeteria)</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h4 class="font-bold text-red-400 mb-3">&#10007; Ambientes que bloqueiam</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Medo de julgamento ou ridicularizacao</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Metricas de curto prazo exclusivas</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Interrupcoes constantes (open space barulhento)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Homogeneidade de perfil no time</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">&#10007;</span><span>Silencio absoluto (paradoxalmente inibidor)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-base font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Rituais de criatividade para times</h3>
+        <ul class="space-y-2 text-neutral-300 text-sm">
+          <li class="flex items-start space-x-2"><span class="text-primary mt-0.5">&#8226;</span><span><strong>Morning Pages (Julia Cameron):</strong> 3 paginas escritas sem censura ao acordar. Esvazia o ruido mental e ativa conexoes latentes.</span></li>
+          <li class="flex items-start space-x-2"><span class="text-primary mt-0.5">&#8226;</span><span><strong>Incubacao deliberada:</strong> agende um bloco de "problema dificil" e entao va fazer uma tarefa simples. O inconsciente trabalha enquanto a mao executa.</span></li>
+          <li class="flex items-start space-x-2"><span class="text-primary mt-0.5">&#8226;</span><span><strong>Cross-pollination meeting:</strong> uma vez por mes, cada membro traz um aprendizado de um dominio completamente diferente do trabalho. 20 minutos cada.</span></li>
+          <li class="flex items-start space-x-2"><span class="text-primary mt-0.5">&#8226;</span><span><strong>Failure resume:</strong> time documenta falhas e o que aprendeu. Normaliza o risco e cria base de conhecimento negativo valioso.</span></li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">📋</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Criatividade e processo, nao dom</strong>
+              <span class="text-neutral-400"> - Insights surgem apos preparacao sistematica, nao do nada; o processamento inconsciente precisa de insumos</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">TRIZ resolve o irresolvel</strong>
+              <span class="text-neutral-400"> - 40 principios inventivos extraidos de 400 mil patentes; use a Matriz de Contradicoes para identificar o caminho correto</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">A natureza ja resolveu seu problema</strong>
+              <span class="text-neutral-400"> - Biomimetica e analogias estruturais importam solucoes testadas por evolucao para desafios de engenharia e negocios</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Restricoes sao aliadas, nao inimigas</strong>
+              <span class="text-neutral-400"> - Restricoes de recursos e tempo ativam pensamento lateral; restricoes de processo e aprovacao bloqueiam</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Inovacao = recombinacao</strong>
+              <span class="text-neutral-400"> - Morfologia de Zwicky, SCAMPER e Random Input sao ferramentas para explorar o espaco de combinacoes sistematicamente</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-blue-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Ambiente e rotina determinam output</strong>
+              <span class="text-neutral-400"> - Seguranca psicologica, diversidade cognitiva e blocos de trabalho profundo diario sao mais poderosos que workshops esporadicos</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-blue-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">2.8 - Prototipagem Rapida: do conceito ao teste em horas, nao meses</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-2-8.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">
+            2.8 - Prototipagem Rapida &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="cultura-inovacao">
+  <title>Inovacao Aberta | Cultura de Inovacao</title>
+
+  <!-- ANTI-FOUC -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+
+    /* Light mode overrides */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - cores de acento (trilha purple) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+
+    /* Light mode - remove gradientes */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+
+    /* Light mode - cores especiais */
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suaves */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* SVG light mode */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* SVG animation */
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+
+  <!-- Manifesto do curso (OBRIGATORIO em toda pagina) -->
+  <script type="application/json" data-inema-manifest>
+{
+  "course": "cultura-inovacao",
+  "tracks": [
+    { "n": "1", "title": "Fundamentos", "modules": [
+      { "id": "1-1", "title": "O que e Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+      { "id": "1-2", "title": "Pilares da Cultura de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+      { "id": "1-3", "title": "Modelos de Referencia", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+      { "id": "1-4", "title": "Mindset de Crescimento", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" },
+      { "id": "1-5", "title": "Papel da Lideranca", "topics": 6, "href": "curso/trilha1/modulo-1-5.html" },
+      { "id": "1-6", "title": "Barreiras Comuns", "topics": 6, "href": "curso/trilha1/modulo-1-6.html" },
+      { "id": "1-7", "title": "Metricas de Inovacao", "topics": 6, "href": "curso/trilha1/modulo-1-7.html" }
+    ]},
+    { "n": "2", "title": "Tecnicas e Ferramentas", "modules": [
+      { "id": "2-1", "title": "Design Thinking", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+      { "id": "2-2", "title": "Lean Startup", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+      { "id": "2-3", "title": "Sprint Design", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+      { "id": "2-4", "title": "SCAMPER e Brainstorming", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" },
+      { "id": "2-5", "title": "Jobs To Be Done", "topics": 6, "href": "curso/trilha2/modulo-2-5.html" },
+      { "id": "2-6", "title": "OKRs para Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-6.html" },
+      { "id": "2-7", "title": "Criatividade Sistematica", "topics": 6, "href": "curso/trilha2/modulo-2-7.html" },
+      { "id": "2-8", "title": "Prototipagem Rapida", "topics": 6, "href": "curso/trilha2/modulo-2-8.html" },
+      { "id": "2-9", "title": "Feedback Loops", "topics": 6, "href": "curso/trilha2/modulo-2-9.html" },
+      { "id": "2-10", "title": "Rituais de Inovacao", "topics": 6, "href": "curso/trilha2/modulo-2-10.html" }
+    ]},
+    { "n": "3", "title": "Avancado", "modules": [
+      { "id": "3-1", "title": "Programa Corporativo", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+      { "id": "3-2", "title": "Intraempreendedorismo", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+      { "id": "3-3", "title": "Inovacao Aberta", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+      { "id": "3-4", "title": "Ambidestria Organizacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" },
+      { "id": "3-5", "title": "IA como Acelerador", "topics": 6, "href": "curso/trilha3/modulo-3-5.html" },
+      { "id": "3-6", "title": "Casos Reais", "topics": 6, "href": "curso/trilha3/modulo-3-6.html" },
+      { "id": "3-7", "title": "ROI de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-7.html" },
+      { "id": "3-8", "title": "Escalando Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-8.html" },
+      { "id": "3-9", "title": "Governanca de Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-9.html" },
+      { "id": "3-10", "title": "Comunidade de Pratica", "topics": 6, "href": "curso/trilha3/modulo-3-10.html" },
+      { "id": "3-11", "title": "Futuro da Inovacao", "topics": 6, "href": "curso/trilha3/modulo-3-11.html" }
+    ]}
+  ]
+}
+  </script>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">&#128161;</span>
+            <span class="font-bold text-lg hidden sm:inline">Cultura de Inovacao</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span>
+            <span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span>
+            <span class="hidden sm:inline">Tecnicas</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span>
+            <span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-2">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Inicio</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a>
+      <span>/</span>
+      <span class="text-purple-400">Modulo 3.3</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MODULO 3.3</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">&#127760; Inovacao Aberta</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Como inovar com o ecossistema: startups, universidades, parceiros e plataformas. O modelo de Henry Chesbrough que rompeu com o laboratorio fechado e transformou a P&D corporativa.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">6</div>
+          <div class="text-xs text-neutral-400">Topicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">55</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Avancado</div>
+          <div class="text-xs text-neutral-400">Nivel</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Ecossistema</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-inema-module="3-3" data-inema-track="3">
+
+    <!-- TOPICO 1: Conceito de Inovacao Aberta -->
+    <section id="topico-1" data-inema-topic="modulo-3-3#topico-1" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+        <h2 class="text-2xl font-bold">&#128218; Conceito de Inovacao Aberta: Inbound e Outbound</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t1-p1">
+        Em 2003, Henry Chesbrough publicou <em>Open Innovation: The New Imperative for Creating and Profiting from Technology</em> e destruiu um dogma de 50 anos: o de que inovacao de verdade so acontecia dentro de laboratorios proprios. O argumento era direto — <strong class="text-purple-400">o conhecimento util esta distribuido pelo mundo, e nenhuma empresa, por maior que seja, consegue monopoliza-lo</strong>. Tentar fazer tudo internamente e, alem de caro, cada vez mais ingrato.
+      </p>
+
+      <!-- SVG: diagrama fan-out Inovacao Aberta inbound/outbound -->
+      <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-8 overflow-hidden">
+        <svg viewBox="0 0 860 320" class="w-full h-auto" role="img" aria-label="Diagrama de Inovacao Aberta: fluxo inbound (conhecimento externo entra na empresa) e outbound (conhecimento interno sai para o mercado), com a empresa no centro conectada a startups, universidades e parceiros">
+          <defs>
+            <linearGradient id="m3-3-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#a855f7"/>
+            </linearGradient>
+            <filter id="m3-3-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="m3-3-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <circle cx="1.3" cy="1.3" r="1.3" fill="#a855f7" opacity="0.12"/>
+            </pattern>
+            <marker id="m3-3-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto">
+              <path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#c084fc"/>
+            </marker>
+            <marker id="m3-3-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto">
+              <path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/>
+            </marker>
+          </defs>
+          <rect x="0" y="0" width="860" height="320" fill="url(#m3-3-grid)"/>
+
+          <!-- Empresa no centro -->
+          <g filter="url(#m3-3-glow)">
+            <rect x="330" y="115" width="200" height="90" rx="14" fill="#1a1230" stroke="url(#m3-3-grad)" stroke-width="2"/>
+          </g>
+          <text x="430" y="153" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="15">Empresa</text>
+          <text x="430" y="174" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="11">P&amp;D + Mercado</text>
+          <text x="430" y="193" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">Core inovador</text>
+
+          <!-- Fontes externas (esquerda - inbound) -->
+          <rect x="30" y="30" width="160" height="52" rx="10" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.5" class="wf-a"/>
+          <text x="110" y="53" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="12">Startups</text>
+          <text x="110" y="70" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">velocity + disrupcao</text>
+
+          <rect x="30" y="134" width="160" height="52" rx="10" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.5" class="wf-a"/>
+          <text x="110" y="157" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="12">Universidades</text>
+          <text x="110" y="174" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">P&amp;D de base</text>
+
+          <rect x="30" y="238" width="160" height="52" rx="10" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.5" class="wf-a"/>
+          <text x="110" y="261" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-weight="600" font-size="12">Fornecedores</text>
+          <text x="110" y="278" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">co-inovacao</text>
+
+          <!-- Destinos externos (direita - outbound) -->
+          <rect x="670" y="30" width="160" height="52" rx="10" fill="#1a1230" stroke="#c084fc" stroke-width="1.5" class="wf-a"/>
+          <text x="750" y="53" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="12">Spin-offs</text>
+          <text x="750" y="70" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10">IP nao utilizado</text>
+
+          <rect x="670" y="134" width="160" height="52" rx="10" fill="#1a1230" stroke="#c084fc" stroke-width="1.5" class="wf-a"/>
+          <text x="750" y="157" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="12">Licenciamento</text>
+          <text x="750" y="174" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10">patentes + know-how</text>
+
+          <rect x="670" y="238" width="160" height="52" rx="10" fill="#1a1230" stroke="#c084fc" stroke-width="1.5" class="wf-a"/>
+          <text x="750" y="261" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="12">Joint Ventures</text>
+          <text x="750" y="278" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="10">novos mercados</text>
+
+          <!-- Setas inbound (esquerda -> centro) -->
+          <line x1="192" y1="56" x2="328" y2="140" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#m3-3-ahc)" opacity="0.7"/>
+          <line x1="192" y1="160" x2="328" y2="160" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#m3-3-ahc)" opacity="0.7"/>
+          <line x1="192" y1="264" x2="328" y2="180" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#m3-3-ahc)" opacity="0.7"/>
+
+          <!-- Setas outbound (centro -> direita) -->
+          <line x1="532" y1="140" x2="668" y2="56" stroke="#c084fc" stroke-width="1.5" marker-end="url(#m3-3-ah)" opacity="0.7"/>
+          <line x1="532" y1="160" x2="668" y2="160" stroke="#c084fc" stroke-width="1.5" marker-end="url(#m3-3-ah)" opacity="0.7"/>
+          <line x1="532" y1="180" x2="668" y2="264" stroke="#c084fc" stroke-width="1.5" marker-end="url(#m3-3-ah)" opacity="0.7"/>
+
+          <!-- Labels inbound/outbound -->
+          <text x="240" y="108" text-anchor="middle" fill="#38bdf8" font-family="Inter,sans-serif" font-size="11" font-weight="600">INBOUND</text>
+          <text x="620" y="108" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="11" font-weight="600">OUTBOUND</text>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-5">
+          <h4 class="font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">&#8594;</span> Inovacao Aberta Inbound</h4>
+          <p class="text-sm text-neutral-300 mb-3" data-inema-block="m3-3-t1-inbound">A empresa <strong>absorve conhecimento externo</strong> para acelerar seu proprio desenvolvimento. Tecnologias licenciadas, talentos externos, parcerias com startups, open source, desafios publicados. A logica: se alguem ja resolveu o problema, por que reinventar?</p>
+          <p class="text-xs text-neutral-400"><strong>Exemplo:</strong> Procter &amp; Gamble com o programa Connect + Develop — 50% das inovacoes vieram de fora da empresa (meta de Lafley, 2000s).</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">&#8592;</span> Inovacao Aberta Outbound</h4>
+          <p class="text-sm text-neutral-300 mb-3" data-inema-block="m3-3-t1-outbound">A empresa <strong>monetiza conhecimento interno</strong> que nao usa no core. Patentes licenciadas, spin-offs, joint ventures, publicacao seletiva de pesquisa. A logica: IP parado no cofre nao gera valor — melhor ceder a quem vai usar.</p>
+          <p class="text-xs text-neutral-400"><strong>Exemplo:</strong> IBM licencia mais de 3.000 patentes por ano, gerando bilhoes em royalties de tecnologias que nao sao core do negocio principal.</p>
+        </div>
+      </div>
+
+      <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5 mb-6">
+        <h4 class="font-semibold text-blue-400 mb-2 flex items-center"><span class="mr-2">&#128202;</span> Dados e Pesquisa</h4>
+        <ul class="space-y-2 text-neutral-300 text-sm">
+          <li>&#8226; <strong>78%</strong> das empresas da Fortune 500 tem alguma iniciativa de inovacao aberta (Deloitte, 2023)</li>
+          <li>&#8226; Empresas com programas estruturados de OI lancam novos produtos <strong>2,4x mais rapido</strong> que as fechadas (MIT Sloan, 2022)</li>
+          <li>&#8226; O custo medio de P&D interno e <strong>3-5x maior</strong> que o de parcerias externas para o mesmo output (BCG Innovation Survey)</li>
+          <li>&#8226; <strong>R&D intensivos no closed model</strong> (ex.: Xerox PARC) geraram tecnologias que terceiros monetizaram — Ethernet, GUI, laser printing</li>
+        </ul>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 2: Corporate Venturing e CVC -->
+    <section id="topico-2" data-inema-topic="modulo-3-3#topico-2" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+        <h2 class="text-2xl font-bold">&#128200; Corporate Venturing e CVC</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t2-p1">
+        Corporate Venture Capital (CVC) e o instrumento mais sofisticado de inovacao aberta inbound. A empresa investe capital em startups externas para obter <strong class="text-purple-400">retorno financeiro E acesso estrategico</strong> a tecnologias, mercados e talentos. Nao e filantropia nem patrocinio — e uma posicao de opcao no futuro. O CVC moderno evoluiu do simples "vamos investir em startups" para um sistema integrado de inteligencia competitiva.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5 flex items-center">
+          <span class="mr-2">&#128336;</span> Evolucao do Corporate Venturing
+        </h3>
+        <div class="space-y-5">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">1</span>
+            </div>
+            <div>
+              <h4 class="font-semibold text-purple-400 mb-1">CVC Passivo (1990s)</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-3-t2-cvc1">Investimento de minoria em startups, sem integracao com o negocio. Objetivo principal: retorno financeiro. Resultado tipico: startup cresce, grande empresa nao aprende nada. Modelo descontinuado na maioria dos casos apos o dot-com crash.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">2</span>
+            </div>
+            <div>
+              <h4 class="font-semibold text-purple-400 mb-1">CVC Estrategico (2010s)</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-3-t2-cvc2">Investimento vinculado a teses estrategicas: "quero aprender sobre X tecnologia" ou "quero acesso ao mercado Y". Intel Capital, Google Ventures, Salesforce Ventures. O investimento e condicional a colaboracao comercial ou tecnologica. Startup ganha dinheiro + cliente/distribuicao. Corporacao ganha inteligencia + opcao de aquisicao.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">3</span>
+            </div>
+            <div>
+              <h4 class="font-semibold text-purple-400 mb-1">Ecossistema Integrado (atual)</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-3-t2-cvc3">CVC como camada de um sistema mais amplo: aceleradora propria + CVC + programa de M&A + hub de inovacao. Natura &amp;Co, Itau BBA, Embraer X. A startup nao e so um investimento — e um laboratorio externo. Se validar, adquire. Se nao, aprendeu barato.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-5">
+          <h4 class="font-bold text-emerald-400 mb-3">&#10003; CVC que funciona</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Tese clara: quais tecnologias/mercados queremos entender</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Time dedicado com autonomia para decidir (nao precisa de 5 aprovacoes)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>SLA de resposta rapido para startups (max 4 semanas para decisao)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Mecanismo de transferencia de aprendizado para o core (reunioes, workshops)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Criterios de saida (aquisicao, desinvestimento) pre-definidos</span></li>
+          </ul>
+        </div>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-5">
+          <h4 class="font-bold text-red-400 mb-3">&#10007; CVC que falha</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Criado para "parecer inovador" para imprensa e concorrentes</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Time do CVC sem acesso ao C-level para fechar parcerias comerciais</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Startups investidas nao conseguem vender para a propria empresa investidora</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Conflito de interesse: startup revela IP e perde vantagem competitiva</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Metrica errada: avaliar CVC com mesmo ROI de private equity tradicional</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 3: Parcerias com Startups e Scaleups -->
+    <section id="topico-3" data-inema-topic="modulo-3-3#topico-3" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+        <h2 class="text-2xl font-bold">&#128101; Parcerias com Startups e Scaleups</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t3-p1">
+        Parceria com startups nao e sobre ser "cool" ou aparecer no ranking de inovacao. E sobre <strong class="text-purple-400">acessar velocidade, tecnologia e modelos de negocio que a grande empresa nao consegue criar internamente</strong> no tempo necessario. O desafio nao e encontrar startups — e estruturar a relacao para que ela gere valor real para os dois lados sem matar a startup no processo.
+      </p>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center">
+          <span class="mr-2">&#128336;</span> Os 4 Modelos de Parceria
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">1. Cliente/Fornecedor</h4>
+            <p class="text-xs text-neutral-300">A empresa compra o produto/servico da startup. Modelo mais simples. A startup ganha revenue e referencia. A empresa ganha solucao rapida. Risco: dependencia de fornecedor fragil.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">2. Co-desenvolvimento</h4>
+            <p class="text-xs text-neutral-300">Desenvolvem conjuntamente uma solucao. A empresa entra com problema real + dados + distribuicao. A startup entra com tecnologia + velocidade. Divisao de IP pre-acordada. Mais complexo, mais valor.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">3. Canal/Distribuicao</h4>
+            <p class="text-xs text-neutral-300">A empresa distribui o produto da startup para sua base de clientes. Ou a startup distribui para um mercado que a empresa nao alcanca. Synergy de base instalada vs. agilidade.</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-lg p-4 border border-dark-600">
+            <h4 class="text-sm font-semibold text-purple-400 mb-2">4. Programa de Aceleracao</h4>
+            <p class="text-xs text-neutral-300">A empresa estrutura uma aceleradora (ex.: Wayra da Telefonica, Liga Ventures). Startups recebem mentoria, recursos e acesso a clientes. Empresa ganha pipeline de tecnologias e opcao de investimento/aquisicao.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">&#128161;</span> O Acordo de Piloto: como estruturar
+        </h3>
+        <p class="text-neutral-300 text-sm mb-3" data-inema-block="m3-3-t3-piloto">O maior gargalo da parceria e o piloto eterno — a startup fica 12 meses "em piloto" sem compra, sem expansao, sem desistencia formal. Isso mata startup e relacionamento. A solucao e o <strong class="text-white">Structured Pilot Agreement</strong>:</p>
+        <ul class="space-y-1 text-neutral-300 text-sm">
+          <li>&#8226; Duracao fixa: 60-90 dias, nunca aberto</li>
+          <li>&#8226; Metrica de sucesso pre-definida: "se X acontecer, compramos"</li>
+          <li>&#8226; Sponsor interno com poder de decisao de compra (nao so de piloto)</li>
+          <li>&#8226; Orcamento de continuidade ja aprovado em principio</li>
+          <li>&#8226; Exit claro: se nao funcionar, empresa libera startup para seguir em frente</li>
+        </ul>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
+          <span class="mr-2">&#127463;&#127479;</span> Casos Brasileiros
+        </h3>
+        <div class="space-y-3 text-sm text-neutral-300">
+          <div><strong class="text-purple-400">Bradesco InovaBra:</strong> aceleradora + CVC + hub fisico. +300 startups aceleradas. Resultados: Bitz (carteira digital) nasceu desse ecossistema.</div>
+          <div><strong class="text-purple-400">Embraer X:</strong> programa de parceria com startups de mobilidade aerea. Resultado: Eve Air Mobility — spin-off que foi a bolsa via SPAC a 2 bi dolares.</div>
+          <div><strong class="text-purple-400">Magazine Luiza (Magalu):</strong> programa Parceiro Magalu para startups de logistica/fintech. Integracao direta com plataforma. Resultado: ecossistema de sellers + solucoes financeiras.</div>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 4: Universidades, P&D e Editais -->
+    <section id="topico-4" data-inema-topic="modulo-3-3#topico-4" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+        <h2 class="text-2xl font-bold">&#127979; Universidades, P&amp;D e Editais</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t4-p1">
+        A pesquisa universitaria e o ativo mais subaproveitado da inovacao aberta no Brasil. Enquanto o modelo de <strong class="text-purple-400">triple helix</strong> (governo + empresa + universidade), descrito por Henry Etzkowitz e Loet Leydesdorff, funciona bem nos EUA, Alemanha e Israel, no Brasil o gap e estrutural: pesquisadores nao sabem como chegar em empresas e empresas nao sabem como absorver pesquisa basica. Mas quem aprende a navegar esse ecossistema ganha vantagem competitiva duravel.
+      </p>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-5 flex items-center">
+          <span class="mr-2">&#128218;</span> Mecanismos de Colaboracao Universidade-Empresa
+        </h3>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">A</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Contratos de P&amp;D direto</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-3-t4-pd">Empresa financia pesquisa especifica em laboratorio universitario. Define o problema, a universidade escolhe o metodo. Acesso aos resultados via contrato. Funciona melhor para problemas tecnicos bem definidos (materiais, processos, farmaceutica). Prazo tipico: 12-36 meses.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">B</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Editais FAPESP, CNPq, EMBRAPII</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-3-t4-editais">O governo subsidia parte do custo de P&D colaborativo. FAPESP PITE (Parceria para Inovacao Tecnologica): empresa entra com 50%, FAPESP cobre 50%. EMBRAPII: subvencao de ate 1/3 do projeto. Resultado: a empresa acessa pesquisa universitaria de ponta com 50% de desconto, com IP protegido.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <span class="text-purple-400 font-bold text-sm">C</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-purple-400 mb-1">Programas de residencia corporativa</h4>
+              <p class="text-sm text-neutral-300" data-inema-block="m3-3-t4-res">Pesquisadores passam 6-12 meses embedded na empresa. Empresa aprende a lingua academica, pesquisador aprende a lingua do negocio. Modelos como o MIT Industrial Liaison Program e o Stanford Center for Professional Development. No Brasil, algumas empresas como Petrobras e Embrapa tem formatos similares.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">&#128161;</span> Como comecar sem burocracia
+        </h3>
+        <p class="text-neutral-300 text-sm mb-3">Nao comece pelos editais — comece pelas pessoas. O caminho mais rapido:</p>
+        <ol class="space-y-2 text-neutral-300 text-sm">
+          <li><strong class="text-white">1.</strong> Identifique 2-3 laboratorios de referencia no seu setor (USP, UNICAMP, UFMG, POLI). Use Google Scholar para achar os pesquisadores mais citados no seu problema.</li>
+          <li><strong class="text-white">2.</strong> Entre em contato direto com o pesquisador (nao com a reitoria). Convide para uma visita a empresa.</li>
+          <li><strong class="text-white">3.</strong> Comece com um projeto pequeno: TCC ou dissertacao patrocinada (R$ 20-50k). Aprende o processo sem risco.</li>
+          <li><strong class="text-white">4.</strong> Se funcionar, escale para FAPESP PITE ou contrato de P&D maior.</li>
+        </ol>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 5: Crowdsourcing, Plataformas e Desafios Abertos -->
+    <section id="topico-5" data-inema-topic="modulo-3-3#topico-5" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+        <h2 class="text-2xl font-bold">&#127760; Crowdsourcing, Plataformas e Desafios Abertos</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t5-p1">
+        Crowdsourcing de inovacao e o ato de <strong class="text-purple-400">publicar um problema para o mundo resolver</strong>. O conceito foi popularizado por Jeff Howe na Wired Magazine em 2006 e evoluiu de simples concursos de design para plataformas sofisticadas de solucao colaborativa de problemas. A premissa de Chesbrough se aplica aqui tambem: se o conhecimento esta distribuido, o solver do seu problema mais dificil pode estar em Singapura, no interior do Maranhao, ou em uma garagem de estudante de engenharia.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-3">&#127942; Plataformas de Premio</h4>
+          <p class="text-sm text-neutral-300 mb-2" data-inema-block="m3-3-t5-premio">InnoCentive, HeroX, Kaggle. A empresa publica um desafio tecnico com premio em dinheiro. Solvers do mundo inteiro competem. A empresa paga so pela solucao que funcionar. ROI tipico: 10-50x vs. P&D interno (MIT, 2019).</p>
+          <p class="text-xs text-neutral-400"><strong>Caso:</strong> NASA usou InnoCentive para resolver problema de predicao de radiacoes solares. Resolvido por um medico aposentado sem background em astrofisica.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-3">&#128200; Hackathons Corporativos</h4>
+          <p class="text-sm text-neutral-300 mb-2" data-inema-block="m3-3-t5-hack">48-72 horas, problema real, prototipo como entrega. Funciona para inovacao de produto digital, processos internos, novos modelos de negocio. O erro classico: hackathon bonito, nenhum resultado implementado. A solucao: pre-comprometer orcamento de implementacao para os 3 primeiros colocados.</p>
+          <p class="text-xs text-neutral-400"><strong>Caso:</strong> Santander Hackathon Brasil — solucao vencedora virou produto real (Santander Empresas digital) em 8 meses.</p>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+          <h4 class="font-semibold text-purple-400 mb-3">&#127774; Open Source Estrategico</h4>
+          <p class="text-sm text-neutral-300 mb-2" data-inema-block="m3-3-t5-oss">Liberar tecnologia interna como open source para atrair contribuicoes externas e criar padrao de mercado. Google com Android e TensorFlow, Netflix com Chaos Monkey, Meta com React. A empresa perde a exclusividade mas ganha ecossistema.</p>
+          <p class="text-xs text-neutral-400"><strong>Logica:</strong> Se muitos players adotam sua tecnologia, voce define o padrao. Quem define o padrao nao paga royalties — recebe.</p>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center">
+          <span class="mr-2">&#128203;</span> Quando usar cada modalidade
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-dark-600">
+                <th class="text-left py-2 pr-4 text-purple-400 font-semibold">Modalidade</th>
+                <th class="text-left py-2 pr-4 text-purple-400 font-semibold">Problema ideal</th>
+                <th class="text-left py-2 text-purple-400 font-semibold">Custo</th>
+              </tr>
+            </thead>
+            <tbody class="text-neutral-300 divide-y divide-dark-600">
+              <tr>
+                <td class="py-2 pr-4 font-medium">Plataforma de premio</td>
+                <td class="py-2 pr-4">Tecnico, definivel, metrica clara</td>
+                <td class="py-2">Medio (premio)</td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-4 font-medium">Hackathon</td>
+                <td class="py-2 pr-4">Digital, produto, processo</td>
+                <td class="py-2">Baixo</td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-4 font-medium">Open source</td>
+                <td class="py-2 pr-4">Infraestrutura, plataforma, padrao</td>
+                <td class="py-2">Alto (inicial)</td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-4 font-medium">Co-criacao com usuarios</td>
+                <td class="py-2 pr-4">Experiencia, produto de consumo</td>
+                <td class="py-2">Baixo</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOPICO 6: Armadilhas -->
+    <section id="topico-6" data-inema-topic="modulo-3-3#topico-6" class="mb-16" style="scroll-margin-top:5rem">
+      <div class="flex items-center space-x-4 mb-6">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+        <h2 class="text-2xl font-bold">&#9888;&#65039; Armadilhas: Sindrome do "Nao Inventado Aqui" e Propriedade Intelectual</h2>
+      </div>
+
+      <p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t6-p1">
+        Inovacao aberta falha em silencio. Nao ha um momento dramatico de colapso — ela simplesmente nao acontece, porque a organizacao tem anticorpos contra o que vem de fora. O mais famoso desses anticorpos e a <strong class="text-purple-400">sindrome do "Nao Inventado Aqui" (NIH — Not Invented Here)</strong>, documentada pela primeira vez por Katz e Allen no MIT Sloan Management Review em 1982. O outro e a gestao ingenua de propriedade intelectual, que cria mais litigios do que valor.
+      </p>
+
+      <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-4 flex items-center">
+          <span class="mr-2">&#128683;</span> Sindrome NIH: como identificar e tratar
+        </h3>
+        <p class="text-neutral-300 text-sm mb-4" data-inema-block="m3-3-t6-nih">A NIH nao e resistencia consciente. E um bias cognitivo: as pessoas superestimam o valor do que criaram e subestimam o que veio de fora. Times de P&D com longa historia de sucesso sao os mais afetados. Manifestacoes tipicas:</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <h4 class="text-sm font-semibold text-red-400">Sinais de alerta</h4>
+            <ul class="space-y-2 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>"Isso e muito simples, nos conseguimos fazer melhor internamente"</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>"A startup nao entende as especificidades do nosso setor"</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Criterios de avaliacao mais rigidos para solucoes externas que internas</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">&#10007;</span><span>Times de P&D travando a compra de solucoes que "concorrem" com seu roadmap</span></li>
+            </ul>
+          </div>
+          <div class="space-y-3">
+            <h4 class="text-sm font-semibold text-emerald-400">Como superar</h4>
+            <ul class="space-y-2 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Reconhecer NIH como risco de negocio (nao fraqueza cultural)</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Incluir "solucoes externas avaliadas" como metrica do time de P&D</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Criar papeis de "tecnologia scout" com incentivo para trazer o melhor de fora</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">&#10003;</span><span>Celebrar casos de adocao externa bem-sucedida igual a inovacao interna</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <span class="mr-2">&#9878;</span> Propriedade Intelectual na Inovacao Aberta
+        </h3>
+        <p class="text-neutral-300 text-sm mb-4" data-inema-block="m3-3-t6-ip">O maior medo das empresas na inovacao aberta e perder IP. O maior medo das startups e ter o IP roubado. Ambos os medos sao legitimos e frequentemente mal enderecados. Chesbrough argumenta que o IP deve ser visto como <strong class="text-white">ativo que precisa circular</strong>, nao como fortaleza a ser defendida. IP parado nao gera retorno.</p>
+        <div class="space-y-3">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-0.5 font-bold">1.</span>
+            <div>
+              <strong class="text-white text-sm">Defina perimetros antes de colaborar:</strong>
+              <span class="text-neutral-400 text-sm"> O que e core IP (nao compartilha) vs. background IP (pode licenciar) vs. foreground IP (gerado na parceria, regras pre-acordadas). Sem essa classificacao, tudo vira litigio.</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-0.5 font-bold">2.</span>
+            <div>
+              <strong class="text-white text-sm">NDA nao e suficiente para parcerias tecnicas:</strong>
+              <span class="text-neutral-400 text-sm"> Use acordos de desenvolvimento conjunto com clausulas de ownership claras. Quem financiou? Quem executou? Como se divide o resultado?</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-0.5 font-bold">3.</span>
+            <div>
+              <strong class="text-white text-sm">Modelo "Dual License":</strong>
+              <span class="text-neutral-400 text-sm"> Para tecnologias que voce quer abrir, use licenca dupla — open source para uso geral, licenca comercial para quem quer suporte/garantia. Modelo bem-sucedido: MySQL, Redis, Elastic.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-primary/10 rounded-xl border border-primary/30 p-5 mb-6">
+        <h3 class="text-lg font-semibold text-primary mb-3 flex items-center">
+          <span class="mr-2">&#128161;</span> A Licao de Chesbrough
+        </h3>
+        <p class="text-neutral-300 text-sm" data-inema-block="m3-3-t6-chesbrough">A conclusao mais provocativa de Chesbrough em <em>Open Business Models</em> (2006): <strong class="text-white">"A empresa que tiver o melhor modelo de negocio vence, nao a empresa que tiver a melhor tecnologia."</strong> IP nao e vantagem competitiva duravel. O que dura e a capacidade de orquestrar o ecossistema — parceiros, startups, universidades, plataformas — para criar e capturar valor de forma continua. Empresas que protegem demais acabam protegendo ativos que o mercado ja superou.</p>
+      </div>
+
+      <div class="flex justify-start mt-6">
+        <button type="button" data-inema-read-toggle class="px-4 py-2 text-sm rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center space-x-2">
+          <span class="inema-ico-todo" aria-hidden="true">&#9744;</span>
+          <span class="inema-ico-done" aria-hidden="true">&#9745;</span>
+          <span class="inema-label-todo">Marcar como lido</span>
+          <span class="inema-label-done">Lido</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESUMO FINAL -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <span class="mr-3">&#128203;</span> Resumo do Modulo
+        </h2>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Inbound + Outbound: as duas faces de Chesbrough</strong>
+              <span class="text-neutral-400"> - Absorver conhecimento externo E monetizar IP interno que o core nao usa</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">CVC estrategico, nao financeiro</strong>
+              <span class="text-neutral-400"> - Investir em startups para aprender e criar opcoes, nao so para retorno de capital</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Parceria com startups exige Structured Pilot</strong>
+              <span class="text-neutral-400"> - Piloto com prazo fixo, metrica de sucesso e budget de continuidade pre-aprovado</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">Universidades via pesquisadores, nao via burocracia</strong>
+              <span class="text-neutral-400"> - Comece pelo contato direto com o lab. Escale com FAPESP PITE ou EMBRAPII</span>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-purple-400 mt-1">&#10003;</span>
+            <div>
+              <strong class="text-white">NIH e IP sao os maiores sabotadores</strong>
+              <span class="text-neutral-400"> - Reconhecer NIH como risco de negocio e classificar IP antes de colaborar</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+          <h3 class="font-semibold text-purple-400 mb-2">Proximo Modulo:</h3>
+          <p class="text-neutral-300">3.4 - Ambidestria Organizacional</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">
+            &#8592; Voltar para Trilha
+          </a>
+          <a href="modulo-3-4.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">
+            3.4 - Ambidestria Organizacional &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Cultura de Inovacao - 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      if (moduleCard) {
+        moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+          if (exp !== explanation) exp.classList.remove('active');
+        });
+      }
+      explanation.classList.toggle('active');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && !html.classList.contains('dark'))) {
+      themeToggleDarkIcon.classList.remove('hidden');
+      html.classList.remove('dark');
+    } else {
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+    }
+  </script>
+</body>
+</html>
